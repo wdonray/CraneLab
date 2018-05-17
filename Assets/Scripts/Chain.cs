@@ -15,19 +15,18 @@ public class Chain : MonoBehaviour
     private void Start()
     {
         m_chainLinks = new Stack<ConfigurableJoint>();
-        //m_chainLinks.Push(GetComponent<ConfigurableJoint>());
     }
 
     private void Update()
     {
-        m_chainLength = (int)Mathf.Abs(Mathf.Sin(Time.time) * 100f);
+        //m_chainLength = (int)Mathf.Abs(Mathf.Sin(Time.time) * 100f);
     }
 
     private void FixedUpdate()
     {
         if(m_chainLength < m_chainLinks.Count)
         {
-            RemoveLink();
+            DestroyTopLink();
         }
         else if(m_chainLength > m_chainLinks.Count)
         {
@@ -58,12 +57,14 @@ public class Chain : MonoBehaviour
         m_chainLinks.Push(newJoint);
     }
 
-    [ContextMenu("Remove Link")]
-    private void RemoveLink()
+    [ContextMenu("Destroy Link")]
+    private void DestroyTopLink()
     {
-        GameObject linkToRemove = m_chainLinks.Pop().gameObject;
+        if (m_chainLinks.Count < 2) return;
 
-        if (m_chainLinks.Count > 0)
+        ConfigurableJoint linkToRemove = m_chainLinks.Pop();
+
+        if (m_chainLinks.Peek().connectedBody != null)
         {
             Rigidbody newTopLink = m_chainLinks.Peek().GetComponent<Rigidbody>();
             newTopLink.useGravity = false;
@@ -71,6 +72,11 @@ public class Chain : MonoBehaviour
             newTopLink.transform.position = linkToRemove.transform.position;
         }
 
-        Destroy(linkToRemove);
+        else
+        {
+            m_chainLinks.Clear();
+        }
+
+        Destroy(linkToRemove.gameObject);
     }
 }
