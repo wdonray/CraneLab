@@ -12,6 +12,8 @@ public class Chain : MonoBehaviour
 
     private Stack<ConfigurableJoint> m_chainLinks;
 
+
+
     private void Start()
     {
         m_chainLinks = new Stack<ConfigurableJoint>();
@@ -24,11 +26,11 @@ public class Chain : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(m_chainLength < m_chainLinks.Count)
+        if (m_chainLength < m_chainLinks.Count)
         {
             DestroyTopLink();
         }
-        else if(m_chainLength > m_chainLinks.Count)
+        else if (m_chainLength > m_chainLinks.Count)
         {
             AddLink();
         }
@@ -63,20 +65,45 @@ public class Chain : MonoBehaviour
         if (m_chainLinks.Count < 2) return;
 
         ConfigurableJoint linkToRemove = m_chainLinks.Pop();
+        ConfigurableJoint newTopLink = m_chainLinks.Peek();
 
-        if (m_chainLinks.Peek().connectedBody != null)
+        if (newTopLink != null && newTopLink.connectedBody != null)
         {
-            Rigidbody newTopLink = m_chainLinks.Peek().GetComponent<Rigidbody>();
-            newTopLink.useGravity = false;
-            newTopLink.isKinematic = true;
+            Rigidbody newTopRB = newTopLink.GetComponent<Rigidbody>();
+            newTopRB.useGravity = false;
+            newTopRB.isKinematic = true;
             newTopLink.transform.position = linkToRemove.transform.position;
         }
 
         else
         {
+            //StartCoroutine(IDelayDestroyLooseLinks(m_chainLinks.ToArray(), 1f));
             m_chainLinks.Clear();
         }
 
         Destroy(linkToRemove.gameObject);
+    }
+
+    public IEnumerator IDelayDestroyLooseLinks(ConfigurableJoint[] objectsToDestroy, float timeDelay)
+    {
+        yield return new WaitForSeconds(timeDelay);
+
+        for(int i = 0; i < objectsToDestroy.Length; i++)
+        {
+            if (objectsToDestroy[i] == null) Destroy(objectsToDestroy[i]);
+
+            else
+            {
+                while (objectsToDestroy[i].transform.localScale.magnitude > 0.01f)
+                {
+                    objectsToDestroy[i].transform.localScale *= 0.5f;
+                    yield return null;
+                }
+                Destroy(objectsToDestroy[i].gameObject);
+            }
+            yield return null;
+        }
+
+        yield return null;
     }
 }
