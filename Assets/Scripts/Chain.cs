@@ -77,7 +77,7 @@ public class Chain : MonoBehaviour
 
         else
         {
-            //StartCoroutine(IDelayDestroyLooseLinks(m_chainLinks.ToArray(), 1f));
+            StartCoroutine(IDelayDestroyLooseLinks(m_chainLinks.ToArray(), 1f));
             m_chainLinks.Clear();
         }
 

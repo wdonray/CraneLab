@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 [RequireComponent(typeof(SphereCollider))]
 public class RigidBodyWind : MonoBehaviour
@@ -49,5 +50,21 @@ public class RigidBodyWind : MonoBehaviour
 
             otherRB.AddForce(relativeAreaForce, ForceMode.Force);
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Vector3 backPos = transform.position - transform.forward;
+        Vector3 frontPos = transform.position + transform.forward;
+
+        backPos += transform.up / 2f;
+        Debug.DrawLine(frontPos, backPos, Color.green);
+        backPos -= transform.up;
+        Debug.DrawLine(frontPos, backPos);
+        backPos += transform.up / 2f;
+        backPos += transform.right / 2f;
+        Debug.DrawLine(frontPos, backPos, Color.red);
+        backPos -= transform.right;
+        Debug.DrawLine(frontPos, backPos);
     }
 }
