@@ -13,15 +13,34 @@ public class Chain : MonoBehaviour
     private Stack<ConfigurableJoint> m_chainLinks;
 
 
+    private Vector3 m_topLinkOffset;
+
 
     private void Start()
     {
         m_chainLinks = new Stack<ConfigurableJoint>();
+        m_topLinkOffset = Vector3.zero;
     }
 
     private void Update()
     {
         //m_chainLength = (int)Mathf.Abs(Mathf.Sin(Time.time) * 100f);
+
+        m_topLinkOffset.y += Input.GetAxis("RIGHT_VERTICAL") * Time.deltaTime;
+        m_chainLinks.Peek().transform.position = transform.position + m_topLinkOffset;
+
+        if (m_topLinkOffset.y >= m_chainLinkPrefab.transform.localScale.y)
+        {
+            m_chainLength--;
+            m_topLinkOffset = Vector3.zero;
+        }
+        else if (m_topLinkOffset.y <= -1f)
+        {
+            m_chainLength++;
+            m_topLinkOffset = Vector3.zero;
+        }
+
+        m_chainLinks.Peek().transform.rotation = Quaternion.identity;
     }
 
     private void FixedUpdate()
@@ -54,6 +73,7 @@ public class Chain : MonoBehaviour
             topRB.isKinematic = false;
             m_chainLinks.Peek().connectedBody = newRB;
             m_chainLinks.Peek().name = "Link: " + m_chainLinks.Count.ToString();
+            m_chainLinks.Peek().transform.parent = null;
         }
 
         m_chainLinks.Push(newJoint);
