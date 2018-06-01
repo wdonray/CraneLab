@@ -13,7 +13,8 @@ public class RotationToInputAxis : MonoBehaviour
     public Axis m_rotationAroundAxis;
 
     public string m_inputAxisName;
-	
+
+    public float m_speedMod = 1f;
 
 	void Update ()
     {
@@ -39,7 +40,8 @@ public class RotationToInputAxis : MonoBehaviour
             default:
                 break;
         }
-        
+
+        rotationEulerAngles *= (m_speedMod * Time.deltaTime);
         transform.Rotate(rotationEulerAngles);
 	}
 }

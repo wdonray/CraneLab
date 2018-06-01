@@ -1097,7 +1097,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 501c77a03cdb5644fbd4f1045baa620f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_chainLength: 100
   m_chainLinkPrefab: {fileID: 1514810611281412, guid: 256a584ae425a2b4e96fe7d2b0e3ee18,
     type: 2}
 --- !u!4 &578746631
@@ -1798,6 +1797,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1071781876}
+  - component: {fileID: 1071781877}
   m_Layer: 0
   m_Name: ArmRoot
   m_TagString: Untagged
@@ -1819,6 +1819,20 @@ Transform:
   m_Father: {fileID: 2041509002}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: -45, y: 0, z: 0}
+--- !u!114 &1071781877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1071781875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b90b1440b60f5a64c88f0f9fd54a5051, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_rotationAroundAxis: 0
+  m_inputAxisName: LEFT_VERTICAL
+  m_speedMod: -10
 --- !u!1 &1105272375
 GameObject:
   m_ObjectHideFlags: 0
@@ -2607,6 +2621,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_rotationAroundAxis: 1
   m_inputAxisName: LEFT_ROTATION
+  m_speedMod: 10
 --- !u!1 &1463551508
 GameObject:
   m_ObjectHideFlags: 0

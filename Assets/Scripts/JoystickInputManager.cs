@@ -40,6 +40,7 @@ public class JoystickInputManager : MonoBehaviour
         foreach (JoystickInput input in JoystickInputs)
         {
             input.SendInputMessage();
+            
         }
 	}
 }

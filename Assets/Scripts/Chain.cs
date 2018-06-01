@@ -26,10 +26,10 @@ public class Chain : MonoBehaviour
     {
         //m_chainLength = (int)Mathf.Abs(Mathf.Sin(Time.time) * 100f);
 
-        m_topLinkOffset.y += Input.GetAxis("RIGHT_VERTICAL") * Time.deltaTime;
-        m_chainLinks.Peek().transform.position = transform.position + m_topLinkOffset;
+        m_topLinkOffset.y += Input.GetAxis("RIGHT_VERTICAL") * Time.deltaTime * 10;
+        m_chainLinks.Peek().transform.position = transform.position;// + m_topLinkOffset;
 
-        if (m_topLinkOffset.y >= m_chainLinkPrefab.transform.localScale.y)
+        if (m_topLinkOffset.y >= 1f)
         {
             m_chainLength--;
             m_topLinkOffset = Vector3.zero;
