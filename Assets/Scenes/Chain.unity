@@ -1097,6 +1097,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 501c77a03cdb5644fbd4f1045baa620f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_chainLength: 70
   m_chainLinkPrefab: {fileID: 1514810611281412, guid: 256a584ae425a2b4e96fe7d2b0e3ee18,
     type: 2}
 --- !u!4 &578746631
