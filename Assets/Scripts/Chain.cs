@@ -9,6 +9,10 @@ public class Chain : MonoBehaviour
 
     [SerializeField]
     private GameObject m_chainLinkPrefab;
+    [SerializeField]
+    private GameObject m_hookPrefab;
+
+    private GameObject m_hookRefrence;
 
     private Stack<ConfigurableJoint> m_chainLinks;
 
@@ -20,6 +24,11 @@ public class Chain : MonoBehaviour
     {
         m_chainLinks = new Stack<ConfigurableJoint>();
         m_topLinkOffset = Vector3.zero;
+
+        AddLink();
+        m_hookRefrence = Instantiate(m_hookPrefab, transform.position, Quaternion.identity) as GameObject;
+        m_hookRefrence.GetComponent<ConfigurableJoint>().connectedBody = m_chainLinks.Peek().GetComponent<Rigidbody>();
+        
     }
 
     private void Update()

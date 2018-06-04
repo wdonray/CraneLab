@@ -15,8 +15,18 @@ public class RotationToInputAxis : MonoBehaviour
     public string m_inputAxisName;
 
     public float m_speedMod = 1f;
+    public float m_dragMod = 0.1f;
 
-	void Update ()
+
+    private Vector3 m_currentRotation;
+    private Vector3 m_originPos;
+
+    private void Start()
+    {
+        m_currentRotation = Vector3.zero;
+    }
+
+    void Update ()
     {
         Vector3 rotationEulerAngles = Vector3.zero;
 
@@ -41,7 +51,12 @@ public class RotationToInputAxis : MonoBehaviour
                 break;
         }
 
-        rotationEulerAngles *= (m_speedMod * Time.deltaTime);
-        transform.Rotate(rotationEulerAngles);
+        m_currentRotation +=
+            rotationEulerAngles.magnitude > 0 ?
+            rotationEulerAngles * (m_speedMod * Time.deltaTime) :
+            -m_currentRotation * m_dragMod * Time.deltaTime;
+
+        //GetComponent<Rigidbody>().centerOfMass = Vector3.zero;
+        transform.Rotate(m_currentRotation);
 	}
 }
