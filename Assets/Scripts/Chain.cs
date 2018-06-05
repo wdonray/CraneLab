@@ -4,8 +4,11 @@ using System.Collections.Generic;
 
 public class Chain : MonoBehaviour
 {
-    [Range(1, 100), SerializeField]
-    int m_chainLength;
+    [SerializeField, Range(1, 100),]
+    private int m_chainLength;
+
+    [SerializeField]
+    private string m_inputAxis;
 
     [SerializeField]
     private GameObject m_chainLinkPrefab;
@@ -13,10 +16,8 @@ public class Chain : MonoBehaviour
     private GameObject m_hookPrefab;
 
     private GameObject m_hookRefrence;
-
     private Stack<ConfigurableJoint> m_chainLinks;
-
-
+    
     private Vector3 m_topLinkOffset;
 
 
@@ -35,7 +36,7 @@ public class Chain : MonoBehaviour
     {
         //m_chainLength = (int)Mathf.Abs(Mathf.Sin(Time.time) * 100f);
 
-        m_topLinkOffset.y += Input.GetAxis("RIGHT_VERTICAL") * Time.deltaTime * 10;
+        m_topLinkOffset.y += Input.GetAxis(m_inputAxis) * Time.deltaTime * 10;
         m_chainLinks.Peek().transform.position = transform.position;// + m_topLinkOffset;
 
         if (m_topLinkOffset.y >= 1f)
