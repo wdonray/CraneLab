@@ -34,12 +34,6 @@ public class HookLoop : MonoBehaviour
             m_hook = other.transform;
             SetGravity(false);
         }
-
-        else if(other.gameObject.CompareTag("DropZone"))
-        {
-            m_hook = null;
-            SetGravity(true);
-        }
     }
 
     void SetGravity(bool isEnabled)
