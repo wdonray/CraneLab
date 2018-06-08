@@ -1,0 +1,172 @@
+fileFormatVersion: 2
+guid: e2b6efbe7c0ae7d4e85ba3e707c8f3d4
+timeCreated: 1528308689
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: Cabin03
+    100002: Cabin03.001
+    100004: Cabin03.002
+    100006: Cabin03.003
+    100008: Cabin03.004
+    100010: Cabin03.005
+    100012: Cabin03.006
+    100014: Cabin04
+    100016: CrainM03
+    100018: CraneRoot
+    100020: Cyl03
+    100022: Cyl04
+    100024: DoorC01
+    100026: Hook01
+    100028: //RootNode
+    100030: Part01
+    100032: Tower01
+    100034: Wire01
+    400000: Cabin03
+    400002: Cabin03.001
+    400004: Cabin03.002
+    400006: Cabin03.003
+    400008: Cabin03.004
+    400010: Cabin03.005
+    400012: Cabin03.006
+    400014: Cabin04
+    400016: CrainM03
+    400018: CraneRoot
+    400020: Cyl03
+    400022: Cyl04
+    400024: DoorC01
+    400026: Hook01
+    400028: //RootNode
+    400030: Part01
+    400032: Tower01
+    400034: Wire01
+    2100000: Craneo
+    2100002: Cglass
+    2100004: Craneo.001
+    2300000: Cabin03
+    2300002: Cabin03.001
+    2300004: Cabin03.002
+    2300006: Cabin03.003
+    2300008: Cabin03.004
+    2300010: Cabin03.005
+    2300012: Cabin03.006
+    2300014: Cabin04
+    2300016: CrainM03
+    2300018: Cyl03
+    2300020: Cyl04
+    2300022: DoorC01
+    2300024: Hook01
+    2300026: Part01
+    2300028: Tower01
+    2300030: Wire01
+    3300000: Cabin03
+    3300002: Cabin03.001
+    3300004: Cabin03.002
+    3300006: Cabin03.003
+    3300008: Cabin03.004
+    3300010: Cabin03.005
+    3300012: Cabin03.006
+    3300014: Cabin04
+    3300016: CrainM03
+    3300018: Cyl03
+    3300020: Cyl04
+    3300022: DoorC01
+    3300024: Hook01
+    3300026: Part01
+    3300028: Tower01
+    3300030: Wire01
+    4300000: Cabin03.006
+    4300002: Cabin03.004
+    4300004: Cabin03.001
+    4300006: Wire01
+    4300008: Tower01
+    4300010: Part01
+    4300012: Hook01
+    4300014: DoorC01
+    4300016: Cyl04
+    4300018: Cyl03
+    4300020: CrainM03
+    4300022: Cabin04
+    4300024: Cabin03
+    4300026: Cabin03.003
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

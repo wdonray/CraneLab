@@ -17,6 +17,7 @@ public class CraneController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        cursor.ChangeLength(rope.RestLength + -Input.GetAxis("RIGHT_VERTICAL") * Time.deltaTime);
 
         //if (Input.GetKey(KeyCode.W)){
         //	if (rope.RestLength > 6.5f)

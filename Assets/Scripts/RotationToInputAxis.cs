@@ -51,12 +51,17 @@ public class RotationToInputAxis : MonoBehaviour
                 break;
         }
 
+        float throttleMod = (Mathf.Abs(Input.GetAxis("RIGHT_ROTATION"))) + 0.1f;// - 1) / 2) + 0.1f;
+        throttleMod *= Time.deltaTime;
+
         m_currentRotation +=
             rotationEulerAngles.magnitude > 0 ?
-            rotationEulerAngles * (m_speedMod * Time.deltaTime) :
-            -m_currentRotation * m_dragMod * Time.deltaTime;
+            (rotationEulerAngles * (m_speedMod * throttleMod)) :
+            Vector3.zero;
 
-        //GetComponent<Rigidbody>().centerOfMass = Vector3.zero;
+        m_currentRotation -= (m_currentRotation * (m_dragMod * Time.deltaTime));
+            
+        
         transform.Rotate(m_currentRotation);
 	}
 }
