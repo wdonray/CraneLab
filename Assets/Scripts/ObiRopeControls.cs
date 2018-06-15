@@ -27,7 +27,8 @@ public class ObiRopeControls : MonoBehaviour
     {
         if (Input.GetAxis(axis) != 0f)
         {
-            ropeLength -= Input.GetAxis(axis) * reelSpeed * Time.deltaTime;
+            float input = Input.GetAxis(axis) * (Mathf.Abs(Input.GetAxis("RIGHT_ROTATION")) + 1);
+            ropeLength -= input * reelSpeed * Time.deltaTime;
             cursor.ChangeLength(ropeLength);
             //cursor.normalizedCoord = 0.8f;
         }

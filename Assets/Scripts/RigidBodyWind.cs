@@ -16,6 +16,7 @@ public class RigidBodyWind : MonoBehaviour
     private eZoneType m_zoneType;
 
     public float m_streangth;
+    public float m_noise;
 
 	void Start ()
     {
@@ -29,6 +30,7 @@ public class RigidBodyWind : MonoBehaviour
         else
         {
             Vector3 directionalForce = transform.forward * m_streangth;
+            directionalForce *= 1 + (Random.value * m_noise);
 
             foreach(Rigidbody rb in FindObjectsOfType<Rigidbody>())
             {

@@ -15,7 +15,7 @@ public class HookLoop : MonoBehaviour
         {
             if (Input.GetButtonDown("RIGHT_TRIGGER"))
             {
-                Drop();
+                //Drop();
             }
         }
     }
