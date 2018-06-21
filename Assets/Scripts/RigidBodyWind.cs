@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
 [RequireComponent(typeof(SphereCollider))]
 public class RigidBodyWind : MonoBehaviour
@@ -30,7 +29,7 @@ public class RigidBodyWind : MonoBehaviour
         else
         {
             Vector3 directionalForce = transform.forward * m_streangth;
-            directionalForce *= 1 + (Random.value * m_noise);
+            directionalForce *= (Random.Range(-m_noise, m_noise));
 
             foreach(Rigidbody rb in FindObjectsOfType<Rigidbody>())
             {
