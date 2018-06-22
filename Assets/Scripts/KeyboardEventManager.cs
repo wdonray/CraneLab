@@ -4,18 +4,47 @@ using UnityEngine;
 
 public class KeyboardEventManager : MonoBehaviour
 {
-    private List<KeyboardEvent> m_keyEvents = new List<KeyboardEvent>();
-	
+    #region -----SINGLETON-----
+    private static KeyboardEventManager _instance;
 
-	void Update ()
+    public static KeyboardEventManager instance
     {
-		
+        get
+        {
+            if (_instance == null)
+                _instance = FindObjectOfType<KeyboardEventManager>();
+
+            return _instance;
+        }
+    }
+
+    private void Awake()
+    {
+        if (instance != this) Destroy(this);
+
+        DontDestroyOnLoad(instance);
+    }
+    #endregion
+
+    [SerializeField]
+    private List<KeyboardEvent> m_keyEvents = new List<KeyboardEvent>();
+
+
+    void Update ()
+    {
+		foreach(KeyboardEvent key in m_keyEvents)
+        {
+            if (Input.GetKeyDown(key.m_key)) key.m_event.Invoke();
+        }
 	}
 }
 
 [System.Serializable]
 public sealed class KeyboardEvent
 {
+    [SerializeField]
+    private string m_name;
+
     public KeyCode m_key;
     public UnityEngine.Events.UnityEvent m_event;
 }

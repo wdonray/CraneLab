@@ -1,29 +1,24 @@
-﻿using System.Collections;
+﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+
 
 public class HookLoop : MonoBehaviour
 {
     Rigidbody m_hook;
     HingeJoint m_connectionJoint;
 
-
+    float grabTimer = 0;
 
     void Update()
     {
-        if (m_hook != null)
-        {
-            if (Input.GetButtonDown("RIGHT_TRIGGER"))
-            {
-                //Drop();
-            }
-        }
+        grabTimer -= Time.deltaTime;
     }
 
 
     private void OnTriggerEnter(Collider other)
     {
-        if (m_hook != null) return;
+        if (m_hook != null || grabTimer > 0) return;
 
         else if(other.CompareTag("Hook"))
         {
@@ -47,5 +42,6 @@ public class HookLoop : MonoBehaviour
     {
         m_hook = null;
         Destroy(m_connectionJoint);
+        grabTimer = 3f;
     }
 }
