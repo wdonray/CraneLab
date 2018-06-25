@@ -5,16 +5,10 @@ using UnityEngine;
 public class UIUtils : MonoBehaviour
 {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update ()
+    // Use this for initialization
+    void Start()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-            ReloadCurrentScene();
+
     }
 
     public void GoToScene(int index)
