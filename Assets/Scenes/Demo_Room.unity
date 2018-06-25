@@ -31170,6 +31170,7 @@ MonoBehaviour:
   m_keyEvents:
   - m_name: Restart
     m_key: 27
+    m_hold: 0
     m_event:
       m_PersistentCalls:
         m_Calls:
@@ -34091,6 +34092,21 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300194, guid: 40b0db8eb2710e64fb09d90520be5a3c, type: 3}
+--- !u!1 &1903598862 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 107946, guid: dc06161b6d97feb419f45f03b62e14b9, type: 2}
+  m_PrefabInternal: {fileID: 130302378}
+--- !u!114 &1903598863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1903598862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 741c32a4c55889145b655bc6185993d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1911119311
 GameObject:
   m_ObjectHideFlags: 0
