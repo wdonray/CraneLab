@@ -4,13 +4,6 @@ using UnityEngine;
 
 public class UIUtils : MonoBehaviour
 {
-
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
     public void GoToScene(int index)
     {
         UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(index);
