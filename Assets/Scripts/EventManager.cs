@@ -38,6 +38,7 @@ public class EventManager : MonoBehaviour
     private Mouledoux.Components.Mediator.Subscriptions sub = new Mouledoux.Components.Mediator.Subscriptions();
     private Mouledoux.Callback.Callback onNotify;
 
+
     void Awake()
     {
         m_CurrentEvent = m_Events[0];   // Sets the current event to the first event
@@ -114,7 +115,6 @@ public class EventManager : MonoBehaviour
     {
         sub.UnsubscribeAll();
     }
-
 }
 
 [System.Serializable]
