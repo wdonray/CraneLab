@@ -35,6 +35,7 @@ public class KeyboardEventManager : MonoBehaviour
 		foreach(KeyboardEvent key in m_keyEvents)
         {
             if (Input.GetKey(key.m_key) && key.m_hold) key.m_event.Invoke();
+
             else if (Input.GetKeyDown(key.m_key)) key.m_event.Invoke();
         }
 	}
