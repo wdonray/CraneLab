@@ -10,7 +10,7 @@ public class LoadGuidance : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        transform.LookAt(CalculateWorldPointPosition());
+        transform.LookAt(Maxamize(CalculateWorldPointPosition()));
 	}
 
     private Vector3 CalculateWorldPointPosition()
@@ -24,5 +24,22 @@ public class LoadGuidance : MonoBehaviour
         targetWorldPos += transform.position;
 
         return targetWorldPos;
+    }
+
+    private Vector3 Maxamize(Vector3 original)
+    {
+        Vector3 max = original;
+        Vector3 absOrig = new Vector3(Mathf.Abs(max.x), Mathf.Abs(max.y), Mathf.Abs(max.z));
+        float highestValue = 0f;
+
+        highestValue = absOrig.x > highestValue ? absOrig.x : highestValue;
+        highestValue = absOrig.y > highestValue ? absOrig.y : highestValue;
+        highestValue = absOrig.z > highestValue ? absOrig.z : highestValue;
+
+        max.x = max.x == highestValue ? 1 : 0;
+        max.y = max.y == highestValue ? 1 : 0;
+        max.z = max.z == highestValue ? 1 : 0;
+
+        return max;
     }
 }
