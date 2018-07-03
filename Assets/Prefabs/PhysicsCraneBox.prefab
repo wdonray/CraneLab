@@ -2937,22 +2937,30 @@ MonoBehaviour:
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0
-    constraintCount: 2
+    constraintCount: 4
     cooked: 0
     sharesParticles: 0
-    activeConstraints: 0000000001000000
+    activeConstraints: 00000000010000000200000003000000
     phaseSizes: 
-    pinIndices: 0000000001000000
+    pinIndices: 00000000010000002100000022000000
     pinBodies:
     - {fileID: 114372993241877046}
     - {fileID: 114372993241877046}
+    - {fileID: 114714335069054404}
+    - {fileID: 114714335069054404}
     pinOffsets:
     - {x: -0.00017820997, y: -0.000000029220189, z: 0.0000004768372, w: 0}
     - {x: -0.031941116, y: 0.041220013, z: 0.002425667, w: 0}
+    - {x: -0.042711027, y: -0.055422086, z: 0.08061401, w: 0}
+    - {x: -0.044492144, y: -0.057733472, z: 0.07830846, w: 0}
     stiffnesses:
     - 0
     - 0
+    - 0
+    - 0
     pinBreakResistance:
+    - 3.4028235e+38
+    - 3.4028235e+38
     - 3.4028235e+38
     - 3.4028235e+38
 --- !u!114 &114109633324910356
@@ -3067,22 +3075,30 @@ MonoBehaviour:
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0
-    constraintCount: 2
+    constraintCount: 4
     cooked: 0
     sharesParticles: 0
-    activeConstraints: 0000000001000000
+    activeConstraints: 00000000010000000200000003000000
     phaseSizes: 
-    pinIndices: 0000000001000000
+    pinIndices: 00000000010000002100000022000000
     pinBodies:
     - {fileID: 114372993241877046}
     - {fileID: 114372993241877046}
+    - {fileID: 114714335069054404}
+    - {fileID: 114714335069054404}
     pinOffsets:
     - {x: -0.00017820997, y: -0.000000029220189, z: 0.0000004768372, w: 0}
     - {x: 0.03159039, y: -0.041219365, z: 0.0024251975, w: 0}
+    - {x: 0.04271065, y: 0.055422146, z: 0.08061394, w: 0}
+    - {x: 0.04449203, y: 0.057733495, z: 0.078308456, w: 0}
     stiffnesses:
     - 0
     - 0
+    - 0
+    - 0
     pinBreakResistance:
+    - 3.4028235e+38
+    - 3.4028235e+38
     - 3.4028235e+38
     - 3.4028235e+38
 --- !u!114 &114155649647945764
@@ -10060,22 +10076,30 @@ MonoBehaviour:
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0
-    constraintCount: 2
+    constraintCount: 4
     cooked: 0
     sharesParticles: 0
-    activeConstraints: 0000000001000000
+    activeConstraints: 00000000010000000200000003000000
     phaseSizes: 
-    pinIndices: 0000000001000000
+    pinIndices: 00000000010000002100000022000000
     pinBodies:
     - {fileID: 114372993241877046}
     - {fileID: 114372993241877046}
+    - {fileID: 114714335069054404}
+    - {fileID: 114714335069054404}
     pinOffsets:
     - {x: -0.00017820997, y: -0.000000029220189, z: 0.0000004768372, w: 0}
     - {x: -0.029026179, y: -0.04331036, z: 0.0024256743, w: 0}
+    - {x: -0.0387918, y: 0.0582326, z: 0.08061398, w: 0}
+    - {x: -0.04040946, y: 0.060661197, z: 0.078308456, w: 0}
     stiffnesses:
     - 0
     - 0
+    - 0
+    - 0
     pinBreakResistance:
+    - 3.4028235e+38
+    - 3.4028235e+38
     - 3.4028235e+38
     - 3.4028235e+38
 --- !u!114 &114760462671773152
@@ -10190,22 +10214,30 @@ MonoBehaviour:
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0
-    constraintCount: 2
+    constraintCount: 4
     cooked: 0
     sharesParticles: 0
-    activeConstraints: 0000000001000000
+    activeConstraints: 00000000010000000200000003000000
     phaseSizes: 
-    pinIndices: 0000000001000000
+    pinIndices: 00000000010000002100000022000000
     pinBodies:
     - {fileID: 114372993241877046}
     - {fileID: 114372993241877046}
+    - {fileID: 114714335069054404}
+    - {fileID: 114714335069054404}
     pinOffsets:
     - {x: -0.00017820997, y: -0.000000029220189, z: 0.0000004768372, w: 0}
     - {x: 0.028675556, y: 0.043309607, z: 0.00242519, w: 0}
+    - {x: 0.03879141, y: -0.058232646, z: 0.080613956, w: 0}
+    - {x: 0.040409345, y: -0.060661223, z: 0.07830845, w: 0}
     stiffnesses:
     - 0
     - 0
+    - 0
+    - 0
     pinBreakResistance:
+    - 3.4028235e+38
+    - 3.4028235e+38
     - 3.4028235e+38
     - 3.4028235e+38
 --- !u!114 &114882662909270134
