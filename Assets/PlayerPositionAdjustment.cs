@@ -4,7 +4,14 @@ using UnityEngine;
 
 public class PlayerPositionAdjustment : MonoBehaviour
 {
-	void Update ()
+    static Vector3 savedOffset = Vector3.zero;
+
+    private void Start()
+    {
+        transform.position += savedOffset;
+    }
+
+    void Update ()
     {
         if (Input.GetKey(KeyCode.LeftShift) ==
             Input.GetKey(KeyCode.RightShift)) return;
@@ -20,5 +27,7 @@ public class PlayerPositionAdjustment : MonoBehaviour
         translation *= Time.deltaTime;
 
         transform.Translate(translation);
+
+        savedOffset += translation;
     }
 }

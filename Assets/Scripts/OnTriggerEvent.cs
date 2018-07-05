@@ -13,7 +13,7 @@ public class OnTriggerEvent : MonoBehaviour
 
     void Start ()
     {
-        GetComponent<Collider>().isTrigger = true;
+        //GetComponent<Collider>().isTrigger = true;
 	}
 
 

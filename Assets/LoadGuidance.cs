@@ -10,7 +10,7 @@ public class LoadGuidance : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        transform.LookAt(Maxamize(CalculateWorldPointPosition()));
+        transform.LookAt((CalculateWorldPointPosition()));
 	}
 
     private Vector3 CalculateWorldPointPosition()
