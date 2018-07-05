@@ -8,7 +8,7 @@ public class PlayerPositionAdjustment : MonoBehaviour
 
     private void Start()
     {
-        transform.position += savedOffset;
+        transform.Translate(savedOffset);
     }
 
     void Update ()
@@ -27,7 +27,8 @@ public class PlayerPositionAdjustment : MonoBehaviour
         translation *= Time.deltaTime;
 
         transform.Translate(translation);
-
         savedOffset += translation;
+
+        print(savedOffset);
     }
 }
