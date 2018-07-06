@@ -20,7 +20,7 @@ public class LoadGuidance : MonoBehaviour
         Vector3 targetWorldPos = Vector3.zero;
 
         targetWorldPos = m_dropZone.position - m_load.position;
-        targetWorldPos.Normalize();
+        targetWorldPos = Maxamize(targetWorldPos).normalized;
         targetWorldPos += transform.position;
 
         return targetWorldPos;
@@ -32,13 +32,13 @@ public class LoadGuidance : MonoBehaviour
         Vector3 absOrig = new Vector3(Mathf.Abs(max.x), Mathf.Abs(max.y), Mathf.Abs(max.z));
         float highestValue = 0f;
 
-        highestValue = absOrig.x > highestValue ? absOrig.x : highestValue;
-        highestValue = absOrig.y > highestValue ? absOrig.y : highestValue;
-        highestValue = absOrig.z > highestValue ? absOrig.z : highestValue;
+        highestValue = absOrig.x > highestValue ? max.x : highestValue;
+        highestValue = absOrig.y > highestValue ? max.y : highestValue;
+        highestValue = absOrig.z > highestValue ? max.z : highestValue;
 
-        max.x = max.x == highestValue ? 1 : 0;
-        max.y = max.y == highestValue ? 1 : 0;
-        max.z = max.z == highestValue ? 1 : 0;
+        max.x = max.x == highestValue ? max.x / absOrig.x : 0;
+        max.y = max.y == highestValue ? max.y / absOrig.y : 0;
+        max.z = max.z == highestValue ? max.z / absOrig.z : 0;
 
         return max;
     }

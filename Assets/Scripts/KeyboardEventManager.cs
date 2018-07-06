@@ -22,7 +22,7 @@ public class KeyboardEventManager : MonoBehaviour
     {
         if (instance != this) Destroy(this);
 
-        DontDestroyOnLoad(instance);
+        //DontDestroyOnLoad(instance);
     }
     #endregion
 

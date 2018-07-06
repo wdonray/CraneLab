@@ -35,6 +35,8 @@ namespace NewtonVR
         private Quaternion InitialLocalRotation;
         private Quaternion ConstrainedRotation;
 
+        public UnityEngine.Events.UnityEvent OnPush;
+
         private void Awake()
         {
             InitialPosition = new GameObject(string.Format("[{0}] Initial Position", this.gameObject.name)).transform;
@@ -73,7 +75,11 @@ namespace NewtonVR
             ButtonIsPushed = CurrentDistance > DistanceToEngage;
 
             if (ButtonWasPushed == false && ButtonIsPushed == true)
+            {
                 ButtonDown = true;
+                OnPush.Invoke();
+            }
+
             else
                 ButtonDown = false;
 
