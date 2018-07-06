@@ -111,6 +111,7 @@ GameObject:
   - component: {fileID: 114010405325415410}
   - component: {fileID: 114714335069054404}
   - component: {fileID: 114718722941381194}
+  - component: {fileID: 114398663562276656}
   m_Layer: 0
   m_Name: Crate
   m_TagString: Untagged
@@ -216,7 +217,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1044208293750880}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 15, z: 0}
+  m_LocalPosition: {x: 0, y: 15, z: 0.19}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 4190325174734684}
@@ -270,7 +271,7 @@ Transform:
   m_GameObject: {fileID: 1445201320602866}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: -0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 100, y: 100.00012, z: 100.00012}
+  m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children: []
   m_Father: {fileID: 4907150796974594}
   m_RootOrder: 2
@@ -311,8 +312,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1563438350943328}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -183.63, y: 60.37, z: -131.28}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4151093650276588}
@@ -630,7 +631,7 @@ Rigidbody:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1445201320602866}
   serializedVersion: 2
-  m_Mass: 10
+  m_Mass: 25
   m_Drag: 1
   m_AngularDrag: 10
   m_UseGravity: 1
@@ -2943,7 +2944,7 @@ MonoBehaviour:
     constraintCount: 3
     cooked: 0
     sharesParticles: 0
-    activeConstraints: 000000000100000002000000
+    activeConstraints: 00000000010000000200000000000000
     phaseSizes: 
     pinIndices: 000000000100000022000000
     pinBodies:
@@ -2973,8 +2974,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a146e95606ea44239b6ebf927418fb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visualize: 0
-  stretchingScale: 0.1
+  visualize: 1
+  stretchingScale: 1
   stiffness: 1
   slack: 0
   batches:
@@ -3077,7 +3078,7 @@ MonoBehaviour:
     constraintCount: 3
     cooked: 0
     sharesParticles: 0
-    activeConstraints: 000000000100000002000000
+    activeConstraints: 00000000010000000200000000000000
     phaseSizes: 
     pinIndices: 000000000100000022000000
     pinBodies:
@@ -5421,8 +5422,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a146e95606ea44239b6ebf927418fb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visualize: 0
-  stretchingScale: 0.1
+  visualize: 1
+  stretchingScale: 1
   stiffness: 1
   slack: 0
   batches:
@@ -9808,6 +9809,39 @@ MonoBehaviour:
   unityCollider: {fileID: 65684730002132538}
   useDistanceFields: 0
   distanceField: {fileID: 0}
+--- !u!114 &114398663562276656
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1445201320602866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8be5fd7738463647aeb0fa7509b3c88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Tag: DropZone
+  OnEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 114571133401324066}
+        m_MethodName: Drop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnExit:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114511064292350022
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -9927,8 +9961,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d174fab52f0c4b8399f25d5c3ea524c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxParticles: 4000
-  substeps: 1
+  maxParticles: 5000
+  substeps: 2
   simulateWhenInvisible: 1
   simulateInLocalSpace: 0
   simulationOrder: 0
@@ -9945,8 +9979,8 @@ MonoBehaviour:
     sleepThreshold: 0.001
   distanceConstraintParameters:
     evaluationOrder: 0
-    iterations: 8
-    SORFactor: 1.5
+    iterations: 20
+    SORFactor: 1
     enabled: 1
   bendingConstraintParameters:
     evaluationOrder: 1
@@ -9957,10 +9991,10 @@ MonoBehaviour:
     evaluationOrder: 1
     iterations: 3
     SORFactor: 1
-    enabled: 1
+    enabled: 0
   collisionConstraintParameters:
-    evaluationOrder: 1
-    iterations: 3
+    evaluationOrder: 0
+    iterations: 10
     SORFactor: 1
     enabled: 0
   skinConstraintParameters:
@@ -9977,10 +10011,10 @@ MonoBehaviour:
     evaluationOrder: 1
     iterations: 3
     SORFactor: 1
-    enabled: 1
+    enabled: 0
   pinConstraintParameters:
     evaluationOrder: 1
-    iterations: 3
+    iterations: 20
     SORFactor: 1
     enabled: 1
   stitchConstraintParameters:
@@ -9992,7 +10026,7 @@ MonoBehaviour:
     evaluationOrder: 1
     iterations: 2
     SORFactor: 1
-    enabled: 0
+    enabled: 1
 --- !u!114 &114551597644234216
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -10118,7 +10152,7 @@ MonoBehaviour:
     constraintCount: 3
     cooked: 0
     sharesParticles: 0
-    activeConstraints: 000000000100000002000000
+    activeConstraints: 00000000010000000200000000000000
     phaseSizes: 
     pinIndices: 000000000100000022000000
     pinBodies:
@@ -10148,8 +10182,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a146e95606ea44239b6ebf927418fb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visualize: 0
-  stretchingScale: 0.1
+  visualize: 1
+  stretchingScale: 1
   stiffness: 1
   slack: 0
   batches:
@@ -10252,7 +10286,7 @@ MonoBehaviour:
     constraintCount: 3
     cooked: 0
     sharesParticles: 0
-    activeConstraints: 000000000100000002000000
+    activeConstraints: 00000000010000000200000000000000
     phaseSizes: 
     pinIndices: 000000000100000022000000
     pinBodies:
@@ -10282,8 +10316,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a146e95606ea44239b6ebf927418fb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visualize: 0
-  stretchingScale: 0.1
+  visualize: 1
+  stretchingScale: 1
   stiffness: 1
   slack: 0
   batches:
