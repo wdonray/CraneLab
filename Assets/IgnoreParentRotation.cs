@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class IgnoreParentRotation : MonoBehaviour
 {
-    Quaternion rotation;
+    Quaternion initRotation;
 
 	// Use this for initialization
 	void Start ()
     {
-        rotation = transform.rotation;
+        initRotation = transform.rotation;
 	}
 	
 	// Update is called once per frame
 	void Update ()
     {
-        transform.rotation = rotation;
+        transform.rotation = initRotation * Quaternion.Inverse(transform.parent.localRotation);
 	}
 }
