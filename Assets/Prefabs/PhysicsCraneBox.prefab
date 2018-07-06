@@ -217,7 +217,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1044208293750880}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 15, z: 0.19}
+  m_LocalPosition: {x: 0, y: 15, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 4190325174734684}
@@ -2941,25 +2941,29 @@ MonoBehaviour:
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0
-    constraintCount: 3
+    constraintCount: 4
     cooked: 0
     sharesParticles: 0
-    activeConstraints: 00000000010000000200000000000000
+    activeConstraints: 0000000001000000020000000000000003000000
     phaseSizes: 
-    pinIndices: 000000000100000022000000
+    pinIndices: 00000000010000002200000023000000
     pinBodies:
     - {fileID: 114372993241877046}
     - {fileID: 114372993241877046}
+    - {fileID: 114714335069054404}
     - {fileID: 114714335069054404}
     pinOffsets:
     - {x: -0.00017820997, y: -0.000000029220189, z: 0.0000004768372, w: 0}
     - {x: -0.031941116, y: 0.041220013, z: 0.002425667, w: 0}
     - {x: -0.044492144, y: -0.057733472, z: 0.07830846, w: 0}
+    - {x: -0.04512741, y: -0.058557987, z: 0.078260005, w: 0}
     stiffnesses:
     - 0
     - 0
     - 0
+    - 0
     pinBreakResistance:
+    - 3.4028235e+38
     - 3.4028235e+38
     - 3.4028235e+38
     - 3.4028235e+38
@@ -3075,25 +3079,29 @@ MonoBehaviour:
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0
-    constraintCount: 3
+    constraintCount: 4
     cooked: 0
     sharesParticles: 0
-    activeConstraints: 00000000010000000200000000000000
+    activeConstraints: 0000000001000000020000000000000003000000
     phaseSizes: 
-    pinIndices: 000000000100000022000000
+    pinIndices: 00000000010000002200000023000000
     pinBodies:
     - {fileID: 114372993241877046}
     - {fileID: 114372993241877046}
+    - {fileID: 114714335069054404}
     - {fileID: 114714335069054404}
     pinOffsets:
     - {x: -0.00017820997, y: -0.000000029220189, z: 0.0000004768372, w: 0}
     - {x: 0.03159039, y: -0.041219365, z: 0.0024251975, w: 0}
     - {x: 0.04449203, y: 0.057733495, z: 0.078308456, w: 0}
+    - {x: 0.04512741, y: 0.058557887, z: 0.07826002, w: 0}
     stiffnesses:
     - 0
     - 0
     - 0
+    - 0
     pinBreakResistance:
+    - 3.4028235e+38
     - 3.4028235e+38
     - 3.4028235e+38
     - 3.4028235e+38
@@ -10149,25 +10157,29 @@ MonoBehaviour:
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0
-    constraintCount: 3
+    constraintCount: 4
     cooked: 0
     sharesParticles: 0
-    activeConstraints: 00000000010000000200000000000000
+    activeConstraints: 0000000001000000020000000000000003000000
     phaseSizes: 
-    pinIndices: 000000000100000022000000
+    pinIndices: 00000000010000002200000023000000
     pinBodies:
     - {fileID: 114372993241877046}
     - {fileID: 114372993241877046}
+    - {fileID: 114714335069054404}
     - {fileID: 114714335069054404}
     pinOffsets:
     - {x: -0.00017820997, y: -0.000000029220189, z: 0.0000004768372, w: 0}
     - {x: -0.029026179, y: -0.04331036, z: 0.0024256743, w: 0}
     - {x: -0.04040946, y: 0.060661197, z: 0.078308456, w: 0}
+    - {x: -0.04098648, y: 0.061527405, z: 0.07826002, w: 0}
     stiffnesses:
     - 0
     - 0
     - 0
+    - 0
     pinBreakResistance:
+    - 3.4028235e+38
     - 3.4028235e+38
     - 3.4028235e+38
     - 3.4028235e+38
@@ -10283,25 +10295,29 @@ MonoBehaviour:
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0
-    constraintCount: 3
+    constraintCount: 4
     cooked: 0
     sharesParticles: 0
-    activeConstraints: 00000000010000000200000000000000
+    activeConstraints: 0000000001000000020000000000000003000000
     phaseSizes: 
-    pinIndices: 000000000100000022000000
+    pinIndices: 00000000010000002200000023000000
     pinBodies:
     - {fileID: 114372993241877046}
     - {fileID: 114372993241877046}
+    - {fileID: 114714335069054404}
     - {fileID: 114714335069054404}
     pinOffsets:
     - {x: -0.00017820997, y: -0.000000029220189, z: 0.0000004768372, w: 0}
     - {x: 0.028675556, y: 0.043309607, z: 0.00242519, w: 0}
     - {x: 0.040409345, y: -0.060661223, z: 0.07830845, w: 0}
+    - {x: 0.04098648, y: -0.061527498, z: 0.07826, w: 0}
     stiffnesses:
     - 0
     - 0
     - 0
+    - 0
     pinBreakResistance:
+    - 3.4028235e+38
     - 3.4028235e+38
     - 3.4028235e+38
     - 3.4028235e+38
