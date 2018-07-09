@@ -1,22 +1,34 @@
 ﻿using UnityEngine;
 using System.Collections;
-[RequireComponent(typeof(Collider))]
 
+[RequireComponent(typeof(Collider))]
 public class OnTriggerEvent : MonoBehaviour
 {
     public string m_Tag = "";
+
+    [Space]
+
+    [SerializeField]
+    private int minToTrigger = 0;
     public UnityEngine.Events.UnityEvent OnEnter;
+
+    [Space]
+
+    [SerializeField]
+    private int maxToTrigger = 0;
     public UnityEngine.Events.UnityEvent OnExit;
+
+
 
     private GameObject collisionObject;
     private bool canTrigger = true;
+    private int objectsInTrigger = 0;
+
 
     void Start ()
     {
         //GetComponent<Collider>().isTrigger = true;
 	}
-
-
 
     private void OnTriggerEnter(Collider other)
     {
@@ -27,10 +39,15 @@ public class OnTriggerEvent : MonoBehaviour
                 return;
 
         collisionObject = other.gameObject;
-        OnEnter.Invoke();
+        objectsInTrigger++;
 
-        canTrigger = false;
+        if (objectsInTrigger >= minToTrigger)
+        {
+            OnEnter.Invoke();
+            canTrigger = false;
+        }
     }
+
 
     private void OnTriggerExit(Collider other)
     {
@@ -39,10 +56,18 @@ public class OnTriggerEvent : MonoBehaviour
                 return;
 
         collisionObject = other.gameObject;
-        OnExit.Invoke();
+        objectsInTrigger--;
 
-        canTrigger = true;
+        if (objectsInTrigger <= maxToTrigger)
+        {
+            OnExit.Invoke();
+            canTrigger = true;
+        }
     }
+
+
+
+
 
     public void SetParent(bool parent)
     {

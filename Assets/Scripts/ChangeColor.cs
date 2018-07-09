@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ChangeColor : MonoBehaviour, IPointerClickHandler
+public class ChangeColor : MonoBehaviour//, IPointerClickHandler
 {
 	void OnEnable ()
 	{
@@ -40,11 +40,11 @@ public class ChangeColor : MonoBehaviour, IPointerClickHandler
 			GetComponent<Light>().color = c;
 	}
 
-	public void OnPointerClick(PointerEventData data)
-	{
-		if (GetComponent<Renderer>() != null)
-			GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value, 1.0f);
-		else if (GetComponent<Light>() != null)
-			GetComponent<Light>().color = new Color(Random.value, Random.value, Random.value, 1.0f);
-	}
+	//public void OnPointerClick(PointerEventData data)
+	//{
+	//	if (GetComponent<Renderer>() != null)
+	//		GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value, 1.0f);
+	//	else if (GetComponent<Light>() != null)
+	//		GetComponent<Light>().color = new Color(Random.value, Random.value, Random.value, 1.0f);
+	//}
 }
