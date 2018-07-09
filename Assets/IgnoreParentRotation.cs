@@ -15,6 +15,6 @@ public class IgnoreParentRotation : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        transform.rotation = initRotation * Quaternion.Inverse(transform.parent.localRotation);
+        transform.localRotation = Quaternion.Inverse(transform.parent.localRotation);
 	}
 }

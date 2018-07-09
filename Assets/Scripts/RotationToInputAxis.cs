@@ -100,7 +100,7 @@ public class RotationToInputAxis : MonoBehaviour
                 break;
         }
         
-        float throttleMod = (Mathf.Abs(Input.GetAxis("RIGHT_ROTATION"))) + 0.1f;
+        float throttleMod = (Mathf.Abs(Input.GetAxis("RIGHT_ROTATION"))) + 0.5f;
         throttleMod *= Time.deltaTime;
 
         m_currentRotation +=
