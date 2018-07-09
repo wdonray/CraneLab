@@ -1,0 +1,189 @@
+fileFormatVersion: 2
+guid: e6c200ee03cf15e4695f6edf8d2f65c7
+timeCreated: 1531165888
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: Cabin03
+    100002: Cabin03.001
+    100004: Cabin03.002
+    100006: Cabin03.003
+    100008: Cabin03.004
+    100010: Cabin03.005
+    100012: Cabin03.006
+    100014: Cabin04
+    100016: Cabin04.001
+    100018: CrainM03
+    100020: CraneRoot
+    100022: Cyl03
+    100024: Cyl04
+    100026: DoorC01
+    100028: Hook01
+    100030: //RootNode
+    100032: Part01
+    100034: Tower01
+    100036: Wire01
+    100038: CabinWindowInside
+    100040: CabinWindowOutside
+    400000: Cabin03
+    400002: Cabin03.001
+    400004: Cabin03.002
+    400006: Cabin03.003
+    400008: Cabin03.004
+    400010: Cabin03.005
+    400012: Cabin03.006
+    400014: Cabin04
+    400016: Cabin04.001
+    400018: CrainM03
+    400020: CraneRoot
+    400022: Cyl03
+    400024: Cyl04
+    400026: DoorC01
+    400028: Hook01
+    400030: //RootNode
+    400032: Part01
+    400034: Tower01
+    400036: Wire01
+    400038: CabinWindowInside
+    400040: CabinWindowOutside
+    2100000: Craneo.001
+    2100002: Cglass
+    2100004: Craneo
+    2300000: Cabin03
+    2300002: Cabin03.001
+    2300004: Cabin03.002
+    2300006: Cabin03.003
+    2300008: Cabin03.004
+    2300010: Cabin03.005
+    2300012: Cabin03.006
+    2300014: Cabin04
+    2300016: Cabin04.001
+    2300018: CrainM03
+    2300020: Cyl03
+    2300022: Cyl04
+    2300024: DoorC01
+    2300026: Hook01
+    2300028: Part01
+    2300030: Tower01
+    2300032: Wire01
+    2300034: CabinWindowInside
+    2300036: CabinWindowOutside
+    3300000: Cabin03
+    3300002: Cabin03.001
+    3300004: Cabin03.002
+    3300006: Cabin03.003
+    3300008: Cabin03.004
+    3300010: Cabin03.005
+    3300012: Cabin03.006
+    3300014: Cabin04
+    3300016: Cabin04.001
+    3300018: CrainM03
+    3300020: Cyl03
+    3300022: Cyl04
+    3300024: DoorC01
+    3300026: Hook01
+    3300028: Part01
+    3300030: Tower01
+    3300032: Wire01
+    3300034: CabinWindowInside
+    3300036: CabinWindowOutside
+    4300000: Cabin03.003
+    4300002: Cabin04.001
+    4300004: Cabin03
+    4300006: Cabin04
+    4300008: CrainM03
+    4300010: Cyl03
+    4300012: Cyl04
+    4300014: DoorC01
+    4300016: Hook01
+    4300018: Part01
+    4300020: Tower01
+    4300022: Wire01
+    4300024: Cabin03.001
+    4300026: Cabin03.002
+    4300028: Cabin03.005
+    4300030: CabinWindowInside
+    4300032: CabinWindowOutside
+    4300034: Cabin03.006
+    4300036: Cabin03.004
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

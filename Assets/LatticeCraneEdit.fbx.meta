@@ -23,6 +23,8 @@ ModelImporter:
     100030: Part01
     100032: Tower01
     100034: Wire01
+    100036: Cabin04.001
+    100038: CabinWindowOutside
     400000: Cabin03
     400002: Cabin03.001
     400004: Cabin03.002
@@ -41,6 +43,8 @@ ModelImporter:
     400030: Part01
     400032: Tower01
     400034: Wire01
+    400036: Cabin04.001
+    400038: CabinWindowOutside
     2100000: Craneo
     2100002: Cglass
     2100004: Craneo.001
@@ -60,6 +64,8 @@ ModelImporter:
     2300026: Part01
     2300028: Tower01
     2300030: Wire01
+    2300032: Cabin04.001
+    2300034: CabinWindowOutside
     3300000: Cabin03
     3300002: Cabin03.001
     3300004: Cabin03.002
@@ -76,6 +82,8 @@ ModelImporter:
     3300026: Part01
     3300028: Tower01
     3300030: Wire01
+    3300032: Cabin04.001
+    3300034: CabinWindowOutside
     4300000: Cabin03.006
     4300002: Cabin03.004
     4300004: Cabin03.001
@@ -92,6 +100,8 @@ ModelImporter:
     4300026: Cabin03.003
     4300028: Cabin03.002
     4300030: Cabin03.005
+    4300032: Cabin04.001
+    4300034: CabinWindowOutside
   externalObjects: {}
   materials:
     importMaterials: 1
