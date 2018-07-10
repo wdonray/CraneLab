@@ -10,6 +10,16 @@ public class HookLoop : MonoBehaviour
 
     float grabTimer = 0;
 
+    Mouledoux.Components.Mediator.Subscriptions subscription = new Mouledoux.Components.Mediator.Subscriptions();
+    Mouledoux.Callback.Callback onDrop;
+
+    private void Awake()
+    {
+        onDrop += Drop;
+
+        subscription.Subscribe("drop", onDrop);
+    }
+
     void Update()
     {
         grabTimer -= Time.deltaTime;
@@ -41,7 +51,15 @@ public class HookLoop : MonoBehaviour
     public void Drop()
     {
         m_hook = null;
-        Destroy(m_connectionJoint);
+
+        if(m_connectionJoint != null)
+            Destroy(m_connectionJoint);
+
         grabTimer = 3f;
+    }
+
+    public void Drop(Mouledoux.Callback.Packet packet)
+    {
+        Drop();
     }
 }

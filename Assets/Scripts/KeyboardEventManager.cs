@@ -39,6 +39,11 @@ public class KeyboardEventManager : MonoBehaviour
             else if (Input.GetKeyDown(key.m_key)) key.m_event.Invoke();
         }
 	}
+
+    public void Broadcast(string message)
+    {
+        Mouledoux.Components.Mediator.instance.NotifySubscribers(message, new Mouledoux.Callback.Packet());
+    }
 }
 
 [System.Serializable]
