@@ -26,24 +26,29 @@ public class HookLoop : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (m_hook != null || grabTimer > 0) return;
 
         else if(other.CompareTag("Hook"))
         {
-            m_hook = other.GetComponent<Rigidbody>();
-            m_connectionJoint = gameObject.AddComponent<HingeJoint>();
-            m_connectionJoint.connectedBody = m_hook;
-            m_connectionJoint.autoConfigureConnectedAnchor = false;
-            m_connectionJoint.anchor = new Vector3(0, 0, -0.75f);
-            m_connectionJoint.connectedAnchor = new Vector3(0, 0, -0.5f);
+            transform.position = Vector3.Lerp(transform.position, other.transform.position, Time.deltaTime * 10f);
 
-            JointLimits newLimits = new JointLimits();
-            newLimits.min = -60f;
-            newLimits.max = 60f;
-            m_connectionJoint.useLimits = true;
-            m_connectionJoint.limits = newLimits;
+            if (Vector3.Distance(transform.position, other.transform.position) <= 4f)
+            {
+                m_hook = other.GetComponent<Rigidbody>();
+                m_connectionJoint = gameObject.AddComponent<HingeJoint>();
+                m_connectionJoint.connectedBody = m_hook;
+                m_connectionJoint.autoConfigureConnectedAnchor = false;
+                m_connectionJoint.anchor = new Vector3(0, 0, -0.75f);
+                m_connectionJoint.connectedAnchor = new Vector3(0, 0, -0.5f);
+
+                JointLimits newLimits = new JointLimits();
+                newLimits.min = -60f;
+                newLimits.max = 60f;
+                m_connectionJoint.useLimits = true;
+                m_connectionJoint.limits = newLimits;
+            }
         }
     }
 
