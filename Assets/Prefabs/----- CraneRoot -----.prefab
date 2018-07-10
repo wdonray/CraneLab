@@ -169,7 +169,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1081687421287818
 GameObject:
   m_ObjectHideFlags: 1
@@ -1304,7 +1304,7 @@ GameObject:
   - component: {fileID: 114719931526682720}
   - component: {fileID: 114983918002120098}
   m_Layer: 0
-  m_Name: HookCable (1)
+  m_Name: Crane Hook Cable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1431,7 +1431,7 @@ GameObject:
   - component: {fileID: 114088764494400532}
   - component: {fileID: 114144025773593526}
   m_Layer: 0
-  m_Name: HookCable (2)
+  m_Name: Crane Hook Cable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9073,7 +9073,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b0ff3a4f8c74454aada3576e59653fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  solver: {fileID: 114475891769357388}
+  solver: {fileID: 114667021111983282}
   worldVelocityScale: 0
   collisionMaterial: {fileID: 0}
   selfCollisions: 0
@@ -9300,7 +9300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b0ff3a4f8c74454aada3576e59653fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  solver: {fileID: 114475891769357388}
+  solver: {fileID: 114667021111983282}
   worldVelocityScale: 0
   collisionMaterial: {fileID: 0}
   selfCollisions: 0
@@ -15075,7 +15075,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d174fab52f0c4b8399f25d5c3ea524c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxParticles: 5000
+  maxParticles: 7777
   substeps: 2
   simulateWhenInvisible: 1
   simulateInLocalSpace: 0
