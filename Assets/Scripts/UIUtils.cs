@@ -18,4 +18,9 @@ public class UIUtils : MonoBehaviour
     {
         GoToScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }
+
+    public void ToggleGameobjectEnable(GameObject go)
+    {
+        go.SetActive(!go.activeSelf);
+    }
 }

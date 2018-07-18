@@ -40,6 +40,18 @@ public class KeyboardEventManager : MonoBehaviour
         }
 	}
 
+    public void TriggerEvent(string eventName)
+    {
+        foreach (KeyboardEvent key in m_keyEvents)
+        {
+            if (eventName.ToLower() == key.m_name.ToLower())
+            {
+                key.m_event.Invoke();
+                return;
+            }
+        }
+    }
+
     public void Broadcast(string message)
     {
         Mouledoux.Components.Mediator.instance.NotifySubscribers(message, new Mouledoux.Callback.Packet());
@@ -49,8 +61,7 @@ public class KeyboardEventManager : MonoBehaviour
 [System.Serializable]
 public sealed class KeyboardEvent
 {
-    [SerializeField]
-    private string m_name;
+    public string m_name;
 
     public KeyCode m_key;
     public bool m_hold;
