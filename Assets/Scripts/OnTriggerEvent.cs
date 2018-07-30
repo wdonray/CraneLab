@@ -66,7 +66,10 @@ public class OnTriggerEvent : MonoBehaviour
     }
 
 
-
+    public void NotifySubscribers(string subscription)
+    {
+        Mouledoux.Components.Mediator.instance.NotifySubscribers(subscription, new Mouledoux.Callback.Packet());
+    }
 
 
     public void SetParent(bool parent)
