@@ -73,12 +73,12 @@ Material:
     - _DstBlend: 0
     - _FresnelScale: 0.15
     - _Glossiness: 0.5
-    - _Intensity: 10
+    - _Intensity: 7.51
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Periode: 0.3
+    - _Periode: 5
     - _Shininess: 265
     - _SrcBlend: 1
     - _UVSec: 0
