@@ -36,4 +36,28 @@ public class PlayerInformation : MonoBehaviour
     {
         SetEmail(input.text);
     }
+
+    public void AppendToFile()
+    {
+        string filePath = Application.dataPath + "/" + "UserInformation";
+
+        string info = Date() + ", ";
+        info += System.DateTime.Now.Hour + ":" + System.DateTime.Now.Minute.ToString("00") + ", ";
+
+
+        info += lastName + ", ";
+        info += firstName + ", ";
+        info += email;
+
+        System.IO.StreamWriter file = System.IO.File.AppendText(filePath);
+        file.WriteLine(info);
+        file.Close();
+    }
+
+    private string Date()
+    {
+        return System.DateTime.Now.Year.ToString() + " " +
+            System.DateTime.Now.Month.ToString() + " " +
+            System.DateTime.Now.Day.ToString();
+    }
 }
