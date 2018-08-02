@@ -95,4 +95,4 @@ Material:
     - _SpecularColor: {r: 0.9411765, g: 0.844577, b: 0.6366782, a: 0.27053705}
     - _WaterColor: {r: 0, g: 0, b: 0, a: 0.5}
     - _WorldLightDir: {r: -0.03, g: -0.201, b: -1, a: 0}
-    - world_light_dir: {r: -0.5566706, g: 0.76604456, b: -0.32139367, a: 0}
+    - world_light_dir: {r: -0.5566704, g: 0.7660443, b: -0.32139382, a: 0}
