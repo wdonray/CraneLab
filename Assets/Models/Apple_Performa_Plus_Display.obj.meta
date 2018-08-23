@@ -1,0 +1,173 @@
+fileFormatVersion: 2
+guid: 6e14682b755cd534ea4ba380ec26475c
+timeCreated: 1534977122
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: back_cap_pivot
+    100004: body_border_pivot
+    100006: body_pivot
+    100008: display_border_pivot
+    100010: display_glass_pivot
+    100012: display_patch_pivot
+    100014: labels_pivot
+    100016: led_pivot
+    100018: no_emptiness_pivot
+    100020: power_button_pivot
+    100022: power_jack_pivot
+    100024: power_pins_pivot
+    100026: screws_pivot
+    100028: stand_pivot
+    400000: //RootNode
+    400002: back_cap_pivot
+    400004: body_border_pivot
+    400006: body_pivot
+    400008: display_border_pivot
+    400010: display_glass_pivot
+    400012: display_patch_pivot
+    400014: labels_pivot
+    400016: led_pivot
+    400018: no_emptiness_pivot
+    400020: power_button_pivot
+    400022: power_jack_pivot
+    400024: power_pins_pivot
+    400026: screws_pivot
+    400028: stand_pivot
+    2100000: back_cap_pivotMat
+    2100002: body_border_pivotMat
+    2100004: body_pivotMat
+    2100006: display_border_pivotMat
+    2100008: display_glass_pivotMat
+    2100010: display_patch_pivotMat
+    2100012: labels_pivotMat
+    2100014: led_pivotMat
+    2100016: no_emptiness_pivotMat
+    2100018: power_button_pivotMat
+    2100020: power_jack_pivotMat
+    2100022: power_pins_pivotMat
+    2100024: screws_pivotMat
+    2100026: stand_pivotMat
+    2300000: back_cap_pivot
+    2300002: body_border_pivot
+    2300004: body_pivot
+    2300006: display_border_pivot
+    2300008: display_glass_pivot
+    2300010: display_patch_pivot
+    2300012: labels_pivot
+    2300014: led_pivot
+    2300016: no_emptiness_pivot
+    2300018: power_button_pivot
+    2300020: power_jack_pivot
+    2300022: power_pins_pivot
+    2300024: screws_pivot
+    2300026: stand_pivot
+    3300000: back_cap_pivot
+    3300002: body_border_pivot
+    3300004: body_pivot
+    3300006: display_border_pivot
+    3300008: display_glass_pivot
+    3300010: display_patch_pivot
+    3300012: labels_pivot
+    3300014: led_pivot
+    3300016: no_emptiness_pivot
+    3300018: power_button_pivot
+    3300020: power_jack_pivot
+    3300022: power_pins_pivot
+    3300024: screws_pivot
+    3300026: stand_pivot
+    4300000: back_cap_pivot
+    4300002: body_border_pivot
+    4300004: body_pivot
+    4300006: display_border_pivot
+    4300008: display_glass_pivot
+    4300010: display_patch_pivot
+    4300012: labels_pivot
+    4300014: led_pivot
+    4300016: no_emptiness_pivot
+    4300018: power_button_pivot
+    4300020: power_jack_pivot
+    4300022: power_pins_pivot
+    4300024: screws_pivot
+    4300026: stand_pivot
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
