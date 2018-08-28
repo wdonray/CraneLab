@@ -30,7 +30,8 @@ public class ActiveCycler : MonoBehaviour
 
 	void Update ()
     {
-		
+        if (Input.GetKeyDown(KeyCode.P))
+            ActivateNext();
 	}
 
 
@@ -44,8 +45,8 @@ public class ActiveCycler : MonoBehaviour
 
         m_toggleObjects[0].SetActive(true);
     }
-
-    public void ActivateNext(bool increment)
+    
+    public void ActivateNext(bool increment = true)
     {
         toggleIndex += increment ? 1 : -1;
     }
