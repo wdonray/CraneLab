@@ -15,7 +15,7 @@ public class ActiveCycler : MonoBehaviour
         set
         {
             m_toggleObjects[_toggleIndex].SetActive(false);
-            _toggleIndex = (value % m_toggleObjects.Count);
+            _toggleIndex = Mathf.Abs(value % m_toggleObjects.Count);
             m_toggleObjects [_toggleIndex].SetActive(true);
         }
     }
