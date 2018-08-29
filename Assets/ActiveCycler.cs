@@ -15,7 +15,13 @@ public class ActiveCycler : MonoBehaviour
         set
         {
             m_toggleObjects[_toggleIndex].SetActive(false);
-            _toggleIndex = Mathf.Abs(value % m_toggleObjects.Count);
+
+            if(value < 0)
+                _toggleIndex = m_toggleObjects.Count - 1;
+            
+            else
+                _toggleIndex = Mathf.Abs(value % m_toggleObjects.Count);
+
             m_toggleObjects [_toggleIndex].SetActive(true);
         }
     }
@@ -30,8 +36,8 @@ public class ActiveCycler : MonoBehaviour
 
 	void Update ()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-            ActivateNext();
+        //if (Input.GetKeyDown(KeyCode.P))
+        //    ActivateNext(false);
 	}
 
 
