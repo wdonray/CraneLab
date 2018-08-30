@@ -8,6 +8,12 @@ public class PlayerInformation : MonoBehaviour
     public static string lastName;
     public static string email;
 
+    public UnityEngine.Events.UnityEvent onStart;
+
+    public void Start()
+    {
+        onStart.Invoke();
+    }
 
 
     public void SetFirstName(string name)
@@ -56,8 +62,18 @@ public class PlayerInformation : MonoBehaviour
 
     private string Date()
     {
-        return System.DateTime.Now.Year.ToString() + " " +
-            System.DateTime.Now.Month.ToString() + " " +
+        return System.DateTime.Now.Year.ToString() + "/ " +
+            System.DateTime.Now.Month.ToString() + "/ " +
             System.DateTime.Now.Day.ToString();
+    }
+
+    public void NameToTextBox(UnityEngine.UI.Text textBox)
+    {
+        textBox.text = firstName + " " + lastName;
+    }
+
+    public void DateToTextBox(UnityEngine.UI.Text textBox)
+    {
+        textBox.text = Date();
     }
 }
