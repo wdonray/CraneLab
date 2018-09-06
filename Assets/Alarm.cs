@@ -33,7 +33,7 @@ public class Alarm : MonoBehaviour
         float timeLoop = 0f;
         do
         {
-            timeLoop = Mathf.Sin((m_alarmSource.time / m_alarmSource.clip.length));
+            timeLoop = Mathf.Sin((m_alarmSource.time / m_alarmSource.clip.length) * (2f * Mathf.PI));
             m_warningLight.intensity = m_lightIntensity * timeLoop;
 
             yield return null;
