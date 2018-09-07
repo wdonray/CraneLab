@@ -1,0 +1,442 @@
+# 
+# Wavefront material file
+# Converted by the DEEP Exploration  Deep Exploration 5.7 5.7.0.4228 Release
+# Right Hemisphere, LTD
+# http://www.righthemisphere.com/
+# 
+
+newmtl Black
+Ka 0 0 0
+Kd 0.176667 0.176667 0.176667
+Ks 0.0831373 0.0831373 0.0831373
+illum 2
+Ns 12.996
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl White
+Ka 0 0 0
+Kd 0.85 0.85 0.85
+Ks 0.4 0.4 0.4
+illum 2
+Ns 12.996
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Alu
+Ka 0 0 0
+Kd 0.87451 0.87451 0.87451
+Ks 0 0 0
+illum 2
+Ns 5.65685
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl WhiteF
+Ka 0 0 0
+Kd 0.85 0.85 0.85
+Ks 0.4 0.4 0.4
+illum 2
+Ns 12.996
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl BlackF
+Ka 0 0 0
+Kd 0.176667 0.176667 0.176667
+Ks 0.0831373 0.0831373 0.0831373
+illum 2
+Ns 12.996
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl GreyF
+Ka 0 0 0
+Kd 0.64 0.64 0.64
+Ks 0.301176 0.301176 0.301176
+illum 2
+Ns 12.996
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Chrome
+Ka 0 0 0
+Kd 0.200784 0.200784 0.200782
+Ks 0.25098 0.25098 0.250978
+illum 2
+Ns 337.794
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Blue
+Ka 0 0 0
+Kd 0 0.213333 0.426667
+Ks 0 0.100392 0.200784
+illum 2
+Ns 12.996
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Orange
+Ka 0 0 0
+Kd 0.85 0.426667 0
+Ks 0.4 0.200784 0
+illum 2
+Ns 12.996
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Inside
+Ka 0 0 0
+Kd 0.426667 0.426667 0.426667
+Ks 0.200784 0.200784 0.200784
+illum 2
+Ns 12.996
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl DecallsY
+Ka 0 0 0
+Kd 0.85 0.69 0.206667
+Ks 0.4 0.324706 0.0972549
+illum 2
+Ns 12.996
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Grey
+Ka 0 0 0
+Kd 0.64 0.64 0.64
+Ks 0.301176 0.301176 0.301176
+illum 2
+Ns 12.996
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Yellow
+Ka 0 0 0
+Kd 0.85 0.69 0.206667
+Ks 0.4 0.324706 0.0972549
+illum 2
+Ns 12.996
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Antifoul
+Ka 0 0 0
+Kd 0.446667 0.173333 0.00666667
+Ks 0.210196 0.0815686 0.00313726
+illum 2
+Ns 12.996
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl RVS
+Ka 0 0 0
+Kd 0.200784 0.200784 0.200782
+Ks 0.25098 0.25098 0.250978
+illum 2
+Ns 337.794
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Bronze
+Ka 0 0 0
+Kd 0.324706 0.3 0.132353
+Ks 0.288627 0.266667 0.117647
+illum 2
+Ns 337.794
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl DecallsW
+Ka 0 0 0
+Kd 0.85 0.85 0.85
+Ks 0.4 0.4 0.4
+illum 2
+Ns 12.996
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Wood
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+illum 2
+Ns 4.14106
+map_Kd PlnksV.jpg
+map_bump PlnksVb.jpg
+bump PlnksVb.jpg
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Orange_Plastic
+Ka 0 0 0
+Kd 0.9 0.451765 0
+Ks 0.6 0.301176 0
+illum 2
+Ns 16
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Outboard
+Ka 0 0 0
+Kd 0 0.0852941 0.127451
+Ks 0 0.614118 0.917647
+illum 2
+Ns 256
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl GlasNavWhite
+Ka 0 0 0
+Kd 0.5 0.5 0.5
+Ks 0.75 0.75 0.75
+illum 2
+Ns 1024
+d 0.75
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Steel
+Ka 0 0 0
+Kd 0.161961 0.163333 0.164706
+Ks 0.231373 0.233333 0.235294
+illum 2
+Ns 16
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl GlasNavRed
+Ka 0 0 0
+Kd 0.5 0 0
+Ks 0.75 0 0
+illum 2
+Ns 1024
+d 0.75
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl GlasNavGreen
+Ka 0 0 0
+Kd 0 0.5 0
+Ks 0 0.75 0
+illum 2
+Ns 1024
+d 0.75
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl DecallsB
+Ka 0 0 0
+Kd 0.176667 0.176667 0.176667
+Ks 0.0831373 0.0831373 0.0831373
+illum 2
+Ns 12.996
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Glass
+Ka 0 0 0
+Kd 0 0 0
+Ks 0 0 0
+illum 2
+Ns 1024
+d 0.95
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Explorer_Default
+Ka 0.117647 0.117647 0.117647
+Kd 0.752941 0.752941 0.752941
+Ks 0.752941 0.752941 0.752941
+illum 2
+Ns 8
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
