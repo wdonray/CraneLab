@@ -1,0 +1,590 @@
+fileFormatVersion: 2
+guid: 468d65481508a344bb01d4833ed3fe39
+timeCreated: 1536681552
+licenseType: Free
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: _End
+    100002: Attributes_Bill
+    100004: Attributes_Jim
+    100006: Attributes_John
+    100008: Attributes_Lee
+    100010: Brows
+    100012: Chest
+    100014: Chin
+    100016: Chin_End
+    100018: Chin_Null
+    100020: coat
+    100022: //RootNode
+    100024: ear_protection
+    100026: ear_protection_2
+    100028: ear_protection_3
+    100030: ear_protection_4
+    100032: glasses
+    100034: glasses_2
+    100036: glasses_3
+    100038: glasses_4
+    100040: hair_Jim
+    100042: head_Bill
+    100044: Head_End
+    100046: head_Jim
+    100048: head_John
+    100050: Head_Joints
+    100052: head_Lee
+    100054: helmet
+    100056: helmet_2
+    100058: helmet_3
+    100060: helmet_4
+    100062: L_Ankle
+    100064: L_Arm_Null
+    100066: L_Cheek
+    100068: L_Cheek_End
+    100070: L_Elbow
+    100072: L_Eye
+    100074: L_Eye_Cornea
+    100076: L_Eye_End
+    100078: L_Eye_End1
+    100080: L_Eye_Iris
+    100082: L_Eye_J
+    100084: L_Eye_Rot
+    100086: L_Eye_Rot1
+    100088: L_Foot
+    100090: L_Hand_Joints
+    100092: L_Hip
+    100094: L_Index1
+    100096: L_Index2
+    100098: L_Index3
+    100100: L_Index_End
+    100102: L_Knee
+    100104: L_LowerLid_End
+    100106: L_LowerLid_Rot
+    100108: L_Middle1
+    100110: L_Middle2
+    100112: L_Middle3
+    100114: L_Middle_End
+    100116: L_Nose
+    100118: L_Nose_End
+    100120: L_Pinky1
+    100122: L_Pinky2
+    100124: L_Pinky3
+    100126: L_Pinky_End
+    100128: L_Ring1
+    100130: L_Ring2
+    100132: L_Ring3
+    100134: L_Ring_End
+    100136: L_Shoulder
+    100138: L_Thumb1
+    100140: L_Thumb2
+    100142: L_Thumb_End
+    100144: L_Thumb_Null
+    100146: L_Toes
+    100148: L_UpperLid_End
+    100150: L_UpperLid_Rot
+    100152: L_Wrist
+    100154: Lashes
+    100156: Lashes_Lee
+    100158: LowerTeeth
+    100160: Man_Rigged
+    100162: Neck
+    100164: Null
+    100166: Null_2
+    100168: overall_A
+    100170: overall_B
+    100172: Pelvis
+    100174: R_Ankle
+    100176: R_Arm_Null
+    100178: R_Cheek
+    100180: R_Cheek_End
+    100182: R_Elbow
+    100184: R_Eye
+    100186: R_Eye_Cornea
+    100188: R_Eye_End
+    100190: R_Eye_End1
+    100192: R_Eye_Iris
+    100194: R_Eye_J
+    100196: R_Eye_Rot
+    100198: R_Eye_Rot1
+    100200: R_Foot
+    100202: R_Hand_Joints
+    100204: R_Hip
+    100206: R_Index1
+    100208: R_Index2
+    100210: R_Index3
+    100212: R_Index_End
+    100214: R_Knee
+    100216: R_LowerLid_End
+    100218: R_LowerLid_Rot
+    100220: R_Middle1
+    100222: R_Middle2
+    100224: R_Middle3
+    100226: R_Middle_End
+    100228: R_Nose
+    100230: R_Nose_End
+    100232: R_Pinky1
+    100234: R_Pinky2
+    100236: R_Pinky3
+    100238: R_Pinky_End
+    100240: R_Ring1
+    100242: R_Ring2
+    100244: R_Ring3
+    100246: R_Ring_End
+    100248: R_Shoulder
+    100250: R_Thumb1
+    100252: R_Thumb2
+    100254: R_THumb_End
+    100256: R_Thumb_Null
+    100258: R_Toes
+    100260: R_UpperLid_End
+    100262: R_UpperLid_Rot
+    100264: R_Wrist
+    100266: safety_boots
+    100268: safety_gloves
+    100270: safety_shoes
+    100272: Skin
+    100274: Skin_10
+    100276: Skin_11
+    100278: Skin_12
+    100280: Skin_13
+    100282: Skin_2
+    100284: Skin_3
+    100286: Skin_4
+    100288: Skin_5
+    100290: Skin_6
+    100292: Skin_7
+    100294: Skin_8
+    100296: Skin_9
+    100298: sweater_jeans
+    100300: tshirt_jeans_A
+    100302: tshirt_jeans_B
+    100304: UpperTeeth
+    400000: _End
+    400002: Attributes_Bill
+    400004: Attributes_Jim
+    400006: Attributes_John
+    400008: Attributes_Lee
+    400010: Brows
+    400012: Chest
+    400014: Chin
+    400016: Chin_End
+    400018: Chin_Null
+    400020: coat
+    400022: //RootNode
+    400024: ear_protection
+    400026: ear_protection_2
+    400028: ear_protection_3
+    400030: ear_protection_4
+    400032: glasses
+    400034: glasses_2
+    400036: glasses_3
+    400038: glasses_4
+    400040: hair_Jim
+    400042: head_Bill
+    400044: Head_End
+    400046: head_Jim
+    400048: head_John
+    400050: Head_Joints
+    400052: head_Lee
+    400054: helmet
+    400056: helmet_2
+    400058: helmet_3
+    400060: helmet_4
+    400062: L_Ankle
+    400064: L_Arm_Null
+    400066: L_Cheek
+    400068: L_Cheek_End
+    400070: L_Elbow
+    400072: L_Eye
+    400074: L_Eye_Cornea
+    400076: L_Eye_End
+    400078: L_Eye_End1
+    400080: L_Eye_Iris
+    400082: L_Eye_J
+    400084: L_Eye_Rot
+    400086: L_Eye_Rot1
+    400088: L_Foot
+    400090: L_Hand_Joints
+    400092: L_Hip
+    400094: L_Index1
+    400096: L_Index2
+    400098: L_Index3
+    400100: L_Index_End
+    400102: L_Knee
+    400104: L_LowerLid_End
+    400106: L_LowerLid_Rot
+    400108: L_Middle1
+    400110: L_Middle2
+    400112: L_Middle3
+    400114: L_Middle_End
+    400116: L_Nose
+    400118: L_Nose_End
+    400120: L_Pinky1
+    400122: L_Pinky2
+    400124: L_Pinky3
+    400126: L_Pinky_End
+    400128: L_Ring1
+    400130: L_Ring2
+    400132: L_Ring3
+    400134: L_Ring_End
+    400136: L_Shoulder
+    400138: L_Thumb1
+    400140: L_Thumb2
+    400142: L_Thumb_End
+    400144: L_Thumb_Null
+    400146: L_Toes
+    400148: L_UpperLid_End
+    400150: L_UpperLid_Rot
+    400152: L_Wrist
+    400154: Lashes
+    400156: Lashes_Lee
+    400158: LowerTeeth
+    400160: Man_Rigged
+    400162: Neck
+    400164: Null
+    400166: Null_2
+    400168: overall_A
+    400170: overall_B
+    400172: Pelvis
+    400174: R_Ankle
+    400176: R_Arm_Null
+    400178: R_Cheek
+    400180: R_Cheek_End
+    400182: R_Elbow
+    400184: R_Eye
+    400186: R_Eye_Cornea
+    400188: R_Eye_End
+    400190: R_Eye_End1
+    400192: R_Eye_Iris
+    400194: R_Eye_J
+    400196: R_Eye_Rot
+    400198: R_Eye_Rot1
+    400200: R_Foot
+    400202: R_Hand_Joints
+    400204: R_Hip
+    400206: R_Index1
+    400208: R_Index2
+    400210: R_Index3
+    400212: R_Index_End
+    400214: R_Knee
+    400216: R_LowerLid_End
+    400218: R_LowerLid_Rot
+    400220: R_Middle1
+    400222: R_Middle2
+    400224: R_Middle3
+    400226: R_Middle_End
+    400228: R_Nose
+    400230: R_Nose_End
+    400232: R_Pinky1
+    400234: R_Pinky2
+    400236: R_Pinky3
+    400238: R_Pinky_End
+    400240: R_Ring1
+    400242: R_Ring2
+    400244: R_Ring3
+    400246: R_Ring_End
+    400248: R_Shoulder
+    400250: R_Thumb1
+    400252: R_Thumb2
+    400254: R_THumb_End
+    400256: R_Thumb_Null
+    400258: R_Toes
+    400260: R_UpperLid_End
+    400262: R_UpperLid_Rot
+    400264: R_Wrist
+    400266: safety_boots
+    400268: safety_gloves
+    400270: safety_shoes
+    400272: Skin
+    400274: Skin_10
+    400276: Skin_11
+    400278: Skin_12
+    400280: Skin_13
+    400282: Skin_2
+    400284: Skin_3
+    400286: Skin_4
+    400288: Skin_5
+    400290: Skin_6
+    400292: Skin_7
+    400294: Skin_8
+    400296: Skin_9
+    400298: sweater_jeans
+    400300: tshirt_jeans_A
+    400302: tshirt_jeans_B
+    400304: UpperTeeth
+    2300000: ear_protection
+    2300002: ear_protection_2
+    2300004: ear_protection_3
+    2300006: ear_protection_4
+    2300008: glasses
+    2300010: glasses_2
+    2300012: glasses_3
+    2300014: glasses_4
+    2300016: hair_Jim
+    2300018: helmet
+    2300020: helmet_2
+    2300022: helmet_3
+    2300024: helmet_4
+    2300026: LowerTeeth
+    2300028: UpperTeeth
+    3300000: ear_protection
+    3300002: ear_protection_2
+    3300004: ear_protection_3
+    3300006: ear_protection_4
+    3300008: glasses
+    3300010: glasses_2
+    3300012: glasses_3
+    3300014: glasses_4
+    3300016: hair_Jim
+    3300018: helmet
+    3300020: helmet_2
+    3300022: helmet_3
+    3300024: helmet_4
+    3300026: LowerTeeth
+    3300028: UpperTeeth
+    4300000: glasses
+    4300002: helmet
+    4300004: ear_protection
+    4300006: glasses_2
+    4300008: helmet_2
+    4300010: ear_protection_2
+    4300012: hair_Jim
+    4300014: glasses_3
+    4300016: helmet_3
+    4300018: ear_protection_3
+    4300020: glasses_4
+    4300022: helmet_4
+    4300024: ear_protection_4
+    4300026: LowerTeeth
+    4300028: UpperTeeth
+    4300030: head_Jim
+    4300032: head_John
+    4300034: head_Bill
+    4300036: head_Lee
+    4300038: coat
+    4300040: overall_A
+    4300042: overall_B
+    4300044: sweater_jeans
+    4300046: tshirt_jeans_A
+    4300048: tshirt_jeans_B
+    4300050: safety_gloves
+    4300052: safety_shoes
+    4300054: safety_boots
+    4300056: Lashes
+    4300058: Lashes_Lee
+    4300060: L_Eye_Iris
+    4300062: L_Eye_Cornea
+    4300064: R_Eye_Iris
+    4300066: R_Eye_Cornea
+    9500000: //RootNode
+    13700000: coat
+    13700002: head_Bill
+    13700004: head_Jim
+    13700006: head_John
+    13700008: head_Lee
+    13700010: L_Eye_Cornea
+    13700012: L_Eye_Iris
+    13700014: Lashes
+    13700016: Lashes_Lee
+    13700018: overall_A
+    13700020: overall_B
+    13700022: R_Eye_Cornea
+    13700024: R_Eye_Iris
+    13700026: safety_boots
+    13700028: safety_gloves
+    13700030: safety_shoes
+    13700032: sweater_jeans
+    13700034: tshirt_jeans_A
+    13700036: tshirt_jeans_B
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Head Bill
+    second: {fileID: 2100000, guid: b921988b5d679ec41972474194759f96, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Head Jim
+    second: {fileID: 2100000, guid: 1a4acf0fb29106249a0e250468bf0361, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Head John
+    second: {fileID: 2100000, guid: 00601efebcd26934889f553a97a5b04d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Head Lee
+    second: {fileID: 2100000, guid: 622aa81fd11929c4d896e2fde5cb9720, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Jim_hair
+    second: {fileID: 2100000, guid: f6fc479ba77d1d34796d27f56a8d3564, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Lashes1
+    second: {fileID: 2100000, guid: 1f5d29db60b528847986b27c0602400e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Skin man dark
+    second: {fileID: 2100000, guid: cb42e3e06bfaa634bb8b08888fe36b33, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Skin man light
+    second: {fileID: 2100000, guid: 9efb197f58883ed44998208607d83135, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Sweater_jeans
+    second: {fileID: 2100000, guid: b761822ce4660484eb89dfcdc1848198, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Teeth
+    second: {fileID: 2100000, guid: 09348dffc9172064eb3e345709e0fdd4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Tshirt_jeans_A
+    second: {fileID: 2100000, guid: 6520baf553be8e743ad339b91b961e1f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Tshirt_safety_jeans_B
+    second: {fileID: 2100000, guid: 7d64da6516bab3d42bff10ee205908b4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: coat safety
+    second: {fileID: 2100000, guid: 64c92bb80e239004682e2b272124413a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: eye surface
+    second: {fileID: 2100000, guid: a2668c48ca05e9a4887f0aed8fed24a5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: foam
+    second: {fileID: 2100000, guid: 653c8d15f3730ff4eaffb3a5edc9e882, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: gloves
+    second: {fileID: 2100000, guid: a65f0bf551346bb4495b03951c62a1f9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: overall_safety
+    second: {fileID: 2100000, guid: 4cd041efd03d97c499082692157d8867, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pasted__iris
+    second: {fileID: 2100000, guid: 04b8d6bed816c364c8c0bc39e079d375, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: plastic black
+    second: {fileID: 2100000, guid: 845b1810db65e3c4cb7aab334f39a123, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: plastic yellow.1
+    second: {fileID: 2100000, guid: de6f72b079689144881125396f76fec5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: safety boots
+    second: {fileID: 2100000, guid: 75a8d97977e679745bb007eb2d1c6bf6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: safety glasses
+    second: {fileID: 2100000, guid: 8adccceb3425f4444a43d1c959d0af3e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shoes safety
+    second: {fileID: 2100000, guid: a055d56af1177134f8ed393b957c29aa, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
