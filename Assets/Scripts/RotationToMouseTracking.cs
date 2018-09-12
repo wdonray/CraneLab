@@ -36,12 +36,12 @@ public class RotationToMouseTracking : MonoBehaviour
 
         if(Input.GetMouseButton(2))
         {
-            transform.Translate(LastMousePos - Input.mousePosition);
+            transform.Translate((LastMousePos - Input.mousePosition) * (PositionSpeed * Time.deltaTime));
         }
 
         if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
         {
-            transform.Translate(Vector3.forward * Input.mouseScrollDelta.y * PositionSpeed);
+            transform.Translate(Vector3.forward * Input.mouseScrollDelta.y * (PositionSpeed * 0.5f));
         }
     }
 
