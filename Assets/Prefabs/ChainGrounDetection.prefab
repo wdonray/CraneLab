@@ -101,7 +101,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 114853543094607918}
-        m_MethodName: BroadcastMessage
+        m_MethodName: NotifySubscribers
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
