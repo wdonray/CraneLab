@@ -55,6 +55,8 @@ GameObject:
   - component: {fileID: 114918070824679232}
   - component: {fileID: 114257876767786470}
   - component: {fileID: 114768115865069126}
+  - component: {fileID: 114137230977575272}
+  - component: {fileID: 114417976305547012}
   m_Layer: 0
   m_Name: Barrel Standard
   m_TagString: Untagged
@@ -1251,6 +1253,18 @@ MonoBehaviour:
   totalParticles: 20
   startPrefabInstance: {fileID: 0}
   endPrefabInstance: {fileID: 0}
+--- !u!114 &114137230977575272
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1323460025971736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62359d80fdc0e4315ab6331b78ec5b90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kinematicForParticles: 0
 --- !u!114 &114141064348409370
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1498,6 +1512,23 @@ MonoBehaviour:
     - {x: 0, y: 1}
     - {x: 0, y: 1}
     - {x: 0, y: 1}
+--- !u!114 &114417976305547012
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1323460025971736}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6757b231cedd544c583ef8aeaf773b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  material: {fileID: 0}
+  phase: 1
+  thickness: 0
+  unityCollider: {fileID: 64522257947918670}
+  useDistanceFields: 0
+  distanceField: {fileID: 0}
 --- !u!114 &114462858494993838
 MonoBehaviour:
   m_ObjectHideFlags: 1
