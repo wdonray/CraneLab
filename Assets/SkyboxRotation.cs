@@ -11,10 +11,10 @@ public class SkyboxRotation : MonoBehaviour
     {
 		
 	}
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
-		
-	}
+        skyboxMaterial.SetFloat("_Rotation", (Time.time % 360f));
+    }
 }
