@@ -14,6 +14,8 @@ public class RigidBodyWind : MonoBehaviour
     [SerializeField]
     private eZoneType m_zoneType;
 
+    public UnityEngine.UI.Slider m_slider;
+
     public float m_streangth;
     public float m_noise;
 
@@ -21,15 +23,24 @@ public class RigidBodyWind : MonoBehaviour
     {
         GetComponent<SphereCollider>().isTrigger = true;
 	}
-	
-	void FixedUpdate ()
+
+    private void OnEnable()
+    {
+        m_slider.interactable = enabled;
+    }
+    private void OnDisable()
+    {
+        m_slider.interactable = enabled;
+    }
+
+    void FixedUpdate ()
     {
         if (m_zoneType != eZoneType.Directional) return;
 
         else
         {
-            Vector3 directionalForce = transform.forward * m_streangth;
-            directionalForce *= (Random.Range(-m_noise, m_noise));
+            Vector3 directionalForce = transform.forward * (m_streangth * m_slider.value);
+            //directionalForce *= (Random.Range(-m_noise, m_noise));
 
             foreach(Rigidbody rb in FindObjectsOfType<Rigidbody>())
             {
@@ -60,11 +71,14 @@ public class RigidBodyWind : MonoBehaviour
 
         backPos += transform.up / 2f;
         Debug.DrawLine(frontPos, backPos, Color.green);
+
         backPos -= transform.up;
         Debug.DrawLine(frontPos, backPos);
+
         backPos += transform.up / 2f;
         backPos += transform.right / 2f;
         Debug.DrawLine(frontPos, backPos, Color.red);
+
         backPos -= transform.right;
         Debug.DrawLine(frontPos, backPos);
     }
