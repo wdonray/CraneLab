@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LockLocalRotation : MonoBehaviour
 {
-    public bool x, y, z;
+    public Vector3 m_lockedRotation;
 
     Quaternion initRotation;
 
@@ -15,15 +15,9 @@ public class LockLocalRotation : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        Quaternion newRotation = initRotation;
-
-        newRotation.eulerAngles = new Vector3(
-            x ? initRotation.eulerAngles.x : transform.parent.localEulerAngles.x,
-            y ? initRotation.eulerAngles.y : transform.parent.localEulerAngles.y,
-            z ? initRotation.eulerAngles.z : transform.parent.localEulerAngles.z);
-
+        Quaternion newRotation = Quaternion.Euler(m_lockedRotation);
         transform.rotation = newRotation;
     }
 }
