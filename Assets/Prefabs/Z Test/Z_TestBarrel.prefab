@@ -37,7 +37,7 @@ GameObject:
   - component: {fileID: 4921790429092424}
   m_Layer: 0
   m_Name: Z_TestBarrel
-  m_TagString: Untagged
+  m_TagString: Z-Test
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -52,14 +52,11 @@ GameObject:
   - component: {fileID: 4479802927353146}
   - component: {fileID: 54194170388102842}
   - component: {fileID: 64522257947918670}
-  - component: {fileID: 114918070824679232}
   - component: {fileID: 114257876767786470}
   - component: {fileID: 114768115865069126}
-  - component: {fileID: 114137230977575272}
-  - component: {fileID: 114417976305547012}
   m_Layer: 0
   m_Name: Barrel Standard
-  m_TagString: Untagged
+  m_TagString: Z-Test
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -217,6 +214,8 @@ GameObject:
   - component: {fileID: 4777920096901500}
   - component: {fileID: 65334986579331262}
   - component: {fileID: 54436651680673814}
+  - component: {fileID: 135769500909094754}
+  - component: {fileID: 114382293794613774}
   m_Layer: 0
   m_Name: Link
   m_TagString: Untagged
@@ -356,7 +355,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1232842092160698}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2, y: 1, z: 3}
+  m_LocalPosition: {x: -4, y: 0.05, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4777920096901500}
@@ -630,7 +629,7 @@ Rigidbody:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1323460025971736}
   serializedVersion: 2
-  m_Mass: 300
+  m_Mass: 30
   m_Drag: 1
   m_AngularDrag: 10
   m_UseGravity: 1
@@ -649,7 +648,7 @@ Rigidbody:
   m_Drag: 0.01
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -833,7 +832,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxParticles: 128
   substeps: 2
-  simulateWhenInvisible: 0
+  simulateWhenInvisible: 1
   simulateInLocalSpace: 0
   simulationOrder: 0
   collisionLayers:
@@ -1253,18 +1252,6 @@ MonoBehaviour:
   totalParticles: 20
   startPrefabInstance: {fileID: 0}
   endPrefabInstance: {fileID: 0}
---- !u!114 &114137230977575272
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1323460025971736}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62359d80fdc0e4315ab6331b78ec5b90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  kinematicForParticles: 0
 --- !u!114 &114141064348409370
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1395,7 +1382,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxParticles: 32
   substeps: 1
-  simulateWhenInvisible: 0
+  simulateWhenInvisible: 1
   simulateInLocalSpace: 0
   simulationOrder: 0
   collisionLayers:
@@ -1512,23 +1499,17 @@ MonoBehaviour:
     - {x: 0, y: 1}
     - {x: 0, y: 1}
     - {x: 0, y: 1}
---- !u!114 &114417976305547012
+--- !u!114 &114382293794613774
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1323460025971736}
-  m_Enabled: 0
+  m_GameObject: {fileID: 1970551409913142}
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6757b231cedd544c583ef8aeaf773b2a, type: 3}
+  m_Script: {fileID: 11500000, guid: a78bb99928bdf8542bfed3cee5592a2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: {fileID: 0}
-  phase: 1
-  thickness: 0
-  unityCollider: {fileID: 64522257947918670}
-  useDistanceFields: 0
-  distanceField: {fileID: 0}
 --- !u!114 &114462858494993838
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2085,23 +2066,6 @@ MonoBehaviour:
     - {x: 0, y: 1}
     - {x: 0, y: 1}
     - {x: 0, y: 1}
---- !u!114 &114918070824679232
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1323460025971736}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 507ae5473760e534a99da99cbe670d84, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_subMessage: chainUp
-  m_event:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114947381826853916
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2550,3 +2514,15 @@ MonoBehaviour:
   totalParticles: 20
   startPrefabInstance: {fileID: 0}
   endPrefabInstance: {fileID: 0}
+--- !u!135 &135769500909094754
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1970551409913142}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Center: {x: 0, y: 0, z: 0}
