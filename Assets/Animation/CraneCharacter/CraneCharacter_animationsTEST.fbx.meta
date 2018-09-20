@@ -158,6 +158,7 @@ ModelImporter:
     100300: tshirt_jeans_A
     100302: tshirt_jeans_B
     100304: UpperTeeth
+    100306: left
     400000: _End
     400002: Attributes_Bill
     400004: Attributes_Jim
@@ -311,6 +312,8 @@ ModelImporter:
     400300: tshirt_jeans_A
     400302: tshirt_jeans_B
     400304: UpperTeeth
+    400306: left
+    2000000: left
     2300000: ear_protection
     2300002: ear_protection_2
     2300004: ear_protection_3
@@ -418,6 +421,9 @@ ModelImporter:
     7400080: Idle-JobComplete
     7400082: JobComplete
     7400084: JobComplete-Idle
+    7400086: Idle-Walk
+    7400088: Walk
+    7400090: Walk-Idle
     9500000: //RootNode
     13700000: coat
     13700002: head_Bill
@@ -1769,6 +1775,90 @@ ModelImporter:
       takeName: Take 001
       firstFrame: 637
       lastFrame: 645
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0.96
+    - serializedVersion: 16
+      name: Idle-Walk
+      takeName: Take 001
+      firstFrame: 646
+      lastFrame: 655
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0.96
+    - serializedVersion: 16
+      name: Walk
+      takeName: Take 001
+      firstFrame: 656
+      lastFrame: 685
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0.96
+    - serializedVersion: 16
+      name: Walk-Idle
+      takeName: Take 001
+      firstFrame: 686
+      lastFrame: 695
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
