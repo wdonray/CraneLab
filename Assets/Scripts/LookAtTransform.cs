@@ -11,8 +11,8 @@ public class LookAtTransform : MonoBehaviour
         m_target = m_target == null ? Camera.main.transform : m_target;
     }
 
-    void Update ()
+    public void LateUpdate()
     {
         transform.LookAt(m_target);
-	}
+    }
 }
