@@ -18,19 +18,11 @@ public class RandomMovement : MonoBehaviour
         newPos = initPosition;
 	}
 
+    float speed = 1f;
+
     // Update is called once per frame
     void Update()
     {
-        //newPos = Vector3.Lerp(initPosition, randomPos, Mathf.Sin(Time.time));
-
-        //if (Vector3.Distance(initPosition, newPos) < 0.1f)
-        //{
-        //    randomPos = new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1)) * noise;
-        //}
-
-        //Vector3 dir = newPos - initPosition;
-        //dir.Normalize();
-
-        transform.Translate(Vector3.up * Time.deltaTime * noise.value * Mathf.Sin(Time.time));
+        transform.Rotate(Vector3.forward, 1f * speed);
     }
 }
