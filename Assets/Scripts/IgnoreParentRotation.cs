@@ -9,7 +9,9 @@ public class IgnoreParentRotation : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
-        initRotation = transform.localRotation;
+        //initRotation = transform.localRotation;
+        transform.parent = null;
+        Destroy(this);
 	}
 	
 	// Update is called once per frame
