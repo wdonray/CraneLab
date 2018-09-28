@@ -4,17 +4,12 @@ using UnityEngine;
 
 public class SkyboxRotation : MonoBehaviour
 {
-    public Material skyboxMaterial;
-
-	// Use this for initialization
-	void Start ()
-    {
-		
-	}
+    public Material skyboxMaterialDay;
+    public Material skyboxMaterialNight;
 
     // Update is called once per frame
     void Update()
     {
-        skyboxMaterial.SetFloat("_Rotation", (Time.time % 360f));
+        RenderSettings.skybox.SetFloat("_Rotation", (Time.time % 360f));
     }
 }
