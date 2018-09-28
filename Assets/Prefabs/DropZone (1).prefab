@@ -9,7 +9,7 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1941106269952420}
+  m_RootGameObject: {fileID: 1407311395884426}
   m_IsPrefabParent: 1
 --- !u!1 &1315240076835238
 GameObject:
@@ -22,6 +22,21 @@ GameObject:
   - component: {fileID: 114271029452627896}
   m_Layer: 0
   m_Name: 3DArrow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1 &1407311395884426
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4629956825527700}
+  m_Layer: 0
+  m_Name: DropZone (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -94,7 +109,7 @@ GameObject:
   - component: {fileID: 114745105132910318}
   m_Layer: 0
   m_Name: TriggerArea
-  m_TagString: DropZoneRed
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -111,8 +126,8 @@ GameObject:
   - component: {fileID: 64577064056482140}
   - component: {fileID: 23377562204355478}
   m_Layer: 0
-  m_Name: DropZone (1)
-  m_TagString: DropZoneRed
+  m_Name: ZonePlane
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -149,15 +164,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1941106269952420}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
-  m_LocalPosition: {x: -75, y: 0, z: 100}
-  m_LocalScale: {x: 2, y: 2, z: 2}
-  m_Children:
-  - {fileID: 4384317591920638}
-  - {fileID: 4662355223164954}
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.025, z: 0}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_Children: []
+  m_Father: {fileID: 4629956825527700}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4384317591920638
 Transform:
   m_ObjectHideFlags: 1
@@ -170,7 +183,7 @@ Transform:
   m_Children:
   - {fileID: 4196563665930930}
   - {fileID: 4237415354570696}
-  m_Father: {fileID: 4259459853817290}
+  m_Father: {fileID: 4629956825527700}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4521581630900294
@@ -186,6 +199,22 @@ Transform:
   m_Father: {fileID: 4662355223164954}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!4 &4629956825527700
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1407311395884426}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -7, y: 0, z: 12}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4384317591920638}
+  - {fileID: 4259459853817290}
+  - {fileID: 4662355223164954}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4662355223164954
 Transform:
   m_ObjectHideFlags: 1
@@ -193,12 +222,12 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1811812027111338}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.5, z: 0}
-  m_LocalScale: {x: 10, y: 5, z: 10}
+  m_LocalPosition: {x: 0, y: 0.55, z: 0}
+  m_LocalScale: {x: 3, y: 1, z: 3}
   m_Children:
   - {fileID: 4521581630900294}
-  m_Father: {fileID: 4259459853817290}
-  m_RootOrder: 1
+  m_Father: {fileID: 4629956825527700}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &23004705789054480
 MeshRenderer:
@@ -388,8 +417,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.5, y: 0.2, z: 0.5}
-  m_Center: {x: 0, y: -0.5, z: 0}
+  m_Size: {x: 1, y: 0.2, z: 1}
+  m_Center: {x: 0, y: -0.4, z: 0}
 --- !u!82 &82161535692306902
 AudioSource:
   m_ObjectHideFlags: 1
@@ -493,7 +522,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_load: {fileID: 0}
-  m_dropZone: {fileID: 4259459853817290}
+  m_dropZone: {fileID: 4629956825527700}
 --- !u!114 &114745105132910318
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -505,7 +534,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8be5fd7738463647aeb0fa7509b3c88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Tag: 
+  m_Tag: DropZone
   minToTrigger: 0
   OnEnter:
     m_PersistentCalls:
@@ -530,6 +559,28 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 114745105132910318}
+        m_MethodName: NotifySubscribers
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: drop
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 114745105132910318}
+        m_MethodName: NotifySubscribers
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: clip1
           m_BoolArgument: 1
         m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
@@ -600,7 +651,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 328678250
+  randomSeed: 895190487
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -648,7 +699,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 1
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -752,7 +803,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.1
+      scalar: 0.01
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -1065,7 +1116,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 1
+      value: 0.3
       mode: 0
       spread: 0
       speed:
@@ -1745,7 +1796,7 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 1
-      scalar: 25
+      scalar: 2
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -1757,17 +1808,17 @@ ParticleSystem:
           outSlope: 0
           tangentMode: 0
         - serializedVersion: 2
-          time: 0.25
-          value: 0
-          inSlope: -2.5078654
-          outSlope: -2.5078654
+          time: 0.5
+          value: -1
+          inSlope: 0
+          outSlope: 0
           tangentMode: 0
         - serializedVersion: 2
           time: 1
           value: -1
-          inSlope: -2
-          outSlope: -2
-          tangentMode: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 34
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 0
@@ -2263,7 +2314,7 @@ ParticleSystem:
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0.5
       minScalar: 1
       maxCurve:
         serializedVersion: 2
