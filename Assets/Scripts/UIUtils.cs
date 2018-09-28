@@ -45,4 +45,11 @@ public class UIUtils : MonoBehaviour
     {
         Application.Quit();
     }
+
+
+
+    public void NotifySubscribers(string subscription)
+    {
+        Mouledoux.Components.Mediator.instance.NotifySubscribers(subscription, new Mouledoux.Callback.Packet());
+    }
 }

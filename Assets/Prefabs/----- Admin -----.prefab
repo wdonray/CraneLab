@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 222071415853097824}
   - component: {fileID: 114242439532546670}
   - component: {fileID: 114518694703486790}
+  - component: {fileID: 114296330179533308}
   m_Layer: 0
   m_Name: Back to log in
   m_TagString: Untagged
@@ -191,6 +192,7 @@ GameObject:
   - component: {fileID: 222940458315352978}
   - component: {fileID: 114146831951353230}
   - component: {fileID: 114444814886971012}
+  - component: {fileID: 114943936071983676}
   m_Layer: 0
   m_Name: Back to scene select
   m_TagString: Untagged
@@ -521,6 +523,7 @@ GameObject:
   - component: {fileID: 222341482702779532}
   - component: {fileID: 114066448930542850}
   - component: {fileID: 114355792623413142}
+  - component: {fileID: 114689470712667882}
   m_Layer: 0
   m_Name: Reset scene
   m_TagString: Untagged
@@ -902,7 +905,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1867293741703670}
   m_LocalRotation: {x: -0.124144636, y: 0.7997349, z: -0.17729695, w: -0.55998033}
-  m_LocalPosition: {x: 190, y: 100, z: 220}
+  m_LocalPosition: {x: 150, y: 100, z: 200}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4061038396118474}
@@ -1421,6 +1424,34 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Reset
+--- !u!114 &114296330179533308
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1007782163993050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b4ccb78928466a45a613fdaa7bcae0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_subMessage: uioff
+  m_event:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 114518694703486790}
+        m_MethodName: set_interactable
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114315661835178476
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1612,6 +1643,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 114473299811200772}
+        m_MethodName: NotifySubscribers
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: uioff
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114360987208412270
@@ -1721,7 +1763,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 114473299811200772}
-        m_MethodName: GoToScene
+        m_MethodName: GoToSceneAsync
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1729,6 +1771,17 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: LevelSelect
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 114473299811200772}
+        m_MethodName: NotifySubscribers
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: uioff
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
@@ -1985,7 +2038,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 114473299811200772}
-        m_MethodName: GoToScene
+        m_MethodName: GoToSceneAsync
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1993,6 +2046,17 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: LogInMenu
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 114473299811200772}
+        m_MethodName: NotifySubscribers
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: uioff
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
@@ -2253,6 +2317,34 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114689470712667882
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1648157542211382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b4ccb78928466a45a613fdaa7bcae0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_subMessage: uioff
+  m_event:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 114355792623413142}
+        m_MethodName: set_interactable
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114716461881255002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2504,6 +2596,34 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &114943936071983676
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1238077600537752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b4ccb78928466a45a613fdaa7bcae0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_subMessage: uioff
+  m_event:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 114444814886971012}
+        m_MethodName: set_interactable
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114955214931306334
 MonoBehaviour:
   m_ObjectHideFlags: 1
