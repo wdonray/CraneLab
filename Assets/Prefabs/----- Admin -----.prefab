@@ -1501,7 +1501,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294967039
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -2518,7 +2518,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 224937764314550574}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999973
+  m_Size: 0.9999957
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3828,7 +3828,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114245961533331182}
   m_HandleRect: {fileID: 224583290033712918}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -5117,7 +5117,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0018005371, y: 0.00031661987}
+  m_AnchoredPosition: {x: 0.00019836426, y: 0.00024414062}
   m_SizeDelta: {x: -20, y: -0.00064086914}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224677125195845100
