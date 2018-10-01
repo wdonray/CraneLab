@@ -10,7 +10,7 @@ public class QuickSubscribe : MonoBehaviour
     public string m_subMessage;
     public UnityEngine.Events.UnityEvent m_event;
        
-	void Start ()
+	void Awake ()
     {
         m_subCallback = InvokeUnityEvent;
         m_subscriptions.Subscribe(m_subMessage, m_subCallback);

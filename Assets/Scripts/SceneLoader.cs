@@ -4,30 +4,38 @@ using UnityEngine;
 
 public class SceneLoader : MonoBehaviour
 {
-    public static string onLoadMessage;
+    public string onLoadMessage;
 
-    private static SceneLoader _instance;
-    public static SceneLoader instance
+    public static SceneLoader _instance;
+    public SceneLoader instance
     {
         get
         {
-            if (_instance = null) FindObjectOfType<SceneLoader>();
+            if (_instance == null) _instance = FindObjectOfType<SceneLoader>();
             return _instance;
         }
     }
 
 
-    public static void SetLoadMessage(string newMessage)
+    public void SetLoadMessage(string newMessage)
     {
-        onLoadMessage = newMessage;
+        instance.onLoadMessage = newMessage;
     }
-
 
     private void Awake()
     {
-        if (instance != this) Destroy(this);
+        if (instance != this)
+        {
+            print(instance.gameObject.name);
+            Destroy(gameObject);
+        }
+        DontDestroyOnLoad(gameObject);
+    }
 
+    private void OnLevelWasLoaded()
+    {
         if (onLoadMessage == null) onLoadMessage = "";
+        print(onLoadMessage);
         Mouledoux.Components.Mediator.instance.NotifySubscribers(onLoadMessage, new Mouledoux.Callback.Packet());
         onLoadMessage = null;
     }

@@ -32,7 +32,7 @@ public class HookLoop : MonoBehaviour
 
         else if(other.CompareTag("Hook"))
         {
-            transform.position = Vector3.Lerp(transform.position, other.transform.position, Time.deltaTime * 10f);
+            transform.position = Vector3.Lerp(transform.position, other.transform.position, Time.deltaTime * 1f);
 
             if (Vector3.Distance(transform.position, other.transform.position) <= 4f)
             {
@@ -40,7 +40,7 @@ public class HookLoop : MonoBehaviour
                 m_connectionJoint = gameObject.AddComponent<HingeJoint>();
                 m_connectionJoint.connectedBody = m_hook;
                 m_connectionJoint.autoConfigureConnectedAnchor = false;
-                m_connectionJoint.anchor = new Vector3(0, 0, -0.75f);
+                m_connectionJoint.anchor = new Vector3(0, 0, 0);
                 m_connectionJoint.connectedAnchor = new Vector3(0, 0, -0.5f);
 
                 JointLimits newLimits = new JointLimits();

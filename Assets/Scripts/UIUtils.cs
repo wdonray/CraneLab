@@ -50,4 +50,10 @@ public class UIUtils : MonoBehaviour
     {
         Mouledoux.Components.Mediator.instance.NotifySubscribers(subscription, new Mouledoux.Callback.Packet());
     }
+
+    public void SetSceneLoadMessage(string message)
+    {
+        SceneLoader._instance.SetLoadMessage(message);
+        print(message);
+    }
 }
