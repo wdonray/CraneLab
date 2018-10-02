@@ -1423,8 +1423,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1867293741703670}
-  m_LocalRotation: {x: 0.030153697, y: 0.96984637, z: -0.17101005, w: 0.17101015}
-  m_LocalPosition: {x: -35, y: 40, z: 10}
+  m_LocalRotation: {x: -0.124144636, y: 0.7997349, z: -0.17729695, w: -0.55998033}
+  m_LocalPosition: {x: 20, y: 10, z: 22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4220276759327256}
@@ -1537,7 +1537,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294967039
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 241a9c756aa253649b7fac27703c5565, type: 2}
   m_TargetDisplay: 0
@@ -1935,7 +1935,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e45d62a65368a9048863350d85b5be41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RotationSpeed: -1
+  RotationSpeed: -10
   PositionSpeed: 1
   MouseButton: 1
   RotateX: 1
@@ -2518,7 +2518,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114875708776843390}
   m_HandleRect: {fileID: 224937764314550574}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3450,7 +3450,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  profile: {fileID: 11400000, guid: 8c02f29d240cbfd4f945f06dd2751744, type: 2}
+  profile: {fileID: 11400000, guid: 81c4f94b89905514bb23da2d3d30c7cd, type: 2}
 --- !u!114 &114813147471668796
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3829,7 +3829,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114245961533331182}
   m_HandleRect: {fileID: 224583290033712918}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3898,7 +3898,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_zoneType: 0
   m_slider: {fileID: 114545863331671586}
-  m_streangth: 100
+  m_streangth: 64
   m_noise: 2
 --- !u!135 &135969568644534176
 SphereCollider:
@@ -4224,7 +4224,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!223 &223427177991703032
 Canvas:
@@ -4234,7 +4234,7 @@ Canvas:
   m_GameObject: {fileID: 1712184815732968}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 20338380523787746}
   m_PlaneDistance: 1
   m_PixelPerfect: 0
@@ -5118,7 +5118,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00064849854, y: 0.00034713745}
+  m_AnchoredPosition: {x: -0.000045776367, y: -0.000011444092}
   m_SizeDelta: {x: -20, y: -0.00064086914}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224677125195845100
