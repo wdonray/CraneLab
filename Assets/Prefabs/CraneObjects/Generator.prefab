@@ -712,7 +712,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &1424770684035978
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
@@ -1170,7 +1170,6 @@ GameObject:
   - component: {fileID: 23013300848079318}
   - component: {fileID: 54453604345836588}
   - component: {fileID: 65053999797049770}
-  - component: {fileID: 65380970085314154}
   - component: {fileID: 114777676428273556}
   - component: {fileID: 114717872352030494}
   m_Layer: 0
@@ -1617,11 +1616,11 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 2, y: 3, z: 1}
   m_Children:
-  - {fileID: 4647717933944870}
   - {fileID: 4720155455009080}
+  - {fileID: 4647717933944870}
   - {fileID: 4686690619881316}
   m_Father: {fileID: 4599278002983342}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4166019604773942
 Transform:
@@ -1969,7 +1968,7 @@ Transform:
   m_LocalScale: {x: 7, y: 7, z: 7}
   m_Children: []
   m_Father: {fileID: 4779978305638992}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!4 &4482842446921406
 Transform:
@@ -2004,7 +2003,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1618694906772162}
   m_LocalRotation: {x: -0, y: 0.7071069, z: -0, w: -0.7071067}
-  m_LocalPosition: {x: 0, y: 2.85, z: 0}
+  m_LocalPosition: {x: 0, y: -0.15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4728524926857670}
@@ -2083,12 +2082,11 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1130062319298282}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11.3, y: 0.1, z: 21.09}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4779978305638992}
-  - {fileID: 4728524926857670}
   - {fileID: 4148214839700230}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -2187,7 +2185,7 @@ Transform:
   - {fileID: 4278746509917714}
   - {fileID: 4822420068983084}
   m_Father: {fileID: 4148214839700230}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!4 &4654554047452160
 Transform:
@@ -2254,7 +2252,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4148214839700230}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4721518528817508
 Transform:
@@ -2283,8 +2281,8 @@ Transform:
   - {fileID: 4873694788344770}
   - {fileID: 4843468953390748}
   - {fileID: 4491500459792154}
-  m_Father: {fileID: 4599278002983342}
-  m_RootOrder: 1
+  m_Father: {fileID: 4779978305638992}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4740293772358546
 Transform:
@@ -2335,6 +2333,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 4728524926857670}
   - {fileID: 4480807066526682}
   m_Father: {fileID: 4599278002983342}
   m_RootOrder: 0
@@ -2466,7 +2465,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1541093112898294}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0.000000104308114}
-  m_LocalPosition: {x: 0, y: 2.85, z: 0}
+  m_LocalPosition: {x: 0, y: -0.15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4728524926857670}
@@ -2505,7 +2504,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1751522854005574}
   m_LocalRotation: {x: -0, y: 0.70710677, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 2.85, z: 0}
+  m_LocalPosition: {x: 0, y: -0.15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4728524926857670}
@@ -2570,7 +2569,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1336366392658360}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.85, z: 0}
+  m_LocalPosition: {x: 0, y: -0.15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4728524926857670}
@@ -5816,11 +5815,11 @@ Rigidbody:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1182965912114614}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 100
   m_Drag: 1
   m_AngularDrag: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -5831,8 +5830,8 @@ Rigidbody:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1739552369274046}
   serializedVersion: 2
-  m_Mass: 10
-  m_Drag: 1
+  m_Mass: 300
+  m_Drag: 3
   m_AngularDrag: 1
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -5851,18 +5850,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.122108, y: 1.1221082, z: 0.22}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!65 &65380970085314154
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1739552369274046}
-  m_Material: {fileID: 13400000, guid: 2f97c57bc19bda6488aba67d814e0684, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Size: {x: 0.55, y: 0.8, z: 1.65}
-  m_Center: {x: 0, y: 0, z: 0.9}
 --- !u!65 &65452135866701900
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -5881,7 +5868,7 @@ BoxCollider:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1002845628027892}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 2f97c57bc19bda6488aba67d814e0684, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -5899,7 +5886,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualize: 0
-  stretchingScale: 1
+  stretchingScale: 0.8
   stiffness: 1
   slack: 0
   batches:
@@ -6261,8 +6248,8 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   invMasses:
-  - 1
-  - 1
+  - 0
+  - 0
   - 1
   - 1
   - 1
@@ -6617,7 +6604,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualize: 0
-  stretchingScale: 1
+  stretchingScale: 0.8
   stiffness: 1
   slack: 0
   batches:
@@ -6795,7 +6782,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualize: 0
-  stretchingScale: 1
+  stretchingScale: 0.8
   stiffness: 1
   slack: 0
   batches:
@@ -6939,8 +6926,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualize: 1
-  maxBending: 1
-  stiffness: 1
+  maxBending: 0.05
+  stiffness: 0.99
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0.0001
@@ -7080,8 +7067,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualize: 1
-  maxBending: 1
-  stiffness: 1
+  maxBending: 0.05
+  stiffness: 0.99
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0.0001
@@ -7235,7 +7222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6757b231cedd544c583ef8aeaf773b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: {fileID: 0}
+  material: {fileID: 11400000, guid: b231b678223e044588ce32ebccbe77f3, type: 2}
   phase: 0
   thickness: 0
   unityCollider: {fileID: 65486992245066894}
@@ -7252,8 +7239,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6757b231cedd544c583ef8aeaf773b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: {fileID: 0}
-  phase: 0
+  material: {fileID: 11400000, guid: 06e7bfec7795f448eb8800edc99dbcf2, type: 2}
+  phase: 1
   thickness: 0
   unityCollider: {fileID: 65452135866701900}
   useDistanceFields: 0
@@ -7327,7 +7314,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62359d80fdc0e4315ab6331b78ec5b90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  kinematicForParticles: 0
+  kinematicForParticles: 1
 --- !u!114 &114512412574625124
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7340,7 +7327,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualize: 0
-  stretchingScale: 1
+  stretchingScale: 0.8
   stiffness: 1
   slack: 0
   batches:
@@ -7562,8 +7549,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualize: 1
-  maxBending: 1
-  stiffness: 1
+  maxBending: 0.05
+  stiffness: 0.99
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0.0001
@@ -7970,8 +7957,8 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   invMasses:
-  - 1
-  - 1
+  - 0
+  - 0
   - 1
   - 1
   - 1
@@ -8326,8 +8313,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualize: 1
-  maxBending: 1
-  stiffness: 1
+  maxBending: 0.05
+  stiffness: 0.99
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0.0001
@@ -8479,7 +8466,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   material: {fileID: 11400000, guid: 56297c6e785b44eb28e469b62cedc016, type: 2}
-  phase: 0
+  phase: 1
   thickness: 0
   unityCollider: {fileID: 65053999797049770}
   useDistanceFields: 0
@@ -8714,8 +8701,8 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   invMasses:
-  - 1
-  - 1
+  - 0
+  - 0
   - 1
   - 1
   - 1
@@ -9377,8 +9364,8 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   invMasses:
-  - 1
-  - 1
+  - 0
+  - 0
   - 1
   - 1
   - 1
