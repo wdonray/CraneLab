@@ -16,7 +16,6 @@ public class HookLoop : MonoBehaviour
     private void Awake()
     {
         onDrop += Drop;
-
         subscription.Subscribe("drop", onDrop);
     }
 

@@ -1935,8 +1935,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e45d62a65368a9048863350d85b5be41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RotationSpeed: -10
-  PositionSpeed: 10
+  RotationSpeed: -1
+  PositionSpeed: 1
   MouseButton: 1
   RotateX: 1
   RotateY: 1
@@ -2047,6 +2047,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf3e62815653fce4aac61973ebb31636, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  keepParent: 0
 --- !u!114 &114268293067082370
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2517,8 +2518,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114875708776843390}
   m_HandleRect: {fileID: 224937764314550574}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 0.9999957
+  m_Value: 1
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3828,7 +3829,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114245961533331182}
   m_HandleRect: {fileID: 224583290033712918}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -5117,7 +5118,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00019836426, y: 0.00024414062}
+  m_AnchoredPosition: {x: 0.00064849854, y: 0.00034713745}
   m_SizeDelta: {x: -20, y: -0.00064086914}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224677125195845100

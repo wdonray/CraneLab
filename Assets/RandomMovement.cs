@@ -4,18 +4,23 @@ using UnityEngine;
 
 public class RandomMovement : MonoBehaviour
 {
-    public UnityEngine.UI.Slider strengthSlider;
+    public UnityEngine.UI.Slider slider;
+    private float sliderStrength;
 
     public Vector3 initPosition;
     public Vector3 randomPos;
     public Vector3 newPos;
 
+    [Space]
 
+    public Vector3 eulerMovement;
 
 	void Start ()
     {
         initPosition = transform.position;
         newPos = initPosition;
+
+        sliderStrength = slider.value;
 	}
 
     float speed = 1f;
@@ -23,10 +28,12 @@ public class RandomMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 newPos = initPosition;
-        newPos.y += Mathf.Cos(Time.time) * strengthSlider.value;
+        sliderStrength += (slider.value - sliderStrength) * Time.deltaTime;
 
-        Vector3 newEulers = new Vector3(0.1f, 1f, 5f) * Mathf.Sin(Time.time) * strengthSlider.value;
+        Vector3 newPos = initPosition;
+        newPos.y += Mathf.Cos(Time.time) * sliderStrength;
+
+        Vector3 newEulers = eulerMovement * Mathf.Sin(Time.time) * sliderStrength;
         Quaternion newRot = Quaternion.Euler(newEulers);
 
         transform.localPosition = newPos;

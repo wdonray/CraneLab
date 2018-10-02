@@ -11,8 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b9c84cdb747944209b1c8753933c5db, type: 3}
   m_Name: HighFriction
   m_EditorClassIdentifier: 
-  friction: 0.8
-  stickiness: 0
+  friction: Infinity
+  stickiness: 64
   stickDistance: 0
   frictionCombine: 3
   stickinessCombine: 0

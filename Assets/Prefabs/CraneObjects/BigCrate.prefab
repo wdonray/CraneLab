@@ -7499,7 +7499,7 @@ Rigidbody:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1532409036426346}
   serializedVersion: 2
-  m_Mass: 10
+  m_Mass: 150
   m_Drag: 1
   m_AngularDrag: 1
   m_UseGravity: 1
@@ -7514,7 +7514,7 @@ Rigidbody:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1580706417262028}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 100
   m_Drag: 1
   m_AngularDrag: 1
   m_UseGravity: 1
@@ -7528,7 +7528,7 @@ BoxCollider:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1580706417262028}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 2f97c57bc19bda6488aba67d814e0684, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -7540,7 +7540,7 @@ BoxCollider:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1532409036426346}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 2f97c57bc19bda6488aba67d814e0684, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -7558,8 +7558,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualize: 0
-  maxBending: 1
-  stiffness: 1
+  maxBending: 0.05
+  stiffness: 0.99
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0.0001
@@ -7644,7 +7644,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   solver: {fileID: 0}
   worldVelocityScale: 0
-  collisionMaterial: {fileID: 11400000, guid: d368f2c47473d4bfb8dd9f08073cb403, type: 2}
+  collisionMaterial: {fileID: 11400000, guid: 56297c6e785b44eb28e469b62cedc016, type: 2}
   selfCollisions: 0
   active: 01010101010101010101010101010100000000000000000000
   positions:
@@ -7901,8 +7901,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6757b231cedd544c583ef8aeaf773b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: {fileID: 0}
-  phase: 0
+  material: {fileID: 11400000, guid: 56297c6e785b44eb28e469b62cedc016, type: 2}
+  phase: 1
   thickness: 0
   unityCollider: {fileID: 65075814987499260}
   useDistanceFields: 0
@@ -7949,7 +7949,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   solver: {fileID: 0}
   worldVelocityScale: 0
-  collisionMaterial: {fileID: 11400000, guid: d368f2c47473d4bfb8dd9f08073cb403, type: 2}
+  collisionMaterial: {fileID: 11400000, guid: 56297c6e785b44eb28e469b62cedc016, type: 2}
   selfCollisions: 0
   active: 01010101010101010101010101010100000000000000000000
   positions:
@@ -8218,8 +8218,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualize: 0
-  maxBending: 1
-  stiffness: 1
+  maxBending: 0.05
+  stiffness: 0.99
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0.0001
@@ -8263,13 +8263,13 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1532409036426346}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6757b231cedd544c583ef8aeaf773b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: {fileID: 0}
-  phase: 0
+  material: {fileID: 11400000, guid: 56297c6e785b44eb28e469b62cedc016, type: 2}
+  phase: 1
   thickness: 0
   unityCollider: {fileID: 65417603847397036}
   useDistanceFields: 0
@@ -8404,7 +8404,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   solver: {fileID: 0}
   worldVelocityScale: 0
-  collisionMaterial: {fileID: 11400000, guid: d368f2c47473d4bfb8dd9f08073cb403, type: 2}
+  collisionMaterial: {fileID: 11400000, guid: 56297c6e785b44eb28e469b62cedc016, type: 2}
   selfCollisions: 0
   active: 01010101010101010101010101010100000000000000000000
   positions:
@@ -8790,7 +8790,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   solver: {fileID: 0}
   worldVelocityScale: 0
-  collisionMaterial: {fileID: 11400000, guid: d368f2c47473d4bfb8dd9f08073cb403, type: 2}
+  collisionMaterial: {fileID: 11400000, guid: 56297c6e785b44eb28e469b62cedc016, type: 2}
   selfCollisions: 0
   active: 01010101010101010101010101010100000000000000000000
   positions:
@@ -9048,8 +9048,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualize: 0
-  maxBending: 1
-  stiffness: 1
+  maxBending: 0.05
+  stiffness: 0.99
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0.0001
@@ -9195,8 +9195,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualize: 0
-  maxBending: 1
-  stiffness: 1
+  maxBending: 0.05
+  stiffness: 0.99
   batches:
   - maxYoungModulus: 200
     minYoungModulus: 0.0001
