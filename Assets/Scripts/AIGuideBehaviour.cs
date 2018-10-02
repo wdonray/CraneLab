@@ -10,6 +10,7 @@ public class AIGuideBehaviour : MonoBehaviour
     public Transform m_load;
     public Transform m_crane;
     [SerializeField] private bool m_loadCollected;
+    [SerializeField] private bool m_hoist;
     private NavMeshAgent m_agent;
 
     // Use this for initialization
@@ -35,15 +36,56 @@ public class AIGuideBehaviour : MonoBehaviour
         var droptoCrane = m_dropZone.position - m_load.position;
         var droptoPlayer = m_dropZone.position - Camera.main.transform.position;
 
+        //HoistOrLower(m_crane.position, new Vector3(0, 1, 0));
+
+        RaiseLowerBoom(m_crane.position, m_load.position);
+
         if (!m_loadCollected)
         {
-            Swing(loadtoCrane, loadToPlayer);
-            RetractExtend(m_crane.position, m_load.position);
+            //Swing(loadtoCrane, loadToPlayer);
+            //RetractExtend(m_crane.position, m_load.position);
         }
         else
         {
-            Swing(droptoCrane, droptoPlayer);
-            RetractExtend(m_load.position, m_dropZone.position);
+            //Swing(droptoCrane, droptoPlayer);
+            //RetractExtend(m_load.position, m_dropZone.position);
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="crane"></param>
+    /// <param name="target"></param>
+    void HoistOrLower(Vector3 crane, Vector3 target)
+    {
+        //TODO: Maybe check if colliding with ground?
+        m_hoist = (crane.y < target.y) ? true : false;
+        m_anim.SetTrigger(m_hoist ? "Hoist" : "Lower");
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="crane"></param>
+    /// <param name="target"></param>
+    void RaiseLowerBoom(Vector3 crane, Vector3 target)
+    {
+        //TODO: This is not correct but I am close???
+        m_hoist = (crane.y < target.y) ? true : false;
+        if (m_hoist)
+        {
+            if ((crane- m_playerPos).magnitude > (target - m_playerPos).magnitude)
+            {
+                m_anim.SetTrigger("RaiseBoom");
+            }
+        }
+        else
+        {
+            if ((crane - m_playerPos).magnitude < (target - m_playerPos).magnitude)
+            {
+                m_anim.SetTrigger("LowerBoom");
+            }
         }
     }
 
