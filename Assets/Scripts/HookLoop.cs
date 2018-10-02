@@ -15,6 +15,11 @@ public class HookLoop : MonoBehaviour
 
     private void Awake()
     {
+        OnEnable();
+    }
+
+    private void OnEnable()
+    {
         onDrop += Drop;
         subscription.Subscribe("drop", onDrop);
     }
@@ -65,5 +70,10 @@ public class HookLoop : MonoBehaviour
     public void Drop(Mouledoux.Callback.Packet packet)
     {
         Drop();
+    }
+
+    private void OnDestroy()
+    {
+        subscription.UnsubscribeAll();
     }
 }
