@@ -12,49 +12,61 @@ public class AIGuideBehaviour : MonoBehaviour
     [SerializeField] private bool m_loadCollected;
     private NavMeshAgent m_agent;
 
-    //TODO: Remove this later
-    private GameObject _testingCube;
-    public Camera MainCamera;
-
     // Use this for initialization
     void Start()
     {
-        _testingCube = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         m_agent = GetComponent<NavMeshAgent>();
         m_anim.SetTrigger("Idle");
+    }
+
+    public Vector3 m_playerPos
+    {
+        get { return Camera.main.transform.position; }
     }
 
     // Update is called once per frame
     void Update()
     {
-        m_crane = _testingCube.transform;
-        FakeCrane();
-
         //Look at crane at all times
-        transform.LookAt(m_crane);
+        transform.LookAt(new Vector3(Camera.main.transform.position.x, this.transform.position.y, Camera.main.transform.position.z));
+        var loadtoCrane = m_load.position - m_crane.position;
+        var loadToPlayer = m_load.position - Camera.main.transform.position;
+
+        var droptoCrane = m_dropZone.position - m_load.position;
+        var droptoPlayer = m_dropZone.position - Camera.main.transform.position;
 
         if (!m_loadCollected)
         {
-
+            Swing(loadtoCrane, loadToPlayer);
+            RetractExtend(m_crane.position, m_load.position);
         }
         else
         {
-
+            Swing(droptoCrane, droptoPlayer);
+            RetractExtend(m_load.position, m_dropZone.position);
         }
     }
 
     /// <summary>
-    ///     Used to simulate a crane
+    ///     Gets the angle between the crane and the player and sets trigger to the correct direction
     /// </summary>
-    void FakeCrane()
+    /// <param name="toCrane"></param>
+    /// <param name="toPlayer"></param>
+    private void Swing(Vector3 toCrane, Vector3 toPlayer)
     {
-        Ray ray = MainCamera.ScreenPointToRay(Input.mousePosition);
+        var angleBetween = Vector3.SignedAngle(new Vector3(toCrane.x, 0, toCrane.z), new Vector3(toPlayer.x, 0, toPlayer.z), new Vector3(0, 1, 0));
+        m_anim.SetTrigger(angleBetween > 1 ? "SwingThatWay" : "SwingThisWay");
+    }
 
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            float oldY = _testingCube.transform.position.y;
-            _testingCube.transform.position.Set(hit.point.x, oldY, hit.point.z);
-        }
+    /// <summary>
+    ///     Source is closer then target retract else extend 
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="target"></param>
+    private void RetractExtend(Vector3 source, Vector3 target)
+    {
+        source.y = 0;
+        target.y = 0;
+        m_anim.SetTrigger((source - m_playerPos).magnitude < (target - m_playerPos).magnitude ? "RetractBoom" : "ExtendBoom");
     }
 }
