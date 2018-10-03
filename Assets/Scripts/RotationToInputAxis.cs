@@ -45,11 +45,12 @@ public class RotationToInputAxis : MonoBehaviour
 
                 if (!m_restrictRotation) break;
 
-                else if (currentRotationAngle < m_rotationMin && rotationEulerAngles.x > 0)
+                if (currentRotationAngle < m_rotationMin && rotationEulerAngles.x > 0)
                 {
                     rotationEulerAngles.x = 0f;
                 }
-                else if (currentRotationAngle > m_rotationMax && rotationEulerAngles.x < 0)
+
+                if (currentRotationAngle > m_rotationMax && rotationEulerAngles.x < 0)
                 {
                     rotationEulerAngles.x = 0f;
                 }
