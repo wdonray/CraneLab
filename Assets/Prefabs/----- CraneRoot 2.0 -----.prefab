@@ -17452,7 +17452,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualize: 0
-  stretchingScale: 0.8
+  stretchingScale: 0.5
   stiffness: 1
   slack: 0
   batches:
