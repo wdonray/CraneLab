@@ -1002,7 +1002,7 @@ GameObject:
   - component: {fileID: 103704572}
   m_Layer: 0
   m_Name: Load
-  m_TagString: Untagged
+  m_TagString: Z-Test
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7009,11 +7009,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1117542488}
   - component: {fileID: 1117542487}
-  - component: {fileID: 1117542489}
-  - component: {fileID: 1117542490}
   - component: {fileID: 1117542491}
   - component: {fileID: 1117542492}
   - component: {fileID: 1117542493}
+  - component: {fileID: 1117542489}
   m_Layer: 0
   m_Name: Crane_Character
   m_TagString: Untagged
@@ -7066,29 +7065,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 1117542486}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ff0d7f8de15d9044a17bd753a2743cc, type: 3}
+  m_Script: {fileID: 11500000, guid: e8be5fd7738463647aeb0fa7509b3c88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_animator: {fileID: 1117542487}
-  m_trigger: Switch
---- !u!114 &1117542490
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1117542486}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1347817507220a4384f3ff6f7c24546, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveUnitsPerSecond:
-    value: {x: 0, y: 0, z: 1.5}
-    space: 1
-  rotateDegreesPerSecond:
-    value: {x: 0, y: 70, z: 0}
-    space: 1
-  ignoreTimescale: 0
+  m_Tag: Hook
+  minToTrigger: 1
+  OnEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1117542491}
+        m_MethodName: Death
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  maxToTrigger: 0
+  OnExit:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &1117542491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7100,14 +7103,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 123cee9bffbf8b54bb1e39356600e8eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_anim: {fileID: 1117542487}
   m_dropZone: {fileID: 1163041112}
   m_load: {fileID: 103704576}
   m_crane: {fileID: 1148851332}
   m_startPos: {x: 0, y: 0, z: 0}
-  m_loadCollected: 0
   m_targetReached: 0
   m_agent: {fileID: 0}
+  m_startedTying: 0
+  m_tyingComplete: 0
+  m_loadCollected: 0
 --- !u!195 &1117542492
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -7139,8 +7143,8 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &1123655247
 GameObject:
   m_ObjectHideFlags: 0
@@ -7389,7 +7393,7 @@ GameObject:
   - component: {fileID: 1148851328}
   m_Layer: 0
   m_Name: Crane
-  m_TagString: Untagged
+  m_TagString: Hook
   m_Icon: {fileID: 419385456094870383, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7471,7 +7475,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1148851325}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.19, y: 0.36, z: 3.72}
+  m_LocalPosition: {x: 3.19, y: 0.36, z: 1.19}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}

@@ -7,22 +7,23 @@ using UnityEngine.AI;
 
 public class AIGuideBehaviour : MonoBehaviour
 {
-    [SerializeField] private Animator m_anim;
     public Transform m_dropZone;
     public Transform m_load;
     public Transform m_crane;
+
     [HideInInspector] public Vector3 m_startPos;
-    [SerializeField] private bool m_loadCollected;
     [HideInInspector] public bool m_targetReached;
     [HideInInspector] public NavMeshAgent m_agent;
+    [HideInInspector] public bool m_startedTying, m_tyingComplete;
 
-    private bool m_startedTying;
-    // Use this for initialization
+    [SerializeField] private bool m_loadCollected;
+
     void Start()
     {
         m_startPos = transform.position;
         m_agent = GetComponent<NavMeshAgent>();
-        m_anim.SetTrigger("Idle");
+        transform.LookAt(new Vector3(Camera.main.transform.position.x, this.transform.position.y, Camera.main.transform.position.z));
+        SendToAnimator.SendTrigger(gameObject, "Idle");
     }
 
     public Vector3 m_playerPos
@@ -30,14 +31,13 @@ public class AIGuideBehaviour : MonoBehaviour
         get { return Camera.main.transform.position; }
     }
 
-    // Update is called once per frame
     void Update()
     {
         //Look at crane at all times
-        if (m_targetReached == false)
-        {
-            transform.LookAt(new Vector3(Camera.main.transform.position.x, this.transform.position.y, Camera.main.transform.position.z));
-        }
+        //if (m_targetReached == false)
+        //{
+        //    transform.LookAt(new Vector3(Camera.main.transform.position.x, this.transform.position.y, Camera.main.transform.position.z));
+        //}
 
         var loadtoCrane = m_load.position - m_crane.position;
         var loadToPlayer = m_load.position - Camera.main.transform.position;
@@ -45,7 +45,7 @@ public class AIGuideBehaviour : MonoBehaviour
         var droptoCrane = m_dropZone.position - m_load.position;
         var droptoPlayer = m_dropZone.position - Camera.main.transform.position;
 
-        //HoistOrLower(m_crane.position, m_load.position);
+        //HoistOrLower(m_crane.position, m_load.position, 1.5f);
         //RaiseLowerBoom(m_crane.position, m_load.position);
         //Stop();
         Tie();
@@ -73,7 +73,7 @@ public class AIGuideBehaviour : MonoBehaviour
         var angleBetween = Vector3.SignedAngle(new Vector3(toCrane.x, 0, toCrane.z), new Vector3(toPlayer.x, 0, toPlayer.z), new Vector3(0, 1, 0));
         var shouldntMove = angleBetween < angle && angleBetween > -angle;
 
-        m_anim.SetTrigger(angleBetween > angle ? "SwingThatWay" : angleBetween < -angle ? "SwingThisWay" : "Stop");
+        SendToAnimator.SendTrigger(gameObject, angleBetween > angle ? "SwingThatWay" : angleBetween < -angle ? "SwingThisWay" : "Stop");
         return !shouldntMove;
     }
 
@@ -97,7 +97,7 @@ public class AIGuideBehaviour : MonoBehaviour
             return false;
         }
 
-        m_anim.SetTrigger(sourceToPlayer.magnitude < targetToPlayer.magnitude ? "RetractBoom" : "ExtendBoom");
+        SendToAnimator.SendTrigger(gameObject, sourceToPlayer.magnitude < targetToPlayer.magnitude ? "RetractBoom" : "ExtendBoom");
         return true;
     }
 
@@ -106,17 +106,17 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     /// <param name="crane"></param>
     /// <param name="target"></param>
-    private bool HoistOrLower(Vector3 crane, Vector3 target)
+    private bool HoistOrLower(Vector3 crane, Vector3 target, float distance)
     {
         var craneToTarget = crane - target;
 
-        if (Mathf.Abs(craneToTarget.y) < 3)
+        if (Mathf.Abs(craneToTarget.y) < distance)
         {
             Stop();
             return false;
         }
 
-        m_anim.SetTrigger((crane.y < target.y) ? "Hoist" : "Lower");
+        SendToAnimator.SendTrigger(gameObject, (crane.y < target.y) ? "Hoist" : "Lower");
         return true;
     }
 
@@ -127,13 +127,12 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="target"></param>
     private bool RaiseLowerBoom(Vector3 crane, Vector3 target)
     {
-        //TODO: This is not correct but I am close???
         var m_hoist = (crane.y < target.y);
         if (m_hoist)
         {
             if ((crane - m_playerPos).magnitude > (target - m_playerPos).magnitude)
             {
-                m_anim.SetTrigger("RaiseBoom");
+                SendToAnimator.SendTrigger(gameObject, "RaiseBoom");
                 return true;
             }
         }
@@ -141,7 +140,7 @@ public class AIGuideBehaviour : MonoBehaviour
         {
             if ((crane - m_playerPos).magnitude < (target - m_playerPos).magnitude)
             {
-                m_anim.SetTrigger("LowerBoom");
+                SendToAnimator.SendTrigger(gameObject, "LowerBoom");
                 return true;
             }
         }
@@ -149,72 +148,59 @@ public class AIGuideBehaviour : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    ///     begin stop animation
+    /// </summary>
     private void Stop()
     {
-        m_anim.SetTrigger("Stop");
+        SendToAnimator.SendTrigger(gameObject, "Stop");
     }
 
+    /// <summary>
+    ///     TODO: Fix
+    /// </summary>
     private void Tie()
     {
-        #region oof
-
-        /*
-        RaycastHit hit;
-        if (Physics.Raycast(m_load.position, Vector3.up, out hit))
+        if (m_tyingComplete == false)
         {
-            //To see if the crane is right above it and if object is the crane
-            var hitToCrane = hit.transform.position - m_crane.transform.position;
-            var hitObject = hit.collider.gameObject;
-
-            if (hitToCrane.y < 3 && hitObject == m_crane.transform.gameObject)
+            if (m_targetReached == false)
             {
-                //Attempt to say target is reached look and walk there
-                m_targetReached = true;
-                m_agent.SetDestination(m_load.transform.position);
-                transform.LookAt(new Vector3(m_load.transform.position.x, this.transform.position.y, Camera.main.transform.position.z));
-
-                if (m_agent.hasPath == false || m_agent.remainingDistance <= m_agent.stoppingDistance)
+                // CRANE IN RANGE OF LOAD
+                if (Physics.OverlapSphere(m_load.position, .5f).Contains(m_crane.GetComponent<Collider>()))
                 {
-                    //Need To play animation once then walk back to start location
-                    m_anim.SetTrigger("TyingUp");
+                    //Look at the load
+                    transform.LookAt(new Vector3(m_load.transform.position.x, this.transform.position.y, m_load.transform.position.z));
+                    //Crane reached load
+                    m_targetReached = true;
 
-                    if (m_anim.GetCurrentAnimatorStateInfo(0).IsName("TyingUp"))
-                    {
-                        Debug.Log("Done");
-                    }
+                    //Begin walking to load
+                    m_agent.stoppingDistance = 1f;
+                    m_agent.SetDestination(m_load.transform.position);
+                    SendToAnimator.SendTrigger(gameObject, "Walk");
+
                 }
                 else
                 {
-                    //Need to look at correct point and walk there (the load)
-                    m_anim.SetTrigger("Walk");
+                    // CRANE NOT IN RANGE OF LOAD
+                    Stop();
+                }
+            }
+
+            if (m_startedTying == false)
+            {
+                //Stop and Tie
+                if (Physics.OverlapSphere(m_load.position, 1f).Contains(transform.GetComponent<Collider>()))
+                {
+                    m_startedTying = true;
+                    m_agent.isStopped = true;
+                    SendToAnimator.SendTrigger(gameObject, "TyingUp");
                 }
             }
         }
     }
-    */
 
-        #endregion
-
-        if (Physics.OverlapSphere(m_load.position, .5f).Contains(m_crane.GetComponent<Collider>()))
-        {
-            transform.LookAt(new Vector3(m_load.transform.position.x, this.transform.position.y, m_load.transform.position.z));
-            if (m_startedTying == false)
-            {
-                m_targetReached = true;
-                m_agent.stoppingDistance = 1f;
-                m_agent.SetDestination(m_load.transform.position);
-                m_anim.SetTrigger("Walk");
-            }
-            
-            if (Physics.OverlapSphere(m_load.position, 1f).Contains(transform.GetComponent<Collider>()))
-            {
-                m_startedTying = true;
-                m_anim.SetTrigger("TyingUp");
-            }
-        }
-        else
-        {
-            Stop();
-        }
+    public void Death()
+    {
+        SendToAnimator.SendTrigger(gameObject, "Death");
     }
 }
