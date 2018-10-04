@@ -20,10 +20,13 @@ public class AIGuideBehaviour : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = .1f;
+
         m_startPos = transform.position;
         m_agent = GetComponent<NavMeshAgent>();
         transform.LookAt(new Vector3(Camera.main.transform.position.x, this.transform.position.y, Camera.main.transform.position.z));
         SendToAnimator.SendTrigger(gameObject, "Idle");
+      
     }
 
     public Vector3 m_playerPos
@@ -31,7 +34,7 @@ public class AIGuideBehaviour : MonoBehaviour
         get { return Camera.main.transform.position; }
     }
 
-    void Update()
+    void LateUpdate()
     {
         //Look at crane at all times
         //if (m_targetReached == false)
@@ -157,7 +160,8 @@ public class AIGuideBehaviour : MonoBehaviour
     }
 
     /// <summary>
-    ///     TODO: Fix
+    ///     TODO: Fix, stop is interrupting walk should not be happening on same frame
+    ///     //WalkStateBehaviour and TyingUpStateMachine
     /// </summary>
     private void Tie()
     {
@@ -177,7 +181,6 @@ public class AIGuideBehaviour : MonoBehaviour
                     m_agent.stoppingDistance = 1f;
                     m_agent.SetDestination(m_load.transform.position);
                     SendToAnimator.SendTrigger(gameObject, "Walk");
-
                 }
                 else
                 {
