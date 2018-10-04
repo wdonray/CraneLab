@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
-// ReSharper disable InconsistentNaming
 
 public class AIGuideBehaviour : MonoBehaviour
 {
@@ -18,20 +17,42 @@ public class AIGuideBehaviour : MonoBehaviour
 
     [SerializeField] private bool m_loadCollected;
 
-    void Start()
-    {
-        Time.timeScale = .1f;
-
-        m_startPos = transform.position;
-        m_agent = GetComponent<NavMeshAgent>();
-        transform.LookAt(new Vector3(Camera.main.transform.position.x, this.transform.position.y, Camera.main.transform.position.z));
-        SendToAnimator.SendTrigger(gameObject, "Idle");
-      
-    }
-
-    public Vector3 m_playerPos
+    public Vector3 playerPos
     {
         get { return Camera.main.transform.position; }
+    }
+
+    public Vector3 cranePos
+    {
+        get { return m_crane.position; }
+    }
+
+    public Vector3 loadPos
+    {
+        get { return m_load.position; }
+    }
+
+    public Vector3 dropZonePos
+    {
+        get { return m_dropZone.position; }
+    }
+
+    public Vector3 lookAtPlayer
+    {
+        get { return new Vector3(playerPos.x, transform.position.y, playerPos.z); }
+    }
+
+    public Vector3 lookAtLoad
+    {
+        get { return new Vector3(loadPos.x, transform.position.y, loadPos.z); }
+    }
+
+    void Awake()
+    {
+        m_startPos = transform.position;
+        m_agent = GetComponent<NavMeshAgent>();
+        transform.LookAt(lookAtPlayer);
+        SendToAnimator.SendTrigger(gameObject, "Idle");
     }
 
     void LateUpdate()
@@ -42,26 +63,26 @@ public class AIGuideBehaviour : MonoBehaviour
         //    transform.LookAt(new Vector3(Camera.main.transform.position.x, this.transform.position.y, Camera.main.transform.position.z));
         //}
 
-        var loadtoCrane = m_load.position - m_crane.position;
-        var loadToPlayer = m_load.position - Camera.main.transform.position;
+        var loadtoCrane = loadPos - cranePos;
+        var loadToPlayer = loadPos - playerPos;
 
-        var droptoCrane = m_dropZone.position - m_load.position;
-        var droptoPlayer = m_dropZone.position - Camera.main.transform.position;
+        var droptoCrane = dropZonePos - loadPos;
+        var droptoPlayer = dropZonePos - playerPos;
 
-        //HoistOrLower(m_crane.position, m_load.position, 1.5f);
-        //RaiseLowerBoom(m_crane.position, m_load.position);
+        HoistOrLower(cranePos, loadPos, 1.5f);
+        //RaiseLowerBoom(m_cranePos, m_loadPos);
         //Stop();
-        Tie();
+        //Tie(m_loadPos);
 
         if (!m_loadCollected)
         {
             //Swing(loadtoCrane, loadToPlayer, 4);
-            //RetractExtend(m_crane.position, m_load.position);
+            //RetractExtend(m_cranePos, m_loadPos);
         }
         else
         {
             //Swing(droptoCrane, droptoPlayer, 4);
-            //RetractExtend(m_load.position, m_dropZone.position);
+            //RetractExtend(m_loadPos, m_dropZone.position);
         }
     }
 
@@ -89,8 +110,8 @@ public class AIGuideBehaviour : MonoBehaviour
     {
         source.y = 0;
         target.y = 0;
-        var sourceToPlayer = source - m_playerPos;
-        var targetToPlayer = target - m_playerPos;
+        var sourceToPlayer = source - playerPos;
+        var targetToPlayer = target - playerPos;
 
         var shouldntMove = (sourceToPlayer - targetToPlayer).magnitude < 1.5f;
 
@@ -133,7 +154,7 @@ public class AIGuideBehaviour : MonoBehaviour
         var m_hoist = (crane.y < target.y);
         if (m_hoist)
         {
-            if ((crane - m_playerPos).magnitude > (target - m_playerPos).magnitude)
+            if ((crane - playerPos).magnitude > (target - playerPos).magnitude)
             {
                 SendToAnimator.SendTrigger(gameObject, "RaiseBoom");
                 return true;
@@ -141,7 +162,7 @@ public class AIGuideBehaviour : MonoBehaviour
         }
         else
         {
-            if ((crane - m_playerPos).magnitude < (target - m_playerPos).magnitude)
+            if ((crane - playerPos).magnitude < (target - playerPos).magnitude)
             {
                 SendToAnimator.SendTrigger(gameObject, "LowerBoom");
                 return true;
@@ -163,23 +184,23 @@ public class AIGuideBehaviour : MonoBehaviour
     ///     TODO: Fix, stop is interrupting walk should not be happening on same frame
     ///     //WalkStateBehaviour and TyingUpStateMachine
     /// </summary>
-    private void Tie()
+    private void Tie(Vector3 target)
     {
         if (m_tyingComplete == false)
         {
             if (m_targetReached == false)
             {
                 // CRANE IN RANGE OF LOAD
-                if (Physics.OverlapSphere(m_load.position, .5f).Contains(m_crane.GetComponent<Collider>()))
+                if (Physics.OverlapSphere(target, .5f).Contains(m_crane.GetComponent<Collider>()))
                 {
                     //Look at the load
-                    transform.LookAt(new Vector3(m_load.transform.position.x, this.transform.position.y, m_load.transform.position.z));
+                    transform.LookAt(new Vector3(target.x, transform.position.y, target.z));
                     //Crane reached load
                     m_targetReached = true;
 
                     //Begin walking to load
                     m_agent.stoppingDistance = 1f;
-                    m_agent.SetDestination(m_load.transform.position);
+                    m_agent.SetDestination(target);
                     SendToAnimator.SendTrigger(gameObject, "Walk");
                 }
                 else
@@ -192,7 +213,7 @@ public class AIGuideBehaviour : MonoBehaviour
             if (m_startedTying == false)
             {
                 //Stop and Tie
-                if (Physics.OverlapSphere(m_load.position, 1f).Contains(transform.GetComponent<Collider>()))
+                if (Physics.OverlapSphere(target, 1f).Contains(transform.GetComponent<Collider>()))
                 {
                     m_startedTying = true;
                     m_agent.isStopped = true;

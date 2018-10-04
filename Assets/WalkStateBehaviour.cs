@@ -26,7 +26,7 @@ public class WalkStateBehaviour : StateMachineBehaviour {
         if (AI.m_tyingComplete)
         {
             AI.m_agent.isStopped = true;
-            AI.transform.LookAt(new Vector3(Camera.main.transform.position.x, AI.transform.position.y, Camera.main.transform.position.z));
+            AI.transform.LookAt(AI.lookAtPlayer);
             SendToAnimator.SendTrigger(AI.gameObject, "Hoist");
         }
     }

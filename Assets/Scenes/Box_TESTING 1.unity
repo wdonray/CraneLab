@@ -7069,7 +7069,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Tag: Hook
-  minToTrigger: 1
+  minToTrigger: 0
   OnEnter:
     m_PersistentCalls:
       m_Calls:
