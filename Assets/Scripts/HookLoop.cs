@@ -38,7 +38,7 @@ public class HookLoop : MonoBehaviour
         {
             transform.position = Vector3.Lerp(transform.position, other.transform.position, Time.deltaTime * 1f);
 
-            if (Vector3.Distance(transform.position, other.transform.position) <= 4f)
+            if (Vector3.Distance(transform.position, other.transform.position) <= 1f)
             {
                 m_hook = other.GetComponent<Rigidbody>();
                 m_connectionJoint = gameObject.AddComponent<HingeJoint>();
