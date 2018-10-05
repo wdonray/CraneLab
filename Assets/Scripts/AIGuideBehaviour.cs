@@ -1,9 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
-// ReSharper disable InconsistentNaming
 
 public class AIGuideBehaviour : MonoBehaviour
 {
@@ -17,48 +17,51 @@ public class AIGuideBehaviour : MonoBehaviour
     [HideInInspector] public bool m_startedTying, m_tyingComplete;
 
     [SerializeField] private bool m_loadCollected;
+    private bool m_dead;
 
-    void Start()
-    {
-        m_startPos = transform.position;
-        m_agent = GetComponent<NavMeshAgent>();
-        transform.LookAt(new Vector3(Camera.main.transform.position.x, this.transform.position.y, Camera.main.transform.position.z));
-        SendToAnimator.SendTrigger(gameObject, "Idle");
-    }
-
-    public Vector3 m_playerPos
+    public Vector3 playerPos
     {
         get { return Camera.main.transform.position; }
     }
 
+    public Vector3 cranePos
+    {
+        get { return m_crane.position; }
+    }
+
+    public Vector3 loadPos
+    {
+        get { return m_load.position; }
+    }
+
+    public Vector3 dropZonePos
+    {
+        get { return m_dropZone.position; }
+    }
+
+    public Vector3 lookAtPlayer
+    {
+        get { return new Vector3(playerPos.x, transform.position.y, playerPos.z); }
+    }
+
+    public Vector3 lookAtLoad
+    {
+        get { return new Vector3(loadPos.x, transform.position.y, loadPos.z); }
+    }
+
+    void Awake()
+    {
+        m_startPos = transform.position;
+        m_agent = GetComponent<NavMeshAgent>();
+        transform.LookAt(lookAtPlayer);
+        SendToAnimator.SendTrigger(gameObject, "Idle");
+    }
+
     void Update()
     {
-        //Look at crane at all times
-        //if (m_targetReached == false)
-        //{
-        //    transform.LookAt(new Vector3(Camera.main.transform.position.x, this.transform.position.y, Camera.main.transform.position.z));
-        //}
-
-        var loadtoCrane = m_load.position - m_crane.position;
-        var loadToPlayer = m_load.position - Camera.main.transform.position;
-
-        var droptoCrane = m_dropZone.position - m_load.position;
-        var droptoPlayer = m_dropZone.position - Camera.main.transform.position;
-
-        //HoistOrLower(m_crane.position, m_load.position, 1.5f);
-        //RaiseLowerBoom(m_crane.position, m_load.position);
-        //Stop();
-        Tie();
-
-        if (!m_loadCollected)
+        if (!m_dead)
         {
-            //Swing(loadtoCrane, loadToPlayer, 4);
-            //RetractExtend(m_crane.position, m_load.position);
-        }
-        else
-        {
-            //Swing(droptoCrane, droptoPlayer, 4);
-            //RetractExtend(m_load.position, m_dropZone.position);
+            GuideCrane();
         }
     }
 
@@ -70,10 +73,12 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="angle"></param>
     private bool Swing(Vector3 toCrane, Vector3 toPlayer, int angle)
     {
-        var angleBetween = Vector3.SignedAngle(new Vector3(toCrane.x, 0, toCrane.z), new Vector3(toPlayer.x, 0, toPlayer.z), new Vector3(0, 1, 0));
+        var angleBetween = Vector3.SignedAngle(new Vector3(toCrane.x, 0, toCrane.z),
+            new Vector3(toPlayer.x, 0, toPlayer.z), new Vector3(0, 1, 0));
         var shouldntMove = angleBetween < angle && angleBetween > -angle;
 
-        SendToAnimator.SendTrigger(gameObject, angleBetween > angle ? "SwingThatWay" : angleBetween < -angle ? "SwingThisWay" : "Stop");
+        SendToAnimator.SendTrigger(gameObject,
+            angleBetween > angle ? "SwingThatWay" : angleBetween < -angle ? "SwingThisWay" : "Stop");
         return !shouldntMove;
     }
 
@@ -82,14 +87,14 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     /// <param name="source"></param>
     /// <param name="target"></param>
-    private bool RetractExtend(Vector3 source, Vector3 target)
+    private bool RetractExtend(Vector3 source, Vector3 target, float distance)
     {
         source.y = 0;
         target.y = 0;
-        var sourceToPlayer = source - m_playerPos;
-        var targetToPlayer = target - m_playerPos;
+        var sourceToPlayer = source - playerPos;
+        var targetToPlayer = target - playerPos;
 
-        var shouldntMove = (sourceToPlayer - targetToPlayer).magnitude < 1.5f;
+        var shouldntMove = (sourceToPlayer - targetToPlayer).magnitude < distance;
 
         if (shouldntMove)
         {
@@ -97,7 +102,8 @@ public class AIGuideBehaviour : MonoBehaviour
             return false;
         }
 
-        SendToAnimator.SendTrigger(gameObject, sourceToPlayer.magnitude < targetToPlayer.magnitude ? "RetractBoom" : "ExtendBoom");
+        SendToAnimator.SendTrigger(gameObject,
+            sourceToPlayer.magnitude < targetToPlayer.magnitude ? "RetractBoom" : "ExtendBoom");
         return true;
     }
 
@@ -130,7 +136,7 @@ public class AIGuideBehaviour : MonoBehaviour
         var m_hoist = (crane.y < target.y);
         if (m_hoist)
         {
-            if ((crane - m_playerPos).magnitude > (target - m_playerPos).magnitude)
+            if ((crane - playerPos).magnitude > (target - playerPos).magnitude)
             {
                 SendToAnimator.SendTrigger(gameObject, "RaiseBoom");
                 return true;
@@ -138,12 +144,13 @@ public class AIGuideBehaviour : MonoBehaviour
         }
         else
         {
-            if ((crane - m_playerPos).magnitude < (target - m_playerPos).magnitude)
+            if ((crane - playerPos).magnitude < (target - playerPos).magnitude)
             {
                 SendToAnimator.SendTrigger(gameObject, "LowerBoom");
                 return true;
             }
         }
+
         Stop();
         return false;
     }
@@ -157,27 +164,27 @@ public class AIGuideBehaviour : MonoBehaviour
     }
 
     /// <summary>
-    ///     TODO: Fix
+    ///     TODO: Fix, stop is interrupting walk should not be happening on same frame
+    ///     //WalkStateBehaviour and TyingUpStateMachine
     /// </summary>
-    private void Tie()
+    private void Tie(Vector3 target)
     {
         if (m_tyingComplete == false)
         {
             if (m_targetReached == false)
             {
                 // CRANE IN RANGE OF LOAD
-                if (Physics.OverlapSphere(m_load.position, .5f).Contains(m_crane.GetComponent<Collider>()))
+                if (Physics.OverlapSphere(target, .5f).Contains(m_crane.GetComponent<Collider>()))
                 {
                     //Look at the load
-                    transform.LookAt(new Vector3(m_load.transform.position.x, this.transform.position.y, m_load.transform.position.z));
+                    transform.LookAt(new Vector3(target.x, transform.position.y, target.z));
                     //Crane reached load
                     m_targetReached = true;
 
                     //Begin walking to load
                     m_agent.stoppingDistance = 1f;
-                    m_agent.SetDestination(m_load.transform.position);
+                    m_agent.SetDestination(target);
                     SendToAnimator.SendTrigger(gameObject, "Walk");
-
                 }
                 else
                 {
@@ -189,7 +196,7 @@ public class AIGuideBehaviour : MonoBehaviour
             if (m_startedTying == false)
             {
                 //Stop and Tie
-                if (Physics.OverlapSphere(m_load.position, 1f).Contains(transform.GetComponent<Collider>()))
+                if (Physics.OverlapSphere(target, 1f).Contains(transform.GetComponent<Collider>()))
                 {
                     m_startedTying = true;
                     m_agent.isStopped = true;
@@ -201,6 +208,41 @@ public class AIGuideBehaviour : MonoBehaviour
 
     public void Death()
     {
+        Animator a = GetComponent<Animator>();
+        List<string> names = new List<string>();
+        for (int i = 0; i < a.parameterCount; i++)
+        {
+            var p = a.GetParameter(i);
+            if (p.name != "Death") 
+                names.Add(p.name);
+        }
+
+        foreach (var n in names)
+        {
+            a.ResetTrigger(n);
+        }
+                m_dead = true;
         SendToAnimator.SendTrigger(gameObject, "Death");
+    }
+
+    private void GuideCrane()
+    {
+        var targetToCrane = (m_loadCollected) ? dropZonePos - loadPos : loadPos - cranePos;
+        var targetToPlayer = (m_loadCollected) ? dropZonePos - playerPos : loadPos - playerPos;
+        var targetPos = (m_loadCollected) ? dropZonePos : loadPos;
+
+        if (!Swing(targetToCrane, targetToPlayer, 4))
+        {
+            if (!RaiseLowerBoom(cranePos, targetPos))
+            {
+                if (!RetractExtend(cranePos, targetPos, 1.5f))
+                {
+                    if (!HoistOrLower(cranePos, targetPos, 1.5f))
+                    {
+
+                    }
+                }
+            }
+        }
     }
 }
