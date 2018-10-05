@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,6 +17,7 @@ public class AIGuideBehaviour : MonoBehaviour
     [HideInInspector] public bool m_startedTying, m_tyingComplete;
 
     [SerializeField] private bool m_loadCollected;
+    private bool m_dead;
 
     public Vector3 playerPos
     {
@@ -55,34 +57,11 @@ public class AIGuideBehaviour : MonoBehaviour
         SendToAnimator.SendTrigger(gameObject, "Idle");
     }
 
-    void LateUpdate()
+    void Update()
     {
-        //Look at crane at all times
-        //if (m_targetReached == false)
-        //{
-        //    transform.LookAt(new Vector3(Camera.main.transform.position.x, this.transform.position.y, Camera.main.transform.position.z));
-        //}
-
-        var loadtoCrane = loadPos - cranePos;
-        var loadToPlayer = loadPos - playerPos;
-
-        var droptoCrane = dropZonePos - loadPos;
-        var droptoPlayer = dropZonePos - playerPos;
-
-        HoistOrLower(cranePos, loadPos, 1.5f);
-        //RaiseLowerBoom(m_cranePos, m_loadPos);
-        //Stop();
-        //Tie(m_loadPos);
-
-        if (!m_loadCollected)
+        if (!m_dead)
         {
-            //Swing(loadtoCrane, loadToPlayer, 4);
-            //RetractExtend(m_cranePos, m_loadPos);
-        }
-        else
-        {
-            //Swing(droptoCrane, droptoPlayer, 4);
-            //RetractExtend(m_loadPos, m_dropZone.position);
+            GuideCrane();
         }
     }
 
@@ -94,10 +73,12 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="angle"></param>
     private bool Swing(Vector3 toCrane, Vector3 toPlayer, int angle)
     {
-        var angleBetween = Vector3.SignedAngle(new Vector3(toCrane.x, 0, toCrane.z), new Vector3(toPlayer.x, 0, toPlayer.z), new Vector3(0, 1, 0));
+        var angleBetween = Vector3.SignedAngle(new Vector3(toCrane.x, 0, toCrane.z),
+            new Vector3(toPlayer.x, 0, toPlayer.z), new Vector3(0, 1, 0));
         var shouldntMove = angleBetween < angle && angleBetween > -angle;
 
-        SendToAnimator.SendTrigger(gameObject, angleBetween > angle ? "SwingThatWay" : angleBetween < -angle ? "SwingThisWay" : "Stop");
+        SendToAnimator.SendTrigger(gameObject,
+            angleBetween > angle ? "SwingThatWay" : angleBetween < -angle ? "SwingThisWay" : "Stop");
         return !shouldntMove;
     }
 
@@ -106,14 +87,14 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     /// <param name="source"></param>
     /// <param name="target"></param>
-    private bool RetractExtend(Vector3 source, Vector3 target)
+    private bool RetractExtend(Vector3 source, Vector3 target, float distance)
     {
         source.y = 0;
         target.y = 0;
         var sourceToPlayer = source - playerPos;
         var targetToPlayer = target - playerPos;
 
-        var shouldntMove = (sourceToPlayer - targetToPlayer).magnitude < 1.5f;
+        var shouldntMove = (sourceToPlayer - targetToPlayer).magnitude < distance;
 
         if (shouldntMove)
         {
@@ -121,7 +102,8 @@ public class AIGuideBehaviour : MonoBehaviour
             return false;
         }
 
-        SendToAnimator.SendTrigger(gameObject, sourceToPlayer.magnitude < targetToPlayer.magnitude ? "RetractBoom" : "ExtendBoom");
+        SendToAnimator.SendTrigger(gameObject,
+            sourceToPlayer.magnitude < targetToPlayer.magnitude ? "RetractBoom" : "ExtendBoom");
         return true;
     }
 
@@ -168,6 +150,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 return true;
             }
         }
+
         Stop();
         return false;
     }
@@ -225,6 +208,41 @@ public class AIGuideBehaviour : MonoBehaviour
 
     public void Death()
     {
+        Animator a = GetComponent<Animator>();
+        List<string> names = new List<string>();
+        for (int i = 0; i < a.parameterCount; i++)
+        {
+            var p = a.GetParameter(i);
+            if (p.name != "Death") 
+                names.Add(p.name);
+        }
+
+        foreach (var n in names)
+        {
+            a.ResetTrigger(n);
+        }
+                m_dead = true;
         SendToAnimator.SendTrigger(gameObject, "Death");
+    }
+
+    private void GuideCrane()
+    {
+        var targetToCrane = (m_loadCollected) ? dropZonePos - loadPos : loadPos - cranePos;
+        var targetToPlayer = (m_loadCollected) ? dropZonePos - playerPos : loadPos - playerPos;
+        var targetPos = (m_loadCollected) ? dropZonePos : loadPos;
+
+        if (!Swing(targetToCrane, targetToPlayer, 4))
+        {
+            if (!RaiseLowerBoom(cranePos, targetPos))
+            {
+                if (!RetractExtend(cranePos, targetPos, 1.5f))
+                {
+                    if (!HoistOrLower(cranePos, targetPos, 1.5f))
+                    {
+
+                    }
+                }
+            }
+        }
     }
 }
