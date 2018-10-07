@@ -87,6 +87,7 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     /// <param name="source"></param>
     /// <param name="target"></param>
+    /// <param name="distance"></param>
     private bool RetractExtend(Vector3 source, Vector3 target, float distance)
     {
         source.y = 0;
@@ -103,7 +104,7 @@ public class AIGuideBehaviour : MonoBehaviour
         }
 
         SendToAnimator.SendTrigger(gameObject,
-            sourceToPlayer.magnitude < targetToPlayer.magnitude ? "RetractBoom" : "ExtendBoom");
+            sourceToPlayer.magnitude < targetToPlayer.magnitude ? "HoistIn" : "HoistOut");
         return true;
     }
 
@@ -112,6 +113,7 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     /// <param name="crane"></param>
     /// <param name="target"></param>
+    /// <param name="distance"></param>
     private bool HoistOrLower(Vector3 crane, Vector3 target, float distance)
     {
         var craneToTarget = crane - target;
@@ -208,20 +210,23 @@ public class AIGuideBehaviour : MonoBehaviour
 
     public void Death()
     {
-        Animator a = GetComponent<Animator>();
-        List<string> names = new List<string>();
-        for (int i = 0; i < a.parameterCount; i++)
+        var a = GetComponent<Animator>();
+        var names = new List<string>();
+
+        for (var i = 0; i < a.parameterCount; i++)
         {
             var p = a.GetParameter(i);
-            if (p.name != "Death") 
+            if (p.name != "Death")
+            {
                 names.Add(p.name);
+            }
         }
 
         foreach (var n in names)
         {
             a.ResetTrigger(n);
         }
-                m_dead = true;
+        m_dead = true;
         SendToAnimator.SendTrigger(gameObject, "Death");
     }
 
