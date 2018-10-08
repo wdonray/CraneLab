@@ -1,0 +1,135 @@
+fileFormatVersion: 2
+guid: cff6e7b85d672fc47a5f6322eb7eeb97
+timeCreated: 1539010632
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: FWDGear
+    100002: LGear01
+    100004: MainRotor
+    100006: MainRotorSpin01
+    100008: RGear
+    100010: S-92
+    100012: //RootNode
+    100014: TailRotor
+    100016: TailRotorSpin
+    400000: FWDGear
+    400002: LGear01
+    400004: MainRotor
+    400006: MainRotorSpin01
+    400008: RGear
+    400010: S-92
+    400012: //RootNode
+    400014: TailRotor
+    400016: TailRotorSpin
+    2100000: MainRotor
+    2100002: TailRotor
+    2100004: Gear
+    2100006: S-92-Sikorsky
+    2100008: MainRotorSpin
+    2100010: TailRotorSpin
+    2300000: FWDGear
+    2300002: LGear01
+    2300004: MainRotor
+    2300006: MainRotorSpin01
+    2300008: RGear
+    2300010: S-92
+    2300012: TailRotor
+    2300014: TailRotorSpin
+    3300000: FWDGear
+    3300002: LGear01
+    3300004: MainRotor
+    3300006: MainRotorSpin01
+    3300008: RGear
+    3300010: S-92
+    3300012: TailRotor
+    3300014: TailRotorSpin
+    4300000: MainRotor
+    4300002: TailRotor
+    4300004: RGear
+    4300006: S-92
+    4300008: FWDGear
+    4300010: LGear01
+    4300012: MainRotorSpin01
+    4300014: TailRotorSpin
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
