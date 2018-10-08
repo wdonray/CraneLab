@@ -45,7 +45,7 @@ public class PlayerInformation : MonoBehaviour
 
     public void AppendToFile()
     {
-        string filePath = Application.dataPath + "/" + "UserInformation";
+        string filePath = Application.dataPath + "/" + "UserInformation.csv";
 
         string info = Date() + ", ";
         info += System.DateTime.Now.Hour + ":" + System.DateTime.Now.Minute.ToString("00") + ", ";
