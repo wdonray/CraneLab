@@ -21,9 +21,13 @@ public class TyingUpStateMachine : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         AI.m_targetReached = false;
+
         AI.m_tyingComplete = true;
+
         AI.m_agent.isStopped = false;
+
         AI.m_agent.SetDestination(AI.m_startPos);
+
         SendToAnimator.SendTrigger(AI.gameObject, "Walk");
     }
 
