@@ -212,7 +212,7 @@
 		v2f o;
 		
 		float4 world_position = mul(unity_ObjectToWorld, v.vertex);
-		world_position.y = get_water_height(world_position.xyz);
+		//world_position.y = get_water_height(world_position.xyz);
 		
 		float interactive = 0.0;
 		for (int i = 0; i < NB_INTERACTIONS; i++)
