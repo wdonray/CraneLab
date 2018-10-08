@@ -1151,7 +1151,7 @@ GameObject:
   - component: {fileID: 114717872352030494}
   m_Layer: 0
   m_Name: Base
-  m_TagString: DropZone
+  m_TagString: DropZoneRed
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1994,7 +1994,7 @@ Transform:
   m_LocalScale: {x: 7, y: 7, z: 7}
   m_Children: []
   m_Father: {fileID: 4779978305638992}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!4 &4482842446921406
 Transform:
@@ -2096,7 +2096,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1130062319298282}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11.3, y: 0.1, z: 21.09}
+  m_LocalPosition: {x: -32, y: 2.78, z: -18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4779978305638992}
@@ -2308,7 +2308,7 @@ Transform:
   - {fileID: 4672119501323636}
   - {fileID: 4926157104518046}
   m_Father: {fileID: 4779978305638992}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4740293772358546
 Transform:
@@ -2359,8 +2359,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4728524926857670}
   - {fileID: 4480807066526682}
+  - {fileID: 4728524926857670}
   m_Father: {fileID: 4599278002983342}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5832,7 +5832,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 32
   m_Drag: 2
-  m_AngularDrag: 32
+  m_AngularDrag: 16
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
