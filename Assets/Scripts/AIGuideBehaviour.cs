@@ -16,7 +16,7 @@ public class AIGuideBehaviour : MonoBehaviour
     [HideInInspector] public NavMeshAgent m_agent;
     [HideInInspector] public bool m_startedTying, m_tyingComplete;
 
-    [SerializeField] private bool m_loadCollected;
+    public bool m_loadCollected;
     private bool m_dead;
 
     public Vector3 playerPos
@@ -49,6 +49,11 @@ public class AIGuideBehaviour : MonoBehaviour
         get { return new Vector3(loadPos.x, transform.position.y, loadPos.z); }
     }
 
+    public Vector3 lookatCrane
+    {
+        get { return new Vector3(cranePos.x, transform.position.y, cranePos.z); }
+    }
+
     void Awake()
     {
         m_startPos = transform.position;
@@ -73,12 +78,10 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="angle"></param>
     private bool Swing(Vector3 toCrane, Vector3 toPlayer, int angle)
     {
-        var angleBetween = Vector3.SignedAngle(new Vector3(toCrane.x, 0, toCrane.z),
-            new Vector3(toPlayer.x, 0, toPlayer.z), new Vector3(0, 1, 0));
+        var angleBetween = Vector3.SignedAngle(new Vector3(toCrane.x, 0, toCrane.z), new Vector3(toPlayer.x, 0, toPlayer.z), new Vector3(0, 1, 0));
         var shouldntMove = angleBetween < angle && angleBetween > -angle;
 
-        SendToAnimator.SendTrigger(gameObject,
-            angleBetween > angle ? "SwingThatWay" : angleBetween < -angle ? "SwingThisWay" : "Stop");
+        SendToAnimator.SendTrigger(gameObject, angleBetween > angle ? "SwingThatWay" : angleBetween < -angle ? "SwingThisWay" : "Stop");
         return !shouldntMove;
     }
 
@@ -103,8 +106,7 @@ public class AIGuideBehaviour : MonoBehaviour
             return false;
         }
 
-        SendToAnimator.SendTrigger(gameObject,
-            sourceToPlayer.magnitude < targetToPlayer.magnitude ? "HoistIn" : "HoistOut");
+        SendToAnimator.SendTrigger(gameObject, sourceToPlayer.magnitude < targetToPlayer.magnitude ? "HoistIn" : "HoistOut");
         return true;
     }
 
@@ -184,7 +186,7 @@ public class AIGuideBehaviour : MonoBehaviour
                     m_targetReached = true;
 
                     //Begin walking to load
-                    m_agent.stoppingDistance = 1f;
+                    m_agent.stoppingDistance = .5f;
                     m_agent.SetDestination(target);
                     SendToAnimator.SendTrigger(gameObject, "Walk");
                 }
@@ -236,18 +238,24 @@ public class AIGuideBehaviour : MonoBehaviour
         var targetToPlayer = (m_loadCollected) ? dropZonePos - playerPos : loadPos - playerPos;
         var targetPos = (m_loadCollected) ? dropZonePos : loadPos;
 
-        if (!Swing(targetToCrane, targetToPlayer, 4))
+        if (m_startedTying == false)
         {
-            if (!RaiseLowerBoom(cranePos, targetPos))
-            {
-                if (!RetractExtend(cranePos, targetPos, 1.5f))
-                {
-                    if (!HoistOrLower(cranePos, targetPos, 1.5f))
-                    {
+            transform.LookAt(lookatCrane);
 
+            if (!Swing(targetToCrane, targetToPlayer, 4))
+            {
+                if (!RaiseLowerBoom(cranePos, targetPos))
+                {
+                    if (!RetractExtend(cranePos, targetPos, 1.5f))
+                    {
+                        if (!HoistOrLower(cranePos, targetPos, 1.5f))
+                        {
+
+                        }
                     }
                 }
             }
         }
+        Tie(targetPos);
     }
 }
