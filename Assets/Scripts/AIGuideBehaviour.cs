@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -18,7 +19,7 @@ public class AIGuideBehaviour : MonoBehaviour
     [HideInInspector] public bool m_startedTying, m_tyingComplete;
 
     public bool m_loadCollected;
-    private bool m_dead;
+    private bool m_dead, m_swing, m_raiselower, m_hoist, m_inout;
 
     public Vector3 cranePos
     {
@@ -60,59 +61,45 @@ public class AIGuideBehaviour : MonoBehaviour
         m_startPos = transform.position;
         m_agent = GetComponent<NavMeshAgent>();
         transform.LookAt(lookAtCrane);
-        SendToAnimator.SendTrigger(gameObject, "Idle");
+        SendToAnimator.SendTrigger(gameObject, "Hoist");
+        StartCoroutine(PauseAnimator(3));
     }
 
     void Update()
     {
         if (!m_dead)
         {
-            GuideCrane();
+            GuideCrane(4, 1, 1);
         }
     }
 
     public void SetDropZone(Transform newZone)
     {
-        var dropZone = GetCurrentDropZone();
-        dropZone = newZone;
-    }
-
-    public Transform GetCurrentDropZone()
-    {
-        return m_dropZone;
+        m_dropZone = newZone;
     }
 
     public void SetLoad(Transform newLoad)
     {
-        var load = GetCurrentLoad();
-        load = newLoad;
-    }
-
-    public Transform GetCurrentLoad()
-    {
-        return m_load;
+        m_load = newLoad;
     }
 
     public void SetHook(Transform newHook)
     {
-        var hook = GetCurrentHook();
-        hook = newHook;
-    }
-
-    public Transform GetCurrentHook()
-    {
-        return m_hook;
+        m_hook = newHook;
     }
 
     public void SetCrane(Transform newCrane)
     {
-        var crane = GetCurrentCrane();
-        crane = newCrane;
+        m_crane = newCrane;
     }
 
-    public Transform GetCurrentCrane()
+    /// <summary>
+    ///     begin stop animation
+    /// </summary>
+    private void Stop()
     {
-        return m_crane;
+        SendToAnimator.SendTriggerForce(gameObject, "Stop");
+        StartCoroutine(PauseAnimator(1));
     }
 
     /// <summary>
@@ -123,11 +110,25 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="angle"></param>
     private bool Swing(Vector3 toHook, Vector3 toPlayer, int angle)
     {
-        var angleBetween = Vector3.SignedAngle(new Vector3(toHook.x, 0, toHook.z), new Vector3(toPlayer.x, 0, toPlayer.z), new Vector3(0, 1, 0));
+        var angleBetween = Vector3.SignedAngle(new Vector3(toHook.x, 0, toHook.z).normalized, new Vector3(toPlayer.x, 0, toPlayer.z).normalized, new Vector3(0, 1, 0));
         var shouldntMove = angleBetween < angle && angleBetween > -angle;
 
-        SendToAnimator.SendTrigger(gameObject, angleBetween > angle ? "SwingThatWay" : angleBetween < -angle ? "SwingThisWay" : "");
-        return !shouldntMove;
+        if (shouldntMove)
+        {
+            if (!m_swing)
+            {
+                Stop();
+            }
+
+            m_swing = true;
+            return false;
+        }
+
+        var trigger = (angleBetween < 0) ? "SwingThatWay" : "SwingThisWay";
+
+        SendToAnimator.SendTrigger(gameObject, trigger);
+        m_swing = false;
+        return true;
     }
 
     /// <summary>
@@ -142,16 +143,23 @@ public class AIGuideBehaviour : MonoBehaviour
         target.y = 0;
         var sourceToPlayer = source - cranePos;
         var targetToPlayer = target - cranePos;
-
+        sourceToPlayer.y = 0;
+        targetToPlayer.y = 0;
         var shouldntMove = (sourceToPlayer - targetToPlayer).magnitude < distance;
 
         if (shouldntMove)
         {
-            Stop();
+            if (!m_inout)
+            {
+                Stop();
+            }
+
+            m_inout = true;
             return false;
         }
 
         SendToAnimator.SendTrigger(gameObject, sourceToPlayer.magnitude > targetToPlayer.magnitude ? "HoistIn" : "HoistOut");
+        m_inout = false;
         return true;
     }
 
@@ -167,11 +175,17 @@ public class AIGuideBehaviour : MonoBehaviour
 
         if (Mathf.Abs(hookToTarget.y) < distance)
         {
-            Stop();
+            if (!m_hoist)
+            {
+                Stop();
+            }
+
+            m_hoist = true;
             return false;
         }
 
         SendToAnimator.SendTrigger(gameObject, (hook.y < target.y) ? "Hoist" : "Lower");
+        m_hoist = false;
         return true;
     }
 
@@ -182,34 +196,39 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="target"></param>
     private bool RaiseLowerBoom(Vector3 hook, Vector3 target)
     {
+        var hookToCrane = hook - cranePos;
+        var targetToCrane = target - cranePos;
+        hookToCrane.y = 0;
+        targetToCrane.y = 0;
+
         var m_hoist = (hook.y < target.y - .5f);
+
         if (m_hoist)
         {
-            if ((hook - cranePos).magnitude > (target - cranePos).magnitude)
+            if ((hookToCrane.magnitude > targetToCrane.magnitude) && (hookToCrane - targetToCrane).magnitude > 1)
             {
                 SendToAnimator.SendTrigger(gameObject, "RaiseBoom");
+                m_raiselower = true;
                 return true;
             }
         }
         else if (hook.y > target.y + .5f)
         {
-            if ((hook - cranePos).magnitude < (target - cranePos).magnitude)
+            if ((hookToCrane.magnitude < targetToCrane.magnitude) && (hookToCrane - targetToCrane).magnitude > 1)
             {
                 SendToAnimator.SendTrigger(gameObject, "LowerBoom");
+                m_raiselower = false;
                 return true;
             }
         }
 
-        Stop();
-        return false;
-    }
+        if (!m_raiselower)
+        {
+            Stop();
+        }
 
-    /// <summary>
-    ///     begin stop animation
-    /// </summary>
-    private void Stop()
-    {
-        SendToAnimator.SendTrigger(gameObject, "Stop");
+        m_raiselower = true;
+        return false;
     }
 
     /// <summary>
@@ -234,11 +253,6 @@ public class AIGuideBehaviour : MonoBehaviour
                     m_agent.stoppingDistance = .5f;
                     m_agent.SetDestination(target);
                     SendToAnimator.SendTrigger(gameObject, "Walk");
-                }
-                else
-                {
-                    // CRANE NOT IN RANGE OF LOAD
-                    //Stop();
                 }
             }
 
@@ -277,23 +291,26 @@ public class AIGuideBehaviour : MonoBehaviour
         SendToAnimator.SendTrigger(gameObject, "Death");
     }
 
-    private void GuideCrane()
+    /// <summary>
+    ///     Adjust values to your liking
+    /// </summary>
+    private void GuideCrane(float swingAngle, float hoistInOutDist, float hoistLowerDist)
     {
-        var targetToCrane = (m_loadCollected) ? dropZonePos - loadPos : loadPos - hookPos;
-        var targetToPlayer = (m_loadCollected) ? dropZonePos - cranePos : loadPos - cranePos;
+        var toCrane = (m_loadCollected) ? dropZonePos - cranePos : loadPos - cranePos;
         var targetPos = (m_loadCollected) ? dropZonePos : loadPos;
+        var hookToCrane = hookPos - cranePos;
 
         if (m_startedTying == false)
         {
             transform.LookAt(lookAtCrane);
 
-            if (!Swing(targetToCrane, targetToPlayer, 6))
+            if (!Swing(hookToCrane.normalized, toCrane.normalized, (int)swingAngle))
             {
                 if (!RaiseLowerBoom(hookPos, targetPos))
                 {
-                    if (!HoistInOut(hookPos, targetPos, 1.5f))
+                    if (!HoistInOut(hookPos, targetPos, hoistInOutDist))
                     {
-                        if (!HoistOrLower(hookPos, targetPos, 1.5f))
+                        if (!HoistOrLower(hookPos, targetPos, hoistLowerDist))
                         {
 
                         }
@@ -302,5 +319,12 @@ public class AIGuideBehaviour : MonoBehaviour
             }
         }
         Tie(targetPos);
+    }
+
+    public IEnumerator PauseAnimator(int delay)
+    {
+        SendToAnimator.stop = true;
+        yield return new WaitForSeconds(delay);
+        SendToAnimator.stop = false;
     }
 }
