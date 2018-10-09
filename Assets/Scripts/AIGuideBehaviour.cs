@@ -10,6 +10,7 @@ public class AIGuideBehaviour : MonoBehaviour
     public Transform m_dropZone;
     public Transform m_load;
     public Transform m_hook;
+    public Transform m_crane;
 
     [HideInInspector] public Vector3 m_startPos;
     [HideInInspector] public bool m_targetReached;
@@ -19,9 +20,9 @@ public class AIGuideBehaviour : MonoBehaviour
     public bool m_loadCollected;
     private bool m_dead;
 
-    public Vector3 playerPos
+    public Vector3 cranePos
     {
-        get { return Camera.main.transform.position; }
+        get { return m_crane.transform.position; }
     }
 
     public Vector3 hookPos
@@ -39,9 +40,9 @@ public class AIGuideBehaviour : MonoBehaviour
         get { return m_dropZone.position; }
     }
 
-    public Vector3 lookAtPlayer
+    public Vector3 lookAtCrane
     {
-        get { return new Vector3(playerPos.x, transform.position.y, playerPos.z); }
+        get { return new Vector3(cranePos.x, transform.position.y, cranePos.z); }
     }
 
     public Vector3 lookAtLoad
@@ -49,7 +50,7 @@ public class AIGuideBehaviour : MonoBehaviour
         get { return new Vector3(loadPos.x, transform.position.y, loadPos.z); }
     }
 
-    public Vector3 lookatCrane
+    public Vector3 lookatHook
     {
         get { return new Vector3(hookPos.x, transform.position.y, hookPos.z); }
     }
@@ -58,7 +59,7 @@ public class AIGuideBehaviour : MonoBehaviour
     {
         m_startPos = transform.position;
         m_agent = GetComponent<NavMeshAgent>();
-        transform.LookAt(lookAtPlayer);
+        transform.LookAt(lookAtCrane);
         SendToAnimator.SendTrigger(gameObject, "Idle");
     }
 
@@ -68,6 +69,50 @@ public class AIGuideBehaviour : MonoBehaviour
         {
             GuideCrane();
         }
+    }
+
+    public void SetDropZone(Transform newZone)
+    {
+        var dropZone = GetCurrentDropZone();
+        dropZone = newZone;
+    }
+
+    public Transform GetCurrentDropZone()
+    {
+        return m_dropZone;
+    }
+
+    public void SetLoad(Transform newLoad)
+    {
+        var load = GetCurrentLoad();
+        load = newLoad;
+    }
+
+    public Transform GetCurrentLoad()
+    {
+        return m_load;
+    }
+
+    public void SetHook(Transform newHook)
+    {
+        var hook = GetCurrentHook();
+        hook = newHook;
+    }
+
+    public Transform GetCurrentHook()
+    {
+        return m_hook;
+    }
+
+    public void SetCrane(Transform newCrane)
+    {
+        var crane = GetCurrentCrane();
+        crane = newCrane;
+    }
+
+    public Transform GetCurrentCrane()
+    {
+        return m_crane;
     }
 
     /// <summary>
@@ -91,12 +136,12 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="source"></param>
     /// <param name="target"></param>
     /// <param name="distance"></param>
-    private bool RetractExtend(Vector3 source, Vector3 target, float distance)
+    private bool HoistInOut(Vector3 source, Vector3 target, float distance)
     {
         source.y = 0;
         target.y = 0;
-        var sourceToPlayer = source - playerPos;
-        var targetToPlayer = target - playerPos;
+        var sourceToPlayer = source - cranePos;
+        var targetToPlayer = target - cranePos;
 
         var shouldntMove = (sourceToPlayer - targetToPlayer).magnitude < distance;
 
@@ -137,18 +182,18 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="target"></param>
     private bool RaiseLowerBoom(Vector3 hook, Vector3 target)
     {
-        var m_hoist = (hook.y < target.y -.5f);
+        var m_hoist = (hook.y < target.y - .5f);
         if (m_hoist)
         {
-            if ((hook - playerPos).magnitude > (target - playerPos).magnitude)
+            if ((hook - cranePos).magnitude > (target - cranePos).magnitude)
             {
                 SendToAnimator.SendTrigger(gameObject, "RaiseBoom");
                 return true;
             }
         }
-        else if(hook.y> target.y +.5f)
+        else if (hook.y > target.y + .5f)
         {
-            if ((hook - playerPos).magnitude < (target - playerPos).magnitude)
+            if ((hook - cranePos).magnitude < (target - cranePos).magnitude)
             {
                 SendToAnimator.SendTrigger(gameObject, "LowerBoom");
                 return true;
@@ -164,7 +209,7 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     private void Stop()
     {
-     //   SendToAnimator.SendTrigger(gameObject, "Stop");
+        SendToAnimator.SendTrigger(gameObject, "Stop");
     }
 
     /// <summary>
@@ -235,18 +280,18 @@ public class AIGuideBehaviour : MonoBehaviour
     private void GuideCrane()
     {
         var targetToCrane = (m_loadCollected) ? dropZonePos - loadPos : loadPos - hookPos;
-        var targetToPlayer = (m_loadCollected) ? dropZonePos - playerPos : loadPos - playerPos;
+        var targetToPlayer = (m_loadCollected) ? dropZonePos - cranePos : loadPos - cranePos;
         var targetPos = (m_loadCollected) ? dropZonePos : loadPos;
 
         if (m_startedTying == false)
         {
-            transform.LookAt(lookAtPlayer);
+            transform.LookAt(lookAtCrane);
 
             if (!Swing(targetToCrane, targetToPlayer, 6))
             {
                 if (!RaiseLowerBoom(hookPos, targetPos))
                 {
-                    if (!RetractExtend(hookPos, targetPos, 1.5f))
+                    if (!HoistInOut(hookPos, targetPos, 1.5f))
                     {
                         if (!HoistOrLower(hookPos, targetPos, 1.5f))
                         {
