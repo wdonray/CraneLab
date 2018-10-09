@@ -9,7 +9,7 @@ public class AIGuideBehaviour : MonoBehaviour
 {
     public Transform m_dropZone;
     public Transform m_load;
-    public Transform m_crane;
+    public Transform m_hook;
 
     [HideInInspector] public Vector3 m_startPos;
     [HideInInspector] public bool m_targetReached;
@@ -24,9 +24,9 @@ public class AIGuideBehaviour : MonoBehaviour
         get { return Camera.main.transform.position; }
     }
 
-    public Vector3 cranePos
+    public Vector3 hookPos
     {
-        get { return m_crane.position; }
+        get { return m_hook.position; }
     }
 
     public Vector3 loadPos
@@ -51,7 +51,7 @@ public class AIGuideBehaviour : MonoBehaviour
 
     public Vector3 lookatCrane
     {
-        get { return new Vector3(cranePos.x, transform.position.y, cranePos.z); }
+        get { return new Vector3(hookPos.x, transform.position.y, hookPos.z); }
     }
 
     void Awake()
@@ -73,15 +73,15 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <summary>
     ///     Gets the angle between the crane and the player and sets trigger to the correct direction
     /// </summary>
-    /// <param name="toCrane"></param>
+    /// <param name="toHook"></param>
     /// <param name="toPlayer"></param>
     /// <param name="angle"></param>
-    private bool Swing(Vector3 toCrane, Vector3 toPlayer, int angle)
+    private bool Swing(Vector3 toHook, Vector3 toPlayer, int angle)
     {
-        var angleBetween = Vector3.SignedAngle(new Vector3(toCrane.x, 0, toCrane.z), new Vector3(toPlayer.x, 0, toPlayer.z), new Vector3(0, 1, 0));
+        var angleBetween = Vector3.SignedAngle(new Vector3(toHook.x, 0, toHook.z), new Vector3(toPlayer.x, 0, toPlayer.z), new Vector3(0, 1, 0));
         var shouldntMove = angleBetween < angle && angleBetween > -angle;
 
-        SendToAnimator.SendTrigger(gameObject, angleBetween > angle ? "SwingThatWay" : angleBetween < -angle ? "SwingThisWay" : "Stop");
+        SendToAnimator.SendTrigger(gameObject, angleBetween > angle ? "SwingThatWay" : angleBetween < -angle ? "SwingThisWay" : "");
         return !shouldntMove;
     }
 
@@ -106,49 +106,49 @@ public class AIGuideBehaviour : MonoBehaviour
             return false;
         }
 
-        SendToAnimator.SendTrigger(gameObject, sourceToPlayer.magnitude < targetToPlayer.magnitude ? "HoistIn" : "HoistOut");
+        SendToAnimator.SendTrigger(gameObject, sourceToPlayer.magnitude > targetToPlayer.magnitude ? "HoistIn" : "HoistOut");
         return true;
     }
 
     /// <summary>
     ///     Raise up and down based on the target
     /// </summary>
-    /// <param name="crane"></param>
+    /// <param name="hook"></param>
     /// <param name="target"></param>
     /// <param name="distance"></param>
-    private bool HoistOrLower(Vector3 crane, Vector3 target, float distance)
+    private bool HoistOrLower(Vector3 hook, Vector3 target, float distance)
     {
-        var craneToTarget = crane - target;
+        var hookToTarget = hook - target;
 
-        if (Mathf.Abs(craneToTarget.y) < distance)
+        if (Mathf.Abs(hookToTarget.y) < distance)
         {
             Stop();
             return false;
         }
 
-        SendToAnimator.SendTrigger(gameObject, (crane.y < target.y) ? "Hoist" : "Lower");
+        SendToAnimator.SendTrigger(gameObject, (hook.y < target.y) ? "Hoist" : "Lower");
         return true;
     }
 
     /// <summary>
     ///     when it needs to go up and in, or out and down at the same time
     /// </summary>
-    /// <param name="crane"></param>
+    /// <param name="hook"></param>
     /// <param name="target"></param>
-    private bool RaiseLowerBoom(Vector3 crane, Vector3 target)
+    private bool RaiseLowerBoom(Vector3 hook, Vector3 target)
     {
-        var m_hoist = (crane.y < target.y);
+        var m_hoist = (hook.y < target.y -.5f);
         if (m_hoist)
         {
-            if ((crane - playerPos).magnitude > (target - playerPos).magnitude)
+            if ((hook - playerPos).magnitude > (target - playerPos).magnitude)
             {
                 SendToAnimator.SendTrigger(gameObject, "RaiseBoom");
                 return true;
             }
         }
-        else
+        else if(hook.y> target.y +.5f)
         {
-            if ((crane - playerPos).magnitude < (target - playerPos).magnitude)
+            if ((hook - playerPos).magnitude < (target - playerPos).magnitude)
             {
                 SendToAnimator.SendTrigger(gameObject, "LowerBoom");
                 return true;
@@ -164,7 +164,7 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     private void Stop()
     {
-        SendToAnimator.SendTrigger(gameObject, "Stop");
+     //   SendToAnimator.SendTrigger(gameObject, "Stop");
     }
 
     /// <summary>
@@ -178,7 +178,7 @@ public class AIGuideBehaviour : MonoBehaviour
             if (m_targetReached == false)
             {
                 // CRANE IN RANGE OF LOAD
-                if (Physics.OverlapSphere(target, .5f).Contains(m_crane.GetComponent<Collider>()))
+                if (Physics.OverlapSphere(target, .5f).Contains(m_hook.GetComponent<Collider>()))
                 {
                     //Look at the load
                     transform.LookAt(new Vector3(target.x, transform.position.y, target.z));
@@ -193,7 +193,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 else
                 {
                     // CRANE NOT IN RANGE OF LOAD
-                    Stop();
+                    //Stop();
                 }
             }
 
@@ -234,21 +234,21 @@ public class AIGuideBehaviour : MonoBehaviour
 
     private void GuideCrane()
     {
-        var targetToCrane = (m_loadCollected) ? dropZonePos - loadPos : loadPos - cranePos;
+        var targetToCrane = (m_loadCollected) ? dropZonePos - loadPos : loadPos - hookPos;
         var targetToPlayer = (m_loadCollected) ? dropZonePos - playerPos : loadPos - playerPos;
         var targetPos = (m_loadCollected) ? dropZonePos : loadPos;
 
         if (m_startedTying == false)
         {
-            transform.LookAt(lookatCrane);
+            transform.LookAt(lookAtPlayer);
 
-            if (!Swing(targetToCrane, targetToPlayer, 4))
+            if (!Swing(targetToCrane, targetToPlayer, 6))
             {
-                if (!RaiseLowerBoom(cranePos, targetPos))
+                if (!RaiseLowerBoom(hookPos, targetPos))
                 {
-                    if (!RetractExtend(cranePos, targetPos, 1.5f))
+                    if (!RetractExtend(hookPos, targetPos, 1.5f))
                     {
-                        if (!HoistOrLower(cranePos, targetPos, 1.5f))
+                        if (!HoistOrLower(hookPos, targetPos, 1.5f))
                         {
 
                         }

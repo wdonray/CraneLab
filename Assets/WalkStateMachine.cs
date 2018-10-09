@@ -29,7 +29,7 @@ public class WalkStateMachine : StateMachineBehaviour {
 
             AI.m_agent.isStopped = true;
 
-            AI.transform.LookAt(AI.lookatCrane);
+            AI.transform.LookAt(AI.lookAtPlayer);
 
             AI.m_loadCollected = true;
 
