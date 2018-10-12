@@ -22,7 +22,16 @@ public class SendToAnimator
             return;
         }
 
-        if (m_oldValue == value) return;
+        if (m_aiGuide.m_dead)
+        {
+            m_animator.SetTrigger("Death");
+        }
+
+        if (m_oldValue == value)
+        {
+            return;
+        }
+
         m_oldValue = value;
         m_animator.SetTrigger(m_oldValue);
     }

@@ -18,8 +18,8 @@ public class AIGuideBehaviour : MonoBehaviour
     [HideInInspector] public NavMeshAgent m_agent;
     [HideInInspector] public bool m_startedTying, m_tyingComplete;
 
-    public bool m_loadCollected;
-    private bool m_dead, m_swing, m_raiselower, m_hoist, m_inout;
+    public bool m_loadCollected, m_dead;
+    private bool m_swing, m_raiselower, m_hoist, m_inout;
 
     public Vector3 cranePos
     {
@@ -271,22 +271,22 @@ public class AIGuideBehaviour : MonoBehaviour
 
     public void Death()
     {
-        var a = GetComponent<Animator>();
-        var names = new List<string>();
+        //var a = GetComponent<Animator>();
+        //var names = new List<string>();
 
-        for (var i = 0; i < a.parameterCount; i++)
-        {
-            var p = a.GetParameter(i);
-            if (p.name != "Death")
-            {
-                names.Add(p.name);
-            }
-        }
+        //for (var i = 0; i < a.parameterCount; i++)
+        //{
+        //    var p = a.GetParameter(i);
+        //    if (p.name != "Death")
+        //    {
+        //        names.Add(p.name);
+        //    }
+        //}
 
-        foreach (var n in names)
-        {
-            a.ResetTrigger(n);
-        }
+        //foreach (var n in names)
+        //{
+        //    a.ResetTrigger(n);
+        //}
         m_dead = true;
         SendToAnimator.SendTrigger(gameObject, "Death");
     }
