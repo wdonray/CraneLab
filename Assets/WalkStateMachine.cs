@@ -9,6 +9,7 @@ public class WalkStateMachine : StateMachineBehaviour {
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         AI = animator.gameObject.GetComponent<AIGuideBehaviour>();
+        AI.m_walking = true;
         if (AI.m_tyingComplete)
         {
             AI.transform.LookAt(new Vector3(AI.m_startPos.x, AI.transform.position.y, AI.m_startPos.z));
@@ -35,6 +36,8 @@ public class WalkStateMachine : StateMachineBehaviour {
 
             SendToAnimator.SendTrigger(AI.gameObject, "Hoist");
         }
+
+        AI.m_walking = false;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove(). Code that processes and affects root motion should be implemented here

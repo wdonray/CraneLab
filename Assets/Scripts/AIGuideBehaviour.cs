@@ -16,7 +16,7 @@ public class AIGuideBehaviour : MonoBehaviour
     [HideInInspector] public Vector3 m_startPos;
     [HideInInspector] public bool m_targetReached;
     [HideInInspector] public NavMeshAgent m_agent;
-    [HideInInspector] public bool m_startedTying, m_tyingComplete;
+    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking;
 
     public bool m_loadCollected, m_dead;
     private bool m_swing, m_raiselower, m_hoist, m_inout;
@@ -98,8 +98,11 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     private void Stop()
     {
-        SendToAnimator.SendTriggerForce(gameObject, "Stop");
-        StartCoroutine(PauseAnimator(1));
+        if (m_agent.isStopped)
+        {
+            SendToAnimator.SendTriggerForce(gameObject, "Stop");
+            StartCoroutine(PauseAnimator(1));
+        }
     }
 
     /// <summary>
@@ -231,10 +234,6 @@ public class AIGuideBehaviour : MonoBehaviour
         return false;
     }
 
-    /// <summary>
-    ///     TODO: Fix, stop is interrupting walk should not be happening on same frame
-    ///     //WalkStateBehaviour and TyingUpStateMachine
-    /// </summary>
     private void Tie(Vector3 target)
     {
         if (m_tyingComplete == false)
@@ -245,7 +244,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 if (Physics.OverlapSphere(target, .5f).Contains(m_hook.GetComponent<Collider>()))
                 {
                     //Look at the load
-                    transform.LookAt(new Vector3(target.x, transform.position.y, target.z));
+                    transform.LookAt(cranePos);
                     //Crane reached load
                     m_targetReached = true;
 
@@ -302,7 +301,11 @@ public class AIGuideBehaviour : MonoBehaviour
 
         if (m_startedTying == false)
         {
-            transform.LookAt(lookAtCrane);
+            if (!m_walking)
+            {
+                if (m_agent.hasPath)
+                    transform.LookAt(lookAtCrane);
+            }
 
             if (!Swing(hookToCrane.normalized, toCrane.normalized, (int)swingAngle))
             {
@@ -317,8 +320,8 @@ public class AIGuideBehaviour : MonoBehaviour
                     }
                 }
             }
+            Tie(targetPos);
         }
-        Tie(targetPos);
     }
 
     public IEnumerator PauseAnimator(int delay)
