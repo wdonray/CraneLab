@@ -21,6 +21,10 @@ public class AIGuideBehaviour : MonoBehaviour
     public bool m_loadCollected, m_dead;
     private bool m_swing, m_raiselower, m_hoist, m_inout;
 
+
+    private bool walkingToLoad, walkingtoStartPos, tying, tyingDone;
+
+
     public Vector3 cranePos
     {
         get { return m_crane.transform.position; }
@@ -113,7 +117,8 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="angle"></param>
     private bool Swing(Vector3 toHook, Vector3 toPlayer, int angle)
     {
-        var angleBetween = Vector3.SignedAngle(new Vector3(toHook.x, 0, toHook.z).normalized, new Vector3(toPlayer.x, 0, toPlayer.z).normalized, new Vector3(0, 1, 0));
+        var angleBetween = Vector3.SignedAngle(new Vector3(toHook.x, 0, toHook.z).normalized,
+            new Vector3(toPlayer.x, 0, toPlayer.z).normalized, new Vector3(0, 1, 0));
         var shouldntMove = angleBetween < angle && angleBetween > -angle;
 
         if (shouldntMove)
@@ -161,7 +166,8 @@ public class AIGuideBehaviour : MonoBehaviour
             return false;
         }
 
-        SendToAnimator.SendTrigger(gameObject, sourceToPlayer.magnitude > targetToPlayer.magnitude ? "HoistIn" : "HoistOut");
+        SendToAnimator.SendTrigger(gameObject,
+            sourceToPlayer.magnitude > targetToPlayer.magnitude ? "HoistIn" : "HoistOut");
         m_inout = false;
         return true;
     }
@@ -257,7 +263,8 @@ public class AIGuideBehaviour : MonoBehaviour
             if (m_startedTying == false)
             {
                 m_agent.stoppingDistance = 1f;
-                if (Physics.OverlapSphere(target, m_agent.stoppingDistance).Contains(transform.GetComponent<Collider>()))
+                if (Physics.OverlapSphere(target, m_agent.stoppingDistance)
+                    .Contains(transform.GetComponent<Collider>()))
                 {
                     m_startedTying = true;
                     m_agent.isStopped = true;
@@ -267,24 +274,52 @@ public class AIGuideBehaviour : MonoBehaviour
         }
     }
 
+
+    private void TieTest(Vector3 target)
+    {
+        if (walkingToLoad)
+        {
+            //Walk To Load
+            m_agent.SetDestination(loadPos);
+            SendToAnimator.SendTrigger(gameObject, "Walk");
+        }
+
+        if (walkingtoStartPos)
+        {
+            //Walk to Zone
+            m_agent.SetDestination(dropZonePos);
+            SendToAnimator.SendTrigger(gameObject, "Walk");
+        }
+
+        if (Physics.OverlapSphere(target, 1).Contains(m_hook.GetComponent<Collider>()))
+        {
+            //Crane in range of load, walk to crane
+            walkingToLoad = true;
+        }
+
+        if (Vector3.Distance(transform.position, target) <= m_agent.stoppingDistance)
+        {
+            //In Range of Load, stop walking towards it and begin tying up
+            walkingToLoad = false;
+            SendToAnimator.SendTrigger(gameObject, "TyingUp");
+        }
+
+        if (m_tyingComplete)
+        {
+            //Tying Complete, walk to start pos
+            walkingtoStartPos = true;
+
+            //If in range of starting pos 
+            if (Vector3.Distance(transform.position, m_startPos) <= m_agent.stoppingDistance)
+            {
+                walkingtoStartPos = false;
+            }
+        }
+
+    }
+
     public void Death()
     {
-        //var a = GetComponent<Animator>();
-        //var names = new List<string>();
-
-        //for (var i = 0; i < a.parameterCount; i++)
-        //{
-        //    var p = a.GetParameter(i);
-        //    if (p.name != "Death")
-        //    {
-        //        names.Add(p.name);
-        //    }
-        //}
-
-        //foreach (var n in names)
-        //{
-        //    a.ResetTrigger(n);
-        //}
         m_dead = true;
         SendToAnimator.SendTrigger(gameObject, "Death");
     }
@@ -311,8 +346,7 @@ public class AIGuideBehaviour : MonoBehaviour
 
             if (!m_agent.hasPath)
             {
-
-                if (!Swing(hookToCrane.normalized, toCrane.normalized, (int) swingAngle))
+                if (!Swing(hookToCrane.normalized, toCrane.normalized, (int)swingAngle))
                 {
                     if (!RaiseLowerBoom(hookPos, targetPos))
                     {
@@ -327,10 +361,10 @@ public class AIGuideBehaviour : MonoBehaviour
                 }
             }
 
-            Tie(targetPos);
+            //Tie(targetPos);
+            TieTest(targetPos);
         }
     }
-
     public IEnumerator PauseAnimator(int delay)
     {
         SendToAnimator.stop = true;

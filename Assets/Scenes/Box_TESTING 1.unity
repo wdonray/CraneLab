@@ -1086,7 +1086,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 103704571}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.19, y: 0.36, z: -1.97}
+  m_LocalPosition: {x: 4.31, y: 0.36, z: -3.96}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
@@ -7141,6 +7141,8 @@ MonoBehaviour:
   m_agent: {fileID: 0}
   m_startedTying: 0
   m_tyingComplete: 0
+  m_walking: 0
+  m_transitionTest: 0
   m_loadCollected: 0
   m_dead: 0
 --- !u!195 &1117542492
@@ -7504,7 +7506,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1148851325}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.51, y: 3.02, z: 1.28}
+  m_LocalPosition: {x: 4.21, y: 0.3, z: -1.39}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}

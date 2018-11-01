@@ -11,13 +11,6 @@ public class WalkStateMachine : StateMachineBehaviour
     {
         AI = animator.gameObject.GetComponent<AIGuideBehaviour>();
         AI.m_walking = true;
-        if (AI.m_tyingComplete)
-        {
-            var startPos = new Vector3(AI.m_startPos.x, AI.transform.position.y, AI.m_startPos.z);
-            var newRot = Quaternion.LookRotation(startPos);
-            AI.transform.rotation = Quaternion.Lerp(AI.transform.rotation, newRot, .7f);
-            AI.m_agent.SetDestination(AI.m_startPos);
-        }
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -30,10 +23,7 @@ public class WalkStateMachine : StateMachineBehaviour
     {
         if (AI.m_tyingComplete)
         {
-            AI.m_agent.isStopped = true;
-            //AI.transform.LookAt(AI.lookAtCrane);
             AI.m_loadCollected = true;
-            //SendToAnimator.SendTrigger(AI.gameObject, "Hoist");
         }
         AI.m_walking = false;
     }
