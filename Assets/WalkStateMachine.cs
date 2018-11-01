@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WalkStateMachine : StateMachineBehaviour {
+public class WalkStateMachine : StateMachineBehaviour
+{
 
     private AIGuideBehaviour AI;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -12,7 +13,10 @@ public class WalkStateMachine : StateMachineBehaviour {
         AI.m_walking = true;
         if (AI.m_tyingComplete)
         {
-            AI.transform.LookAt(new Vector3(AI.m_startPos.x, AI.transform.position.y, AI.m_startPos.z));
+            var startPos = new Vector3(AI.m_startPos.x, AI.transform.position.y, AI.m_startPos.z);
+            var newRot = Quaternion.LookRotation(startPos);
+            AI.transform.rotation = Quaternion.Lerp(AI.transform.rotation, newRot, .7f);
+            AI.m_agent.SetDestination(AI.m_startPos);
         }
     }
 
@@ -26,17 +30,11 @@ public class WalkStateMachine : StateMachineBehaviour {
     {
         if (AI.m_tyingComplete)
         {
-            AI.m_startedTying = false;
-
             AI.m_agent.isStopped = true;
-
-            AI.transform.LookAt(AI.lookAtCrane);
-
+            //AI.transform.LookAt(AI.lookAtCrane);
             AI.m_loadCollected = true;
-
-            SendToAnimator.SendTrigger(AI.gameObject, "Hoist");
+            //SendToAnimator.SendTrigger(AI.gameObject, "Hoist");
         }
-
         AI.m_walking = false;
     }
 

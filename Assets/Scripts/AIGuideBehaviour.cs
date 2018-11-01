@@ -16,7 +16,7 @@ public class AIGuideBehaviour : MonoBehaviour
     [HideInInspector] public Vector3 m_startPos;
     [HideInInspector] public bool m_targetReached;
     [HideInInspector] public NavMeshAgent m_agent;
-    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking;
+    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, m_transitionTest;
 
     public bool m_loadCollected, m_dead;
     private bool m_swing, m_raiselower, m_hoist, m_inout;
@@ -243,22 +243,21 @@ public class AIGuideBehaviour : MonoBehaviour
                 // CRANE IN RANGE OF LOAD
                 if (Physics.OverlapSphere(target, .5f).Contains(m_hook.GetComponent<Collider>()))
                 {
-                    //Look at the load
                     transform.LookAt(cranePos);
-                    //Crane reached load
                     m_targetReached = true;
-
-                    //Begin walking to load
-                    m_agent.stoppingDistance = .5f;
-                    m_agent.SetDestination(target);
-                    SendToAnimator.SendTrigger(gameObject, "Walk");
                 }
+            }
+
+            if (m_targetReached)
+            {
+                m_agent.SetDestination(target);
+                SendToAnimator.SendTrigger(gameObject, "Walk");
             }
 
             if (m_startedTying == false)
             {
-                //Stop and Tie
-                if (Physics.OverlapSphere(target, 1f).Contains(transform.GetComponent<Collider>()))
+                m_agent.stoppingDistance = 1f;
+                if (Physics.OverlapSphere(target, m_agent.stoppingDistance).Contains(transform.GetComponent<Collider>()))
                 {
                     m_startedTying = true;
                     m_agent.isStopped = true;
@@ -303,23 +302,31 @@ public class AIGuideBehaviour : MonoBehaviour
         {
             if (!m_walking)
             {
-                if (m_agent.hasPath)
-                    transform.LookAt(lookAtCrane);
+                if (!m_agent.hasPath)
+                {
+                    var newRot = Quaternion.LookRotation(lookAtCrane);
+                    transform.rotation = Quaternion.Lerp(transform.rotation, newRot, .2f);
+                }
             }
 
-            if (!Swing(hookToCrane.normalized, toCrane.normalized, (int)swingAngle))
+            if (!m_agent.hasPath)
             {
-                if (!RaiseLowerBoom(hookPos, targetPos))
-                {
-                    if (!HoistInOut(hookPos, targetPos, hoistInOutDist))
-                    {
-                        if (!HoistOrLower(hookPos, targetPos, hoistLowerDist))
-                        {
 
+                if (!Swing(hookToCrane.normalized, toCrane.normalized, (int) swingAngle))
+                {
+                    if (!RaiseLowerBoom(hookPos, targetPos))
+                    {
+                        if (!HoistInOut(hookPos, targetPos, hoistInOutDist))
+                        {
+                            if (!HoistOrLower(hookPos, targetPos, hoistLowerDist))
+                            {
+
+                            }
                         }
                     }
                 }
             }
+
             Tie(targetPos);
         }
     }
