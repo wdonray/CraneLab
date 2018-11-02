@@ -23,6 +23,7 @@ public class TyingUpStateMachine : StateMachineBehaviour
         AI.m_startedTying = false;
         AI.m_targetReached = false;
         AI.m_tyingComplete = true;
+        AI.walkingtoStartPos = true;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove(). Code that processes and affects root motion should be implemented here

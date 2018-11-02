@@ -12,17 +12,17 @@ public class AIGuideBehaviour : MonoBehaviour
     public Transform m_load;
     public Transform m_hook;
     public Transform m_crane;
-
+    public float RotationSpeed;
     [HideInInspector] public Vector3 m_startPos;
     [HideInInspector] public bool m_targetReached;
     [HideInInspector] public NavMeshAgent m_agent;
-    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, m_transitionTest;
+    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking;
 
-    public bool m_loadCollected, m_dead;
+    public bool m_tieOnly, m_loadCollected, m_dead;
     private bool m_swing, m_raiselower, m_hoist, m_inout;
 
 
-    private bool walkingToLoad, walkingtoStartPos, tying, tyingDone;
+    [HideInInspector] public bool walkingToLoad, walkingtoStartPos;
 
 
     public Vector3 cranePos
@@ -58,6 +58,11 @@ public class AIGuideBehaviour : MonoBehaviour
     public Vector3 lookatHook
     {
         get { return new Vector3(hookPos.x, transform.position.y, hookPos.z); }
+    }
+
+    public Vector3 lookAtStart
+    {
+        get { return new Vector3(m_startPos.x, transform.position.y, m_startPos.z); }
     }
 
     void Awake()
@@ -240,82 +245,90 @@ public class AIGuideBehaviour : MonoBehaviour
         return false;
     }
 
+    //private void Tie(Vector3 target)
+    //{
+    //    if (m_tyingComplete == false)
+    //    {
+    //        if (m_targetReached == false)
+    //        {
+    //            // CRANE IN RANGE OF LOAD
+    //            if (Physics.OverlapSphere(target, .5f).Contains(m_hook.GetComponent<Collider>()))
+    //            {
+    //                transform.LookAt(cranePos);
+    //                m_targetReached = true;
+    //            }
+    //        }
+
+    //        if (m_targetReached)
+    //        {
+    //            m_agent.SetDestination(target);
+    //            SendToAnimator.SendTrigger(gameObject, "Walk");
+    //        }
+
+    //        if (m_startedTying == false)
+    //        {
+    //            m_agent.stoppingDistance = 1f;
+    //            if (Physics.OverlapSphere(target, m_agent.stoppingDistance)
+    //                .Contains(transform.GetComponent<Collider>()))
+    //            {
+    //                m_startedTying = true;
+    //                m_agent.isStopped = true;
+    //                SendToAnimator.SendTrigger(gameObject, "TyingUp");
+    //            }
+    //        }
+    //    }
+    //}
+
+
     private void Tie(Vector3 target)
     {
         if (m_tyingComplete == false)
         {
-            if (m_targetReached == false)
+            if (walkingToLoad)
             {
-                // CRANE IN RANGE OF LOAD
-                if (Physics.OverlapSphere(target, .5f).Contains(m_hook.GetComponent<Collider>()))
-                {
-                    transform.LookAt(cranePos);
-                    m_targetReached = true;
-                }
-            }
-
-            if (m_targetReached)
-            {
-                m_agent.SetDestination(target);
+                m_agent.stoppingDistance = 2.5f;
+                //Walk To Load
+                var targetRotation = Quaternion.LookRotation(loadPos - transform.position);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
+                m_agent.isStopped = false;
+                m_agent.SetDestination(loadPos);
                 SendToAnimator.SendTrigger(gameObject, "Walk");
             }
 
-            if (m_startedTying == false)
+            if (Physics.OverlapSphere(target, 1).Contains(m_hook.GetComponent<Collider>()))
             {
-                m_agent.stoppingDistance = 1f;
-                if (Physics.OverlapSphere(target, m_agent.stoppingDistance)
-                    .Contains(transform.GetComponent<Collider>()))
+                //Crane in range of load, walk to crane
+                walkingToLoad = true;
+            }
+
+            if (Vector3.Distance(transform.position, target) <= m_agent.stoppingDistance)
+            {
+                //In Range of Load, stop walking towards it and begin tying up
+                walkingToLoad = false;
+                SendToAnimator.SendTrigger(gameObject, "TyingUp");
+            }
+        }
+        else
+        {
+            m_agent.stoppingDistance = .5f;
+            if (Vector3.Distance(transform.position, m_startPos) > m_agent.stoppingDistance)
+            {
+                if (walkingtoStartPos)
                 {
-                    m_startedTying = true;
-                    m_agent.isStopped = true;
-                    SendToAnimator.SendTrigger(gameObject, "TyingUp");
+                    //Walk to Zone
+                    var targetRotation = Quaternion.LookRotation(m_startPos - transform.position);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
+                    m_agent.isStopped = false;
+                    m_agent.SetDestination(m_startPos);
+                    SendToAnimator.SendTrigger(gameObject, "Walk");
                 }
             }
-        }
-    }
-
-
-    private void TieTest(Vector3 target)
-    {
-        if (walkingToLoad)
-        {
-            //Walk To Load
-            m_agent.SetDestination(loadPos);
-            SendToAnimator.SendTrigger(gameObject, "Walk");
-        }
-
-        if (walkingtoStartPos)
-        {
-            //Walk to Zone
-            m_agent.SetDestination(dropZonePos);
-            SendToAnimator.SendTrigger(gameObject, "Walk");
-        }
-
-        if (Physics.OverlapSphere(target, 1).Contains(m_hook.GetComponent<Collider>()))
-        {
-            //Crane in range of load, walk to crane
-            walkingToLoad = true;
-        }
-
-        if (Vector3.Distance(transform.position, target) <= m_agent.stoppingDistance)
-        {
-            //In Range of Load, stop walking towards it and begin tying up
-            walkingToLoad = false;
-            SendToAnimator.SendTrigger(gameObject, "TyingUp");
-        }
-
-        if (m_tyingComplete)
-        {
-            //Tying Complete, walk to start pos
-            walkingtoStartPos = true;
-
-            //If in range of starting pos 
-            if (Vector3.Distance(transform.position, m_startPos) <= m_agent.stoppingDistance)
+            else
             {
                 walkingtoStartPos = false;
+                m_agent.isStopped = true;
             }
         }
-
     }
 
     public void Death()
@@ -339,8 +352,8 @@ public class AIGuideBehaviour : MonoBehaviour
             {
                 if (!m_agent.hasPath)
                 {
-                    var newRot = Quaternion.LookRotation(lookAtCrane);
-                    transform.rotation = Quaternion.Lerp(transform.rotation, newRot, .2f);
+                    var targetRotation = Quaternion.LookRotation(cranePos - transform.position);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, (RotationSpeed + 2) * Time.deltaTime);
                 }
             }
 
@@ -361,8 +374,10 @@ public class AIGuideBehaviour : MonoBehaviour
                 }
             }
 
-            //Tie(targetPos);
-            TieTest(targetPos);
+            if (m_tieOnly)
+            {
+                Tie(targetPos);
+            }
         }
     }
     public IEnumerator PauseAnimator(int delay)

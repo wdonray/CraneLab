@@ -15,16 +15,22 @@ public class SendToAnimator
         }
 
         var m_animator = sender.GetComponent<Animator>();
+        var m_aiGuide = m_animator.gameObject.GetComponent<AIGuideBehaviour>();
 
         if (m_animator.IsInTransition(0))
         {
             return;
         }
 
-        //if (m_oldValue == value)
-        //{
-        //    return;
-        //}
+        if (m_aiGuide.m_dead)
+        {
+            m_animator.SetTrigger("Death");
+        }
+
+        if (m_oldValue == value)
+        {
+            return;
+        }
 
         m_oldValue = value;
         m_animator.SetTrigger(m_oldValue);
