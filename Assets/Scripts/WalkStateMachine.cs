@@ -23,7 +23,7 @@ public class WalkStateMachine : StateMachineBehaviour
     {
         if (AI.m_tyingComplete)
         {
-            AI.m_loadCollected = true;
+            AIGuideBehaviour.m_loadCollected = true;
         }
         AI.m_walking = false;
     }
