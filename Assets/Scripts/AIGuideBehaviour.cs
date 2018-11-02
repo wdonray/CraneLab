@@ -12,14 +12,16 @@ public class AIGuideBehaviour : MonoBehaviour
     public Transform m_load;
     public Transform m_hook;
     public Transform m_crane;
-
+    public float RotationSpeed;
     [HideInInspector] public Vector3 m_startPos;
-    [HideInInspector] public bool m_targetReached;
     [HideInInspector] public NavMeshAgent m_agent;
-    [HideInInspector] public bool m_startedTying, m_tyingComplete;
 
-    public bool m_loadCollected, m_dead;
+    [HideInInspector]
+    public bool m_startedTying, m_tyingComplete, m_walking, walkingToLoad, walkingtoStartPos, m_untieReady;
+
+    public bool m_tieOnly, m_loadCollected, m_dead;
     private bool m_swing, m_raiselower, m_hoist, m_inout;
+
 
     public Vector3 cranePos
     {
@@ -54,6 +56,11 @@ public class AIGuideBehaviour : MonoBehaviour
     public Vector3 lookatHook
     {
         get { return new Vector3(hookPos.x, transform.position.y, hookPos.z); }
+    }
+
+    public Vector3 lookAtStart
+    {
+        get { return new Vector3(m_startPos.x, transform.position.y, m_startPos.z); }
     }
 
     void Awake()
@@ -98,8 +105,11 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     private void Stop()
     {
-        SendToAnimator.SendTriggerForce(gameObject, "Stop");
-        StartCoroutine(PauseAnimator(1));
+        if (m_agent.isStopped)
+        {
+            SendToAnimator.SendTriggerForce(gameObject, "Stop");
+            StartCoroutine(PauseAnimator(1));
+        }
     }
 
     /// <summary>
@@ -110,7 +120,8 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="angle"></param>
     private bool Swing(Vector3 toHook, Vector3 toPlayer, int angle)
     {
-        var angleBetween = Vector3.SignedAngle(new Vector3(toHook.x, 0, toHook.z).normalized, new Vector3(toPlayer.x, 0, toPlayer.z).normalized, new Vector3(0, 1, 0));
+        var angleBetween = Vector3.SignedAngle(new Vector3(toHook.x, 0, toHook.z).normalized,
+            new Vector3(toPlayer.x, 0, toPlayer.z).normalized, new Vector3(0, 1, 0));
         var shouldntMove = angleBetween < angle && angleBetween > -angle;
 
         if (shouldntMove)
@@ -158,7 +169,8 @@ public class AIGuideBehaviour : MonoBehaviour
             return false;
         }
 
-        SendToAnimator.SendTrigger(gameObject, sourceToPlayer.magnitude > targetToPlayer.magnitude ? "HoistIn" : "HoistOut");
+        SendToAnimator.SendTrigger(gameObject,
+            sourceToPlayer.magnitude > targetToPlayer.magnitude ? "HoistIn" : "HoistOut");
         m_inout = false;
         return true;
     }
@@ -231,62 +243,97 @@ public class AIGuideBehaviour : MonoBehaviour
         return false;
     }
 
-    /// <summary>
-    ///     TODO: Fix, stop is interrupting walk should not be happening on same frame
-    ///     //WalkStateBehaviour and TyingUpStateMachine
-    /// </summary>
+    //private void Tie(Vector3 target)
+    //{
+    //    if (m_tyingComplete == false)
+    //    {
+    //        if (m_targetReached == false)
+    //        {
+    //            // CRANE IN RANGE OF LOAD
+    //            if (Physics.OverlapSphere(target, .5f).Contains(m_hook.GetComponent<Collider>()))
+    //            {
+    //                transform.LookAt(cranePos);
+    //                m_targetReached = true;
+    //            }
+    //        }
+
+    //        if (m_targetReached)
+    //        {
+    //            m_agent.SetDestination(target);
+    //            SendToAnimator.SendTrigger(gameObject, "Walk");
+    //        }
+
+    //        if (m_startedTying == false)
+    //        {
+    //            m_agent.stoppingDistance = 1f;
+    //            if (Physics.OverlapSphere(target, m_agent.stoppingDistance)
+    //                .Contains(transform.GetComponent<Collider>()))
+    //            {
+    //                m_startedTying = true;
+    //                m_agent.isStopped = true;
+    //                SendToAnimator.SendTrigger(gameObject, "TyingUp");
+    //            }
+    //        }
+    //    }
+    //}
+
+
     private void Tie(Vector3 target)
     {
         if (m_tyingComplete == false)
         {
-            if (m_targetReached == false)
+            if (walkingToLoad)
             {
-                // CRANE IN RANGE OF LOAD
-                if (Physics.OverlapSphere(target, .5f).Contains(m_hook.GetComponent<Collider>()))
-                {
-                    //Look at the load
-                    transform.LookAt(new Vector3(target.x, transform.position.y, target.z));
-                    //Crane reached load
-                    m_targetReached = true;
-
-                    //Begin walking to load
-                    m_agent.stoppingDistance = .5f;
-                    m_agent.SetDestination(target);
-                    SendToAnimator.SendTrigger(gameObject, "Walk");
-                }
+                m_agent.stoppingDistance = 2.5f;
+                //Walk To Load
+                var targetRotation = Quaternion.LookRotation(target - transform.position);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
+                m_agent.isStopped = false;
+                m_agent.SetDestination(target);
+                SendToAnimator.SendTriggerForce(gameObject, "Walk");
             }
 
-            if (m_startedTying == false)
+            if (Physics.OverlapSphere(target, 1).Contains(m_hook.GetComponent<Collider>()))
             {
-                //Stop and Tie
-                if (Physics.OverlapSphere(target, 1f).Contains(transform.GetComponent<Collider>()))
+                //Crane in range of target, walk to target
+                walkingToLoad = true;
+            }
+
+            if (Vector3.Distance(transform.position, target) <= m_agent.stoppingDistance)
+            {
+                //In Range of Load, stop walking towards it and begin tying up
+                walkingToLoad = false;
+                SendToAnimator.SendTrigger(gameObject, "TyingUp");
+            }
+        }
+        else
+        {
+            m_agent.stoppingDistance = .5f;
+
+            if (Vector3.Distance(transform.position, m_startPos) > m_agent.stoppingDistance)
+            {
+                if (walkingtoStartPos)
                 {
-                    m_startedTying = true;
-                    m_agent.isStopped = true;
-                    SendToAnimator.SendTrigger(gameObject, "TyingUp");
+                    //Walk to Start
+                    var targetRotation = Quaternion.LookRotation(m_startPos - transform.position);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
+                    m_agent.isStopped = false;
+                    m_agent.SetDestination(m_startPos);
+                    SendToAnimator.SendTriggerForce(gameObject, "Walk");
                 }
+            }
+            else
+            {
+                walkingtoStartPos = false;
+                m_agent.isStopped = true;
+                m_tyingComplete = false;
             }
         }
     }
 
+
     public void Death()
     {
-        //var a = GetComponent<Animator>();
-        //var names = new List<string>();
-
-        //for (var i = 0; i < a.parameterCount; i++)
-        //{
-        //    var p = a.GetParameter(i);
-        //    if (p.name != "Death")
-        //    {
-        //        names.Add(p.name);
-        //    }
-        //}
-
-        //foreach (var n in names)
-        //{
-        //    a.ResetTrigger(n);
-        //}
         m_dead = true;
         SendToAnimator.SendTrigger(gameObject, "Death");
     }
@@ -302,25 +349,38 @@ public class AIGuideBehaviour : MonoBehaviour
 
         if (m_startedTying == false)
         {
-            transform.LookAt(lookAtCrane);
-
-            if (!Swing(hookToCrane.normalized, toCrane.normalized, (int)swingAngle))
+            if (!m_walking)
             {
-                if (!RaiseLowerBoom(hookPos, targetPos))
+                if (!m_agent.hasPath)
                 {
-                    if (!HoistInOut(hookPos, targetPos, hoistInOutDist))
-                    {
-                        if (!HoistOrLower(hookPos, targetPos, hoistLowerDist))
-                        {
+                    var targetRotation = Quaternion.LookRotation(cranePos - transform.position);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, (RotationSpeed + 2) * Time.deltaTime);
+                }
+            }
 
+            if (!m_agent.hasPath)
+            {
+                if (!Swing(hookToCrane.normalized, toCrane.normalized, (int)swingAngle))
+                {
+                    if (!RaiseLowerBoom(hookPos, targetPos))
+                    {
+                        if (!HoistInOut(hookPos, targetPos, hoistInOutDist))
+                        {
+                            if (!HoistOrLower(hookPos, targetPos, hoistLowerDist))
+                            {
+
+                            }
                         }
                     }
                 }
             }
-        }
-        Tie(targetPos);
-    }
 
+            if (m_tieOnly)
+            {
+                Tie(targetPos);
+            }
+        }
+    }
     public IEnumerator PauseAnimator(int delay)
     {
         SendToAnimator.stop = true;

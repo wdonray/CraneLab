@@ -20,15 +20,12 @@ public class TyingUpStateMachine : StateMachineBehaviour
     //OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        AI.m_targetReached = false;
-
+        AI.m_startedTying = false;
         AI.m_tyingComplete = true;
+        
+        AI.m_loadCollected = AI.m_loadCollected == false;
 
-        AI.m_agent.isStopped = false;
-
-        AI.m_agent.SetDestination(AI.m_startPos);
-
-        SendToAnimator.SendTrigger(AI.gameObject, "Walk");
+        AI.walkingtoStartPos = true;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove(). Code that processes and affects root motion should be implemented here
