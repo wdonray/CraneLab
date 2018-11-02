@@ -14,15 +14,13 @@ public class AIGuideBehaviour : MonoBehaviour
     public Transform m_crane;
     public float RotationSpeed;
     [HideInInspector] public Vector3 m_startPos;
-    [HideInInspector] public bool m_targetReached;
     [HideInInspector] public NavMeshAgent m_agent;
-    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking;
+
+    [HideInInspector]
+    public bool m_startedTying, m_tyingComplete, m_walking, walkingToLoad, walkingtoStartPos, m_untieReady;
 
     public bool m_tieOnly, m_loadCollected, m_dead;
     private bool m_swing, m_raiselower, m_hoist, m_inout;
-
-
-    [HideInInspector] public bool walkingToLoad, walkingtoStartPos;
 
 
     public Vector3 cranePos
@@ -288,16 +286,16 @@ public class AIGuideBehaviour : MonoBehaviour
             {
                 m_agent.stoppingDistance = 2.5f;
                 //Walk To Load
-                var targetRotation = Quaternion.LookRotation(loadPos - transform.position);
+                var targetRotation = Quaternion.LookRotation(target - transform.position);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
                 m_agent.isStopped = false;
-                m_agent.SetDestination(loadPos);
-                SendToAnimator.SendTrigger(gameObject, "Walk");
+                m_agent.SetDestination(target);
+                SendToAnimator.SendTriggerForce(gameObject, "Walk");
             }
 
             if (Physics.OverlapSphere(target, 1).Contains(m_hook.GetComponent<Collider>()))
             {
-                //Crane in range of load, walk to crane
+                //Crane in range of target, walk to target
                 walkingToLoad = true;
             }
 
@@ -311,25 +309,28 @@ public class AIGuideBehaviour : MonoBehaviour
         else
         {
             m_agent.stoppingDistance = .5f;
+
             if (Vector3.Distance(transform.position, m_startPos) > m_agent.stoppingDistance)
             {
                 if (walkingtoStartPos)
                 {
-                    //Walk to Zone
+                    //Walk to Start
                     var targetRotation = Quaternion.LookRotation(m_startPos - transform.position);
                     transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
                     m_agent.isStopped = false;
                     m_agent.SetDestination(m_startPos);
-                    SendToAnimator.SendTrigger(gameObject, "Walk");
+                    SendToAnimator.SendTriggerForce(gameObject, "Walk");
                 }
             }
             else
             {
                 walkingtoStartPos = false;
                 m_agent.isStopped = true;
+                m_tyingComplete = false;
             }
         }
     }
+
 
     public void Death()
     {

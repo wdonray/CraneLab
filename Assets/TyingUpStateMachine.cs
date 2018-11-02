@@ -21,8 +21,10 @@ public class TyingUpStateMachine : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         AI.m_startedTying = false;
-        AI.m_targetReached = false;
         AI.m_tyingComplete = true;
+        
+        AI.m_loadCollected = AI.m_loadCollected == false;
+
         AI.walkingtoStartPos = true;
     }
 
