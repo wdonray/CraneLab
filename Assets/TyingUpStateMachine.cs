@@ -22,8 +22,8 @@ public class TyingUpStateMachine : StateMachineBehaviour
     {
         AI.m_startedTying = false;
         AI.m_tyingComplete = true;
-        
-        AI.m_loadCollected = AI.m_loadCollected == false;
+
+        AIGuideBehaviour.m_loadCollected = AIGuideBehaviour.m_loadCollected == false;
 
         AI.walkingtoStartPos = true;
     }

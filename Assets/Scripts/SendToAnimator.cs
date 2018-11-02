@@ -45,6 +45,12 @@ public class SendToAnimator
         m_animator.SetTrigger(value);
         m_oldValue = value;
     }
+
+    public static void ResetTrigger(GameObject sender, string value)
+    {
+        var m_animator = sender.GetComponent<Animator>();
+        m_animator.ResetTrigger(value);
+    }
 }
 
 //var m_aiGuide = m_animator.gameObject.GetComponent<AIGuideBehaviour>();

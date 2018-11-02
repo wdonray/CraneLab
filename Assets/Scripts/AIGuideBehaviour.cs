@@ -15,11 +15,12 @@ public class AIGuideBehaviour : MonoBehaviour
     public float RotationSpeed;
     [HideInInspector] public Vector3 m_startPos;
     [HideInInspector] public NavMeshAgent m_agent;
-
+    public float TargetDistance = 2f;
     [HideInInspector]
     public bool m_startedTying, m_tyingComplete, m_walking, walkingToLoad, walkingtoStartPos, m_untieReady;
 
-    public bool m_tieOnly, m_loadCollected, m_dead;
+    public bool m_tieOnly, m_dead;
+    public static bool m_loadCollected;
     private bool m_swing, m_raiselower, m_hoist, m_inout;
 
 
@@ -282,14 +283,18 @@ public class AIGuideBehaviour : MonoBehaviour
     {
         if (m_tyingComplete == false)
         {
+            var dir = transform.position - target;
             if (walkingToLoad)
             {
-                m_agent.stoppingDistance = 2.5f;
+                m_agent.stoppingDistance = .01f;
                 //Walk To Load
                 var targetRotation = Quaternion.LookRotation(target - transform.position);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
                 m_agent.isStopped = false;
-                m_agent.SetDestination(target);
+
+
+                m_agent.SetDestination(target + (dir.normalized * TargetDistance));
+                Debug.DrawRay(target + (dir.normalized * TargetDistance), Vector3.up, Color.cyan);
                 SendToAnimator.SendTriggerForce(gameObject, "Walk");
             }
 
@@ -299,7 +304,8 @@ public class AIGuideBehaviour : MonoBehaviour
                 walkingToLoad = true;
             }
 
-            if (Vector3.Distance(transform.position, target) <= m_agent.stoppingDistance)
+            var dist = Vector3.Distance(transform.position, target + (dir.normalized * TargetDistance));
+            if (dist <= m_agent.stoppingDistance)
             {
                 //In Range of Load, stop walking towards it and begin tying up
                 walkingToLoad = false;
@@ -326,6 +332,8 @@ public class AIGuideBehaviour : MonoBehaviour
             {
                 walkingtoStartPos = false;
                 m_agent.isStopped = true;
+                SendToAnimator.ResetTrigger(gameObject, "Walk");
+                SendToAnimator.SendTrigger(gameObject, "Idle");
                 m_tyingComplete = false;
             }
         }
@@ -353,22 +361,30 @@ public class AIGuideBehaviour : MonoBehaviour
             {
                 if (!m_agent.hasPath)
                 {
-                    var targetRotation = Quaternion.LookRotation(cranePos - transform.position);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, (RotationSpeed + 2) * Time.deltaTime);
+                    var dir = (cranePos - transform.position).normalized;
+                    var dotProd = Vector3.Dot(dir, transform.forward);
+                    if (dotProd < 0.9f)
+                    {
+                        var targetRotation = Quaternion.LookRotation(cranePos - transform.position);
+                        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, (RotationSpeed + 2) * Time.deltaTime);
+                    }
                 }
             }
 
-            if (!m_agent.hasPath)
+            if (!m_tieOnly)
             {
-                if (!Swing(hookToCrane.normalized, toCrane.normalized, (int)swingAngle))
+                if (!m_agent.hasPath)
                 {
-                    if (!RaiseLowerBoom(hookPos, targetPos))
+                    if (!Swing(hookToCrane.normalized, toCrane.normalized, (int)swingAngle))
                     {
-                        if (!HoistInOut(hookPos, targetPos, hoistInOutDist))
+                        if (!RaiseLowerBoom(hookPos, targetPos))
                         {
-                            if (!HoistOrLower(hookPos, targetPos, hoistLowerDist))
+                            if (!HoistInOut(hookPos, targetPos, hoistInOutDist))
                             {
+                                if (!HoistOrLower(hookPos, targetPos, hoistLowerDist))
+                                {
 
+                                }
                             }
                         }
                     }
