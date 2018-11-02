@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WalkStateMachine : StateMachineBehaviour {
+public class WalkStateMachine : StateMachineBehaviour
+{
 
     private AIGuideBehaviour AI;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -10,10 +11,6 @@ public class WalkStateMachine : StateMachineBehaviour {
     {
         AI = animator.gameObject.GetComponent<AIGuideBehaviour>();
         AI.m_walking = true;
-        if (AI.m_tyingComplete)
-        {
-            AI.transform.LookAt(new Vector3(AI.m_startPos.x, AI.transform.position.y, AI.m_startPos.z));
-        }
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -26,17 +23,8 @@ public class WalkStateMachine : StateMachineBehaviour {
     {
         if (AI.m_tyingComplete)
         {
-            AI.m_startedTying = false;
-
-            AI.m_agent.isStopped = true;
-
-            AI.transform.LookAt(AI.lookAtCrane);
-
             AI.m_loadCollected = true;
-
-            SendToAnimator.SendTrigger(AI.gameObject, "Hoist");
         }
-
         AI.m_walking = false;
     }
 
