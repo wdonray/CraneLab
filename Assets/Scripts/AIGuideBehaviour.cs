@@ -17,8 +17,8 @@ public class AIGuideBehaviour : MonoBehaviour
     [HideInInspector] public NavMeshAgent m_agent;
     public float TargetDistance = 2f;
     [HideInInspector]
-    public bool m_startedTying, m_tyingComplete, m_walking, walkingToLoad, walkingtoStartPos, m_untieReady;
-
+    public bool m_startedTying, m_tyingComplete, m_walking;
+    public static bool walkingToLoad, walkingtoStartPos;
     public bool m_tieOnly, m_dead;
     public static bool m_loadCollected;
     private bool m_swing, m_raiselower, m_hoist, m_inout;
@@ -102,15 +102,12 @@ public class AIGuideBehaviour : MonoBehaviour
     }
 
     /// <summary>
-    ///     begin stop animation
+    ///     Begin stop animation
     /// </summary>
     private void Stop()
     {
-        if (m_agent.isStopped)
-        {
-            SendToAnimator.SendTriggerForce(gameObject, "Stop");
-            StartCoroutine(PauseAnimator(1));
-        }
+        SendToAnimator.SendTriggerForce(gameObject, "Stop");
+        StartCoroutine(PauseAnimator(1));
     }
 
     /// <summary>
@@ -244,6 +241,7 @@ public class AIGuideBehaviour : MonoBehaviour
         return false;
     }
 
+    //Old tie logic
     //private void Tie(Vector3 target)
     //{
     //    if (m_tyingComplete == false)
@@ -278,7 +276,10 @@ public class AIGuideBehaviour : MonoBehaviour
     //    }
     //}
 
-
+    /// <summary>
+    ///     If the crane is in range of the target walk over and start the tying animation
+    /// </summary>
+    /// <param name="target"></param>
     private void Tie(Vector3 target)
     {
         if (m_tyingComplete == false)
@@ -287,12 +288,11 @@ public class AIGuideBehaviour : MonoBehaviour
             if (walkingToLoad)
             {
                 m_agent.stoppingDistance = .01f;
-                //Walk To Load
+                //Rotate towards target
                 var targetRotation = Quaternion.LookRotation(target - transform.position);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
                 m_agent.isStopped = false;
-
-
+                //Walk to target and stop a distance away
                 m_agent.SetDestination(target + (dir.normalized * TargetDistance));
                 Debug.DrawRay(target + (dir.normalized * TargetDistance), Vector3.up, Color.cyan);
                 SendToAnimator.SendTriggerForce(gameObject, "Walk");
@@ -309,6 +309,7 @@ public class AIGuideBehaviour : MonoBehaviour
             {
                 //In Range of Load, stop walking towards it and begin tying up
                 walkingToLoad = false;
+                SendToAnimator.ResetTrigger(gameObject, "Walk");
                 SendToAnimator.SendTrigger(gameObject, "TyingUp");
             }
         }
@@ -320,7 +321,7 @@ public class AIGuideBehaviour : MonoBehaviour
             {
                 if (walkingtoStartPos)
                 {
-                    //Walk to Start
+                    //Rotate towards start pos and walk there
                     var targetRotation = Quaternion.LookRotation(m_startPos - transform.position);
                     transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
                     m_agent.isStopped = false;
@@ -330,6 +331,7 @@ public class AIGuideBehaviour : MonoBehaviour
             }
             else
             {
+                //Stop walking and idle
                 walkingtoStartPos = false;
                 m_agent.isStopped = true;
                 SendToAnimator.ResetTrigger(gameObject, "Walk");
@@ -339,7 +341,9 @@ public class AIGuideBehaviour : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    ///     Calls this if the agent is hit
+    /// </summary>
     public void Death()
     {
         m_dead = true;
@@ -347,8 +351,11 @@ public class AIGuideBehaviour : MonoBehaviour
     }
 
     /// <summary>
-    ///     Adjust values to your liking
+    ///      Guide and or tie the crane using the functions created above
     /// </summary>
+    /// <param name="swingAngle"></param>
+    /// <param name="hoistInOutDist"></param>
+    /// <param name="hoistLowerDist"></param>
     private void GuideCrane(float swingAngle, float hoistInOutDist, float hoistLowerDist)
     {
         var toCrane = (m_loadCollected) ? dropZonePos - cranePos : loadPos - cranePos;
@@ -361,6 +368,7 @@ public class AIGuideBehaviour : MonoBehaviour
             {
                 if (!m_agent.hasPath)
                 {
+                    //If you are not facing the crane, rotate and look at the crane
                     var dir = (cranePos - transform.position).normalized;
                     var dotProd = Vector3.Dot(dir, transform.forward);
                     if (dotProd < 0.9f)
@@ -371,10 +379,16 @@ public class AIGuideBehaviour : MonoBehaviour
                 }
             }
 
+            //If you are not tying, guide the crane
             if (!m_tieOnly)
             {
-                if (!m_agent.hasPath)
+                if (walkingToLoad || walkingtoStartPos)
                 {
+                    Stop();
+                }
+                else if (!m_agent.hasPath)
+                {
+                    SendToAnimator.ResetTrigger(gameObject, "Stop");
                     if (!Swing(hookToCrane.normalized, toCrane.normalized, (int)swingAngle))
                     {
                         if (!RaiseLowerBoom(hookPos, targetPos))
@@ -390,13 +404,18 @@ public class AIGuideBehaviour : MonoBehaviour
                     }
                 }
             }
-
-            if (m_tieOnly)
+            else
             {
+                //Else tie if needed
                 Tie(targetPos);
             }
         }
     }
+    /// <summary>
+    ///     Pause the animator for a sec amount of seconds
+    /// </summary>
+    /// <param name="delay"></param>
+    /// <returns></returns>
     public IEnumerator PauseAnimator(int delay)
     {
         SendToAnimator.stop = true;
