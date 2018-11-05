@@ -54,6 +54,15 @@ public class SendToAnimator
         var m_animator = sender.GetComponent<Animator>();
         m_animator.ResetTrigger(value);
     }
+
+    public static void ResetAllTriggers(GameObject sender)
+    {
+        var m_animator = sender.GetComponent<Animator>();
+        foreach (AnimatorControllerParameter parameter in m_animator.parameters)
+        {
+            m_animator.ResetTrigger(parameter.name);
+        }
+    }
 }
 
 //var m_aiGuide = m_animator.gameObject.GetComponent<AIGuideBehaviour>();

@@ -336,6 +336,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 m_agent.isStopped = true;
                 SendToAnimator.ResetTrigger(gameObject, "Walk");
                 SendToAnimator.SendTrigger(gameObject, "Idle");
+                GuideHelper.Index++;
                 m_tyingComplete = false;
             }
         }
