@@ -76,12 +76,14 @@ public class AIGuideBehaviour : MonoBehaviour
         }
     }
 
-    void Update()
+    void LateUpdate()
     {
         if (!m_dead)
         {
             GuideCrane(4, 1, 1);
         }
+
+
     }
 
     public void SetDropZone(Transform newZone)
@@ -362,7 +364,11 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="hoistLowerDist"></param>
     private void GuideCrane(float swingAngle, float hoistInOutDist, float hoistLowerDist)
     {
-        var toCrane = (m_loadCollected) ? dropZonePos - cranePos : loadPos - cranePos;
+        Vector3 toCrane;
+        if (m_loadCollected)
+            toCrane = dropZonePos - cranePos;
+        else
+            toCrane = loadPos - cranePos;
         var targetPos = (m_loadCollected) ? dropZonePos : loadPos;
         var hookToCrane = hookPos - cranePos;
 

@@ -30,7 +30,7 @@ public class TyingUpStateMachine : StateMachineBehaviour
         }
         else
         {
-            guideHelper.Loads[GuideHelper.Index].GetComponentInChildren<HookLoop>().HookUp(AI.m_crane.GetComponent<Collider>());
+            guideHelper.Loads[GuideHelper.Index].GetComponentInChildren<HookLoop>().HookUp(AI.m_hook.GetComponent<Collider>());
         }
         AIGuideBehaviour.m_loadCollected = AIGuideBehaviour.m_loadCollected == false;
         AIGuideBehaviour.walkingtoStartPos = true;
