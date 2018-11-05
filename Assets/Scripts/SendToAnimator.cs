@@ -9,13 +9,16 @@ public class SendToAnimator
 
     public static void SendTrigger(GameObject sender, string value)
     {
-        if (stop)
-        {
-            return;
-        }
-
         var m_animator = sender.GetComponent<Animator>();
         var m_aiGuide = m_animator.gameObject.GetComponent<AIGuideBehaviour>();
+
+        if (!m_aiGuide.m_tieOnly)
+        {
+            if (stop)
+            {
+                return;
+            }
+        }
 
         if (m_animator.IsInTransition(0))
         {

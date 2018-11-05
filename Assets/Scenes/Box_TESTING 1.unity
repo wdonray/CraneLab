@@ -834,12 +834,10 @@ MonoBehaviour:
   RotationSpeed: 2
   m_startPos: {x: 0, y: 0, z: 0}
   m_agent: {fileID: 0}
+  TargetDistance: 2
   m_startedTying: 0
   m_tyingComplete: 0
   m_walking: 0
-  walkingToLoad: 0
-  walkingtoStartPos: 0
-  m_untieReady: 0
   m_tieOnly: 0
   m_dead: 0
 --- !u!95 &75154723
@@ -10861,12 +10859,10 @@ MonoBehaviour:
   RotationSpeed: 2
   m_startPos: {x: 0, y: 0, z: 0}
   m_agent: {fileID: 0}
+  TargetDistance: 2
   m_startedTying: 0
   m_tyingComplete: 0
   m_walking: 0
-  walkingToLoad: 0
-  walkingtoStartPos: 0
-  m_untieReady: 0
   m_tieOnly: 1
   m_dead: 0
 --- !u!195 &1117542492
