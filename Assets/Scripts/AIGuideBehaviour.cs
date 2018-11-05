@@ -69,8 +69,11 @@ public class AIGuideBehaviour : MonoBehaviour
         m_startPos = transform.position;
         m_agent = GetComponent<NavMeshAgent>();
         transform.LookAt(lookAtCrane);
-        SendToAnimator.SendTrigger(gameObject, "Hoist");
-        StartCoroutine(PauseAnimator(3));
+        if (!m_tieOnly)
+        {
+            SendToAnimator.SendTrigger(gameObject, "Hoist");
+            StartCoroutine(PauseAnimator(3));
+        }
     }
 
     void Update()
