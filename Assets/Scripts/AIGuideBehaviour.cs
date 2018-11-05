@@ -23,7 +23,7 @@ public class AIGuideBehaviour : MonoBehaviour
     public static bool m_loadCollected;
     private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist;
     public Vector3 tempHookPos;
-
+    private GuideHelper guideHelper;
     public Vector3 cranePos
     {
         get { return m_crane.transform.position; }
@@ -72,10 +72,12 @@ public class AIGuideBehaviour : MonoBehaviour
         tempHookPos = hookPos;
         if (!m_tieOnly)
         {
-            //    StartCoroutine(HoistTest());
+            //StartCoroutine(HoistTest());
             SendToAnimator.SendTrigger(gameObject, "Hoist");
             StartCoroutine(PauseAnimator(3));
         }
+
+        guideHelper = FindObjectOfType<GuideHelper>();
     }
 
     void LateUpdate()
@@ -303,10 +305,21 @@ public class AIGuideBehaviour : MonoBehaviour
                 SendToAnimator.SendTriggerForce(gameObject, "Walk");
             }
 
-            if (Physics.OverlapSphere(target, 1).Contains(m_hook.GetComponent<Collider>()))
+            if (!m_loadCollected)
             {
-                //Crane in range of target, walk to target
-                walkingToLoad = true;
+                if (Physics.OverlapSphere(target, 1.3f).Contains(m_hook.GetComponent<Collider>()))
+                {
+                    //Crane in range of target, walk to target
+                    walkingToLoad = true;
+                }
+            }
+            else
+            {
+                if (Physics.OverlapSphere(target, 1).Contains(guideHelper.Loads[GuideHelper.Index].GetComponent<Collider>()))
+                {
+                    //Crane in range of target, walk to target
+                    walkingToLoad = true;
+                }
             }
 
             var dist = Vector3.Distance(transform.position, target + (dir.normalized * TargetDistance));
@@ -393,9 +406,9 @@ public class AIGuideBehaviour : MonoBehaviour
                 }
                 else if (!m_agent.hasPath)
                 {
-                    SendToAnimator.ResetTrigger(gameObject, "Stop");
                     if (Check())
                     {
+                        SendToAnimator.ResetTrigger(gameObject, "Stop");
                         if (!Swing(hookToCrane.normalized, toCrane.normalized, (int)swingAngle))
                         {
                             if (!RaiseLowerBoom(hookPos, targetPos))
