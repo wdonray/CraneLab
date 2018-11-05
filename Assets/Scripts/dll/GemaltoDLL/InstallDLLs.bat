@@ -1,1 +1,0 @@
-xcopy %~dp0apidsp_windows.dll
