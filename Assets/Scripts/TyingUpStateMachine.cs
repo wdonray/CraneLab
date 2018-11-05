@@ -5,9 +5,11 @@ using UnityEngine;
 public class TyingUpStateMachine : StateMachineBehaviour
 {
     private AIGuideBehaviour AI;
+    private GuideHelper guideHelper;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        guideHelper = FindObjectOfType<GuideHelper>();
         AI = animator.gameObject.GetComponent<AIGuideBehaviour>();
         //AI.m_startedTying = true;
     }
@@ -22,6 +24,14 @@ public class TyingUpStateMachine : StateMachineBehaviour
     {
         AI.m_startedTying = false;
         AI.m_tyingComplete = true;
+        if (AIGuideBehaviour.m_loadCollected)
+        {
+            guideHelper.Loads[GuideHelper.Index].GetComponentInChildren<HookLoop>().Drop();
+        }
+        else
+        {
+            guideHelper.Loads[GuideHelper.Index].GetComponentInChildren<HookLoop>().HookUp(AI.m_crane.GetComponent<Collider>());
+        }
         AIGuideBehaviour.m_loadCollected = AIGuideBehaviour.m_loadCollected == false;
         AIGuideBehaviour.walkingtoStartPos = true;
     }
