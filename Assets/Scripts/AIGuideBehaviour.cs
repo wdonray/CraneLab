@@ -21,8 +21,8 @@ public class AIGuideBehaviour : MonoBehaviour
     public static bool walkingToLoad, walkingtoStartPos;
     public bool m_tieOnly, m_dead;
     public static bool m_loadCollected;
-    private bool m_swing, m_raiselower, m_hoist, m_inout;
-
+    private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist;
+    public Vector3 tempHookPos;
 
     public Vector3 cranePos
     {
@@ -69,8 +69,10 @@ public class AIGuideBehaviour : MonoBehaviour
         m_startPos = transform.position;
         m_agent = GetComponent<NavMeshAgent>();
         transform.LookAt(lookAtCrane);
+        tempHookPos = hookPos;
         if (!m_tieOnly)
         {
+            //    StartCoroutine(HoistTest());
             SendToAnimator.SendTrigger(gameObject, "Hoist");
             StartCoroutine(PauseAnimator(3));
         }
@@ -82,8 +84,6 @@ public class AIGuideBehaviour : MonoBehaviour
         {
             GuideCrane(4, 1, 1);
         }
-
-
     }
 
     public void SetDropZone(Transform newZone)
@@ -341,7 +341,6 @@ public class AIGuideBehaviour : MonoBehaviour
                 m_agent.isStopped = true;
                 SendToAnimator.ResetTrigger(gameObject, "Walk");
                 SendToAnimator.SendTrigger(gameObject, "Idle");
-                GuideHelper.Index++;
                 m_tyingComplete = false;
             }
         }
@@ -364,11 +363,7 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="hoistLowerDist"></param>
     private void GuideCrane(float swingAngle, float hoistInOutDist, float hoistLowerDist)
     {
-        Vector3 toCrane;
-        if (m_loadCollected)
-            toCrane = dropZonePos - cranePos;
-        else
-            toCrane = loadPos - cranePos;
+        var toCrane = m_loadCollected ? dropZonePos - cranePos : loadPos - cranePos;
         var targetPos = (m_loadCollected) ? dropZonePos : loadPos;
         var hookToCrane = hookPos - cranePos;
 
@@ -399,15 +394,18 @@ public class AIGuideBehaviour : MonoBehaviour
                 else if (!m_agent.hasPath)
                 {
                     SendToAnimator.ResetTrigger(gameObject, "Stop");
-                    if (!Swing(hookToCrane.normalized, toCrane.normalized, (int)swingAngle))
+                    if (Check())
                     {
-                        if (!RaiseLowerBoom(hookPos, targetPos))
+                        if (!Swing(hookToCrane.normalized, toCrane.normalized, (int)swingAngle))
                         {
-                            if (!HoistInOut(hookPos, targetPos, hoistInOutDist))
+                            if (!RaiseLowerBoom(hookPos, targetPos))
                             {
-                                if (!HoistOrLower(hookPos, targetPos, hoistLowerDist))
+                                if (!HoistInOut(hookPos, targetPos, hoistInOutDist))
                                 {
+                                    if (!HoistOrLower(hookPos, targetPos, hoistLowerDist))
+                                    {
 
+                                    }
                                 }
                             }
                         }
@@ -431,5 +429,21 @@ public class AIGuideBehaviour : MonoBehaviour
         SendToAnimator.stop = true;
         yield return new WaitForSeconds(delay);
         SendToAnimator.stop = false;
+    }
+
+    private IEnumerator HoistTest()
+    {
+        SendToAnimator.SendTrigger(gameObject, "Hoist");
+        yield return new WaitUntil(Check);
+    }
+
+    private bool Check()
+    {
+        return (hookPos.y - tempHookPos.y > 5);
+    }
+
+    public void StartHoistTest()
+    {
+        StartCoroutine(HoistTest());
     }
 }
