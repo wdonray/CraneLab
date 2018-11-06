@@ -16,12 +16,11 @@ public class GuideHelper : MonoBehaviour
         {
             Riggers.Add(rigger);
         }
-        LoadToZone = new Dictionary<int, LoadAndZone>
+
+        for (int i = 0; i < Loads.Count; i++)
         {
-            { 0, new LoadAndZone(Loads[0], Zones[0])},
-            { 1, new LoadAndZone(Loads[1], Zones[1])},
-            { 2, new LoadAndZone(Loads[2], Zones[2])},
-        };
+            LoadToZone.Add(i, new LoadAndZone(Loads[i], Zones[i]));
+        }
     }
 
     // Update is called once per frame
