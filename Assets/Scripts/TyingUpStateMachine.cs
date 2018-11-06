@@ -24,9 +24,9 @@ public class TyingUpStateMachine : StateMachineBehaviour
     {
         AI.m_startedTying = false;
         AI.m_tyingComplete = true;
-        AI.tempHookPos = AI.hookPos;
-        AI.StartHoistTest();
-        if (AIGuideBehaviour.m_loadCollected)
+        AI.StoreHookPos = AI.HookPos;
+        AI.StartCheckHoist();
+        if (AIGuideBehaviour.LoadCollected)
         {
             guideHelper.Loads[GuideHelper.Index].GetComponentInChildren<HookLoop>().Drop();
             GuideHelper.Index++;
@@ -35,8 +35,8 @@ public class TyingUpStateMachine : StateMachineBehaviour
         {
             guideHelper.Loads[GuideHelper.Index].GetComponentInChildren<HookLoop>().HookUp(AI.m_hook.GetComponent<Collider>());
         }
-        AIGuideBehaviour.m_loadCollected = AIGuideBehaviour.m_loadCollected == false;
-        AIGuideBehaviour.walkingtoStartPos = true;
+        AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
+        AIGuideBehaviour.WalkingtoStartPos = true;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove(). Code that processes and affects root motion should be implemented here
