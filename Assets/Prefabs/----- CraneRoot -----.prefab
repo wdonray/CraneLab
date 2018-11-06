@@ -15682,19 +15682,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   otherHand: {fileID: 114807634587957162}
-  startingHandType: 2
+  handType: 0
+  trackedObject: {fileID: 0}
+  grabPinchAction: {fileID: 11400000, guid: 74c5a995623a22942a589dd784b1f6fd, type: 2}
+  grabGripAction: {fileID: 11400000, guid: 32626b223efc98e499bc9974eeb4b59a, type: 2}
+  hapticAction: {fileID: 11400000, guid: 6548c72b78ea25a43a13a99f2b8e1e2b, type: 2}
+  uiInteractAction: {fileID: 11400000, guid: 48efd5087f95e094e805cb5054e1485f, type: 2}
+  useHoverSphere: 1
   hoverSphereTransform: {fileID: 0}
   hoverSphereRadius: 0.05
   hoverLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
   hoverUpdateInterval: 0.1
+  useControllerHoverComponent: 1
+  controllerHoverComponent: tip
+  controllerHoverRadius: 0.075
+  useFingerJointHover: 1
+  fingerJointHover: 10
+  fingerJointHoverRadius: 0.025
+  objectAttachmentPoint: {fileID: 0}
   noSteamVRFallbackCamera: {fileID: 0}
   noSteamVRFallbackMaxDistanceNoItem: 10
   noSteamVRFallbackMaxDistanceWithItem: 0.5
-  controllerPrefab: {fileID: 168468, guid: 3f39fc63a93686e4a8e9168ee73f24d9, type: 2}
+  renderModelPrefab: {fileID: 0}
   showDebugText: 0
   spewDebugText: 0
+  showDebugInteractables: 0
 --- !u!114 &114124685909245164
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -20079,6 +20093,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf3e62815653fce4aac61973ebb31636, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  keepParent: 0
 --- !u!114 &114268839049291672
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -21815,6 +21830,7 @@ MonoBehaviour:
   controllerMaterial: {fileID: 2100000, guid: 11b050e661ec0cf48a289a7266451e91, type: 2}
   flashColor: {r: 1, g: 0.9170069, b: 0.453, a: 0.709}
   textHintPrefab: {fileID: 140952, guid: 5fa42bb9e52706a42b8a1eaf0b54326a, type: 2}
+  hapticFlash: {fileID: 11400000, guid: 6548c72b78ea25a43a13a99f2b8e1e2b, type: 2}
   debugHints: 0
 --- !u!114 &114691059028266130
 MonoBehaviour:
@@ -21975,6 +21991,7 @@ MonoBehaviour:
   controllerMaterial: {fileID: 2100000, guid: 11b050e661ec0cf48a289a7266451e91, type: 2}
   flashColor: {r: 1, g: 0.9170069, b: 0.453, a: 0.709}
   textHintPrefab: {fileID: 140952, guid: 5fa42bb9e52706a42b8a1eaf0b54326a, type: 2}
+  hapticFlash: {fileID: 11400000, guid: 6548c72b78ea25a43a13a99f2b8e1e2b, type: 2}
   debugHints: 0
 --- !u!114 &114740216077008660
 MonoBehaviour:
@@ -22230,19 +22247,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   otherHand: {fileID: 0}
-  startingHandType: 2
+  handType: 0
+  trackedObject: {fileID: 0}
+  grabPinchAction: {fileID: 11400000, guid: 74c5a995623a22942a589dd784b1f6fd, type: 2}
+  grabGripAction: {fileID: 11400000, guid: 32626b223efc98e499bc9974eeb4b59a, type: 2}
+  hapticAction: {fileID: 11400000, guid: 6548c72b78ea25a43a13a99f2b8e1e2b, type: 2}
+  uiInteractAction: {fileID: 11400000, guid: 48efd5087f95e094e805cb5054e1485f, type: 2}
+  useHoverSphere: 1
   hoverSphereTransform: {fileID: 0}
   hoverSphereRadius: 0.05
   hoverLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
   hoverUpdateInterval: 0.1
+  useControllerHoverComponent: 1
+  controllerHoverComponent: tip
+  controllerHoverRadius: 0.075
+  useFingerJointHover: 1
+  fingerJointHover: 10
+  fingerJointHoverRadius: 0.025
+  objectAttachmentPoint: {fileID: 0}
   noSteamVRFallbackCamera: {fileID: 20696065105027572}
   noSteamVRFallbackMaxDistanceNoItem: 10
   noSteamVRFallbackMaxDistanceWithItem: 0.5
-  controllerPrefab: {fileID: 0}
+  renderModelPrefab: {fileID: 0}
   showDebugText: 0
   spewDebugText: 0
+  showDebugInteractables: 0
 --- !u!114 &114798488314353112
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22254,6 +22285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf3e62815653fce4aac61973ebb31636, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  keepParent: 0
 --- !u!114 &114806367065052948
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22265,6 +22297,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf3e62815653fce4aac61973ebb31636, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  keepParent: 0
 --- !u!114 &114807634587957162
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22277,19 +22310,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   otherHand: {fileID: 114120351836457402}
-  startingHandType: 2
+  handType: 0
+  trackedObject: {fileID: 0}
+  grabPinchAction: {fileID: 11400000, guid: 74c5a995623a22942a589dd784b1f6fd, type: 2}
+  grabGripAction: {fileID: 11400000, guid: 32626b223efc98e499bc9974eeb4b59a, type: 2}
+  hapticAction: {fileID: 11400000, guid: 6548c72b78ea25a43a13a99f2b8e1e2b, type: 2}
+  uiInteractAction: {fileID: 11400000, guid: 48efd5087f95e094e805cb5054e1485f, type: 2}
+  useHoverSphere: 1
   hoverSphereTransform: {fileID: 0}
   hoverSphereRadius: 0.05
   hoverLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
   hoverUpdateInterval: 0.1
+  useControllerHoverComponent: 1
+  controllerHoverComponent: tip
+  controllerHoverRadius: 0.075
+  useFingerJointHover: 1
+  fingerJointHover: 10
+  fingerJointHoverRadius: 0.025
+  objectAttachmentPoint: {fileID: 0}
   noSteamVRFallbackCamera: {fileID: 0}
   noSteamVRFallbackMaxDistanceNoItem: 10
   noSteamVRFallbackMaxDistanceWithItem: 0.5
-  controllerPrefab: {fileID: 168468, guid: 3f39fc63a93686e4a8e9168ee73f24d9, type: 2}
+  renderModelPrefab: {fileID: 0}
   showDebugText: 0
   spewDebugText: 0
+  showDebugInteractables: 0
 --- !u!114 &114815697405877680
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -25220,11 +25267,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e979227f3384fac4b8ca0b3550bf005c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseGameWhenDashboardIsVisible: 1
-  lockPhysicsUpdateRateToRenderFrequency: 1
   externalCamera: {fileID: 0}
   externalCameraConfigPath: externalcamera.cfg
-  trackingSpace: 1
 --- !u!114 &114987961426571248
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -25236,9 +25280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34a02d09df1836045b195565d5338afe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  x: 1
-  y: 1
-  z: 1
+  m_lockedRotation: {x: 0, y: 0, z: 0}
 --- !u!114 &114991728393959706
 MonoBehaviour:
   m_ObjectHideFlags: 1
