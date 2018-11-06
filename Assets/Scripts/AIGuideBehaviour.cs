@@ -24,6 +24,8 @@ public class AIGuideBehaviour : MonoBehaviour
     private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist;
     public Vector3 tempHookPos;
     private GuideHelper guideHelper;
+    private float _height;
+
     public Vector3 cranePos
     {
         get { return m_crane.transform.position; }
@@ -66,6 +68,7 @@ public class AIGuideBehaviour : MonoBehaviour
 
     void Awake()
     {
+        _height = 2;
         m_startPos = transform.position;
         m_agent = GetComponent<NavMeshAgent>();
         transform.LookAt(lookAtCrane);
@@ -113,6 +116,7 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     private void Stop()
     {
+        Debug.Log("Stop");
         SendToAnimator.SendTriggerForce(gameObject, "Stop");
         StartCoroutine(PauseAnimator(1));
     }
@@ -315,7 +319,7 @@ public class AIGuideBehaviour : MonoBehaviour
             }
             else
             {
-                if (Physics.OverlapSphere(target, 1).Contains(guideHelper.Loads[GuideHelper.Index].GetComponent<Collider>()))
+                if (Physics.OverlapSphere(target, .7f).Contains(guideHelper.Loads[GuideHelper.Index].transform.GetChild(2).GetComponent<Collider>()))
                 {
                     //Crane in range of target, walk to target
                     walkingToLoad = true;
@@ -382,31 +386,20 @@ public class AIGuideBehaviour : MonoBehaviour
 
         if (m_startedTying == false)
         {
-            if (!m_walking)
-            {
-                if (!m_agent.hasPath)
-                {
-                    //If you are not facing the crane, rotate and look at the crane
-                    var dir = (cranePos - transform.position).normalized;
-                    var dotProd = Vector3.Dot(dir, transform.forward);
-                    if (dotProd < 0.9f)
-                    {
-                        var targetRotation = Quaternion.LookRotation(cranePos - transform.position);
-                        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, (RotationSpeed + 2) * Time.deltaTime);
-                    }
-                }
-            }
+            FaceCrane(0.9f);
 
             //If you are not tying, guide the crane
             if (!m_tieOnly)
             {
+                //If the other AI is walking not tying AI holds up stop
                 if (walkingToLoad || walkingtoStartPos)
                 {
                     Stop();
                 }
                 else if (!m_agent.hasPath)
                 {
-                    if (Check())
+                    //If Raised up guide crane
+                    if (Check(_height))
                     {
                         SendToAnimator.ResetTrigger(gameObject, "Stop");
                         if (!Swing(hookToCrane.normalized, toCrane.normalized, (int)swingAngle))
@@ -423,6 +416,13 @@ public class AIGuideBehaviour : MonoBehaviour
                             }
                         }
                     }
+                    //Else tell them to hoist
+                    else
+                    {
+                        SendToAnimator.ResetTrigger(gameObject, "Stop");
+                        SendToAnimator.stop = false;
+                        StartHoistTest();
+                    }
                 }
             }
             else
@@ -432,6 +432,28 @@ public class AIGuideBehaviour : MonoBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// If you are not facing the crane, rotate and look at the crane
+    /// </summary>
+    private void FaceCrane(float dist)
+    {
+        if (!m_walking)
+        {
+            if (!m_agent.hasPath)
+            {
+                var dir = (cranePos - transform.position).normalized;
+                var dotProd = Vector3.Dot(dir, transform.forward);
+                if (dotProd < dist)
+                {
+                    var targetRotation = Quaternion.LookRotation(cranePos - transform.position);
+                    transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, (RotationSpeed + 2) * Time.deltaTime);
+                }
+            }
+        }
+    }
+
+
     /// <summary>
     ///     Pause the animator for a sec amount of seconds
     /// </summary>
@@ -444,15 +466,24 @@ public class AIGuideBehaviour : MonoBehaviour
         SendToAnimator.stop = false;
     }
 
+    /// <summary>
+    ///     Tell them to hoist until certain point
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator HoistTest()
     {
-        SendToAnimator.SendTrigger(gameObject, "Hoist");
-        yield return new WaitUntil(Check);
+        if (Check(_height) == false)
+            SendToAnimator.SendTrigger(gameObject, "Hoist");
+        yield return new WaitUntil(() => Check(_height));
     }
 
-    private bool Check()
+    /// <summary>
+    ///     Check if hook has been raised past a value
+    /// </summary>
+    /// <returns></returns>
+    private bool Check(float height)
     {
-        return (hookPos.y - tempHookPos.y > 5);
+        return (hookPos.y - tempHookPos.y > height);
     }
 
     public void StartHoistTest()
