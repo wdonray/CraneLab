@@ -6,16 +6,9 @@ using Aladdin.HASP;
 
 public class GemaltoSceneLocker : MonoBehaviour
 {
+    private Hasp hasp;
 
-    private void Start()
-    {
-        HaspFeature feature = HaspFeature.Default;
-
-        string scope =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" +
-        "<haspscope/>";
-
-        string vendorCode =
+    private string vendorCode =
         "pEl9GkEx50FvJgYEJRAQZRitr7/xkSIWx8dqPJ6lwu9qZIY4AZJvFhOqDN9DC0bgfq+GUcbR/1URnMaL" +
         "660OVvvBntLtBV9mfhRs91g5AWQO/zzCvQG/RwpCVElxZy2X7u1GQWR7iqGEmG47GzGtFCZmnwAv2fLt" +
         "0zXaCLZNGSv84Sk1pYdHqv2hH2eSpLOL6F7OCYSq2viRRRNY0moXZ2OCs8sbmKcsqKoobrenH/QYOYMF" +
@@ -30,17 +23,56 @@ public class GemaltoSceneLocker : MonoBehaviour
         "jk+nAxJFBA3RBrVztQGfO5Y+ZwVxb2XxgJFsgpm5Vd/5big7owqNIdRTY25sZave6oqqm9475QeRsSvX" +
         "3sY3KQL+YFo8nTMjc5UENg==";
 
-        Hasp hasp = new Hasp(feature);
-        HaspStatus status = hasp.Login(vendorCode, scope);
 
-        if (HaspStatus.StatusOk != status)
-        {
-            Debug.Log("Security Key Not Found \n" +
-                status.ToString());
-        }
-        else if (HaspStatus.StatusOk == status)
-        {
-            Debug.Log("All good");
-        }
+
+    private bool KetIsConnected()
+    {
+        HaspFeature feature = HaspFeature.Default;
+
+        string scope =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" +
+        "<haspscope/>";
+
+        hasp = new Hasp(feature);
+        HaspStatus status = hasp.Login(vendorCode, scope);
+        
+        return HaspStatus.StatusOk == status;
+    }
+
+
+    private bool KeyDateIsValid()
+    {
+        if (KetIsConnected() == false) return false;
+
+        System.DateTime time = System.DateTime.Now;
+        HaspStatus status = hasp.GetRtc(ref time);
+
+        return HaspStatus.StatusOk == status;
+    }
+
+
+    private bool CheckKeyID()
+    {
+        string scope = 
+        "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" + 
+        "<haspscope/>";
+
+        string format = 
+        "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" + 
+        "<haspformat root=\"hasp_info\">" + 
+        "    <hasp>" + 
+        "        <attribute name=\"id\" />" + 
+        "        <attribute name=\"type\" />" + 
+        "        <feature>" + 
+        "            <attribute name=\"id\" />" + 
+        "        </feature>" + 
+        "    </hasp>" + 
+        "</haspformat>";
+
+
+        string info = null;
+        HaspStatus status = Hasp.GetInfo(scope, format, vendorCode, ref info);
+
+        return HaspStatus.StatusOk == status;
     }
 }
