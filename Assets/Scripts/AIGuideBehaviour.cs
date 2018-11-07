@@ -76,7 +76,6 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     private void Stop()
     {
-        Debug.Log("Stop");
         SendToAnimator.SendTriggerForce(gameObject, "Stop");
         StartCoroutine(PauseAnimator(1));
     }
@@ -147,12 +146,12 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <summary>
     ///     Raise up and down based on the target
     /// </summary>
-    /// <param name="hook"></param>
+    /// <param name="source"></param>
     /// <param name="target"></param>
     /// <param name="distance"></param>
-    private bool HoistOrLower(Vector3 hook, Vector3 target, float distance)
+    private bool HoistOrLower(Vector3 source, Vector3 target, float distance)
     {
-        var hookToTarget = hook - target;
+        var hookToTarget = source - target;
 
         if (Mathf.Abs(hookToTarget.y) < distance)
         {
@@ -165,7 +164,7 @@ public class AIGuideBehaviour : MonoBehaviour
             return false;
         }
 
-        SendToAnimator.SendTrigger(gameObject, (hook.y < target.y) ? "Hoist" : "Lower");
+        SendToAnimator.SendTrigger(gameObject, (source.y < target.y) ? "Hoist" : "Lower");
         m_hoist = false;
         return true;
     }
@@ -173,16 +172,16 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <summary>
     ///     when it needs to go up and in, or out and down at the same time
     /// </summary>
-    /// <param name="hook"></param>
+    /// <param name="source"></param>
     /// <param name="target"></param>
-    private bool RaiseLowerBoom(Vector3 hook, Vector3 target)
+    private bool RaiseLowerBoom(Vector3 source, Vector3 target)
     {
-        var hookToCrane = hook - CranePos;
+        var hookToCrane = source - CranePos;
         var targetToCrane = target - CranePos;
         hookToCrane.y = 0;
         targetToCrane.y = 0;
 
-        var m_hoist = (hook.y < target.y - .5f);
+        var m_hoist = (source.y < target.y - .5f);
 
         if (m_hoist)
         {
@@ -193,7 +192,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 return true;
             }
         }
-        else if (hook.y > target.y + .5f)
+        else if (source.y > target.y + .5f)
         {
             if ((hookToCrane.magnitude < targetToCrane.magnitude) && (hookToCrane - targetToCrane).magnitude > 1)
             {
@@ -289,7 +288,7 @@ public class AIGuideBehaviour : MonoBehaviour
             var dist = Vector3.Distance(transform.position, target + (dir.normalized * TargetDistance));
             if (dist <= Agent.stoppingDistance)
             {
-                //In Range of Load, stop walking towards it and begin tying up
+                //In Range of Load, start walking towards it and begin tying up
                 WalkingToLoad = false;
                 SendToAnimator.ResetTrigger(gameObject, "Walk");
                 SendToAnimator.SendTrigger(gameObject, "TyingUp");
@@ -343,6 +342,7 @@ public class AIGuideBehaviour : MonoBehaviour
         var toCrane = LoadCollected ? DropZonePos - CranePos : LoadPos - CranePos;
         var targetPos = (LoadCollected) ? DropZonePos : LoadPos;
         var hookToCrane = HookPos - CranePos;
+        var source = (LoadCollected) ? LoadPos : HookPos;
 
         if (m_startedTying == false)
         {
@@ -363,11 +363,11 @@ public class AIGuideBehaviour : MonoBehaviour
                         SendToAnimator.ResetTrigger(gameObject, "Stop");
                         if (!Swing(hookToCrane.normalized, toCrane.normalized, (int)swingAngle))
                         {
-                            if (!RaiseLowerBoom(HookPos, targetPos))
+                            if (!RaiseLowerBoom(source, targetPos))
                             {
-                                if (!HoistInOut(HookPos, targetPos, hoistInOutDist))
+                                if (!HoistInOut(source, targetPos, hoistInOutDist))
                                 {
-                                    if (!HoistOrLower(HookPos, targetPos, hoistLowerDist))
+                                    if (!HoistOrLower(source, targetPos, hoistLowerDist))
                                     {
 
                                     }
@@ -427,7 +427,7 @@ public class AIGuideBehaviour : MonoBehaviour
         CheckHoistCalled = true;
         SendToAnimator.ResetTrigger(gameObject, "Stop");
         SendToAnimator.stop = false;
-        SendToAnimator.SendTrigger(gameObject, "Hoist");
+        SendToAnimator.SendTriggerForce(gameObject, "Hoist");
         yield return new WaitUntil(() => Check(_height));
         CheckHoistCalled = false;
     }

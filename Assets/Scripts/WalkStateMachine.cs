@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class WalkStateMachine : StateMachineBehaviour
 {
-
+    private GuideHelper guideHelper;
     private AIGuideBehaviour AI;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        guideHelper = FindObjectOfType<GuideHelper>();
         AI = animator.gameObject.GetComponent<AIGuideBehaviour>();
         AI.m_walking = true;
     }
@@ -21,6 +22,15 @@ public class WalkStateMachine : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        AIGuideBehaviour other = null;
+        foreach (var rigger in guideHelper.Riggers)
+        {
+            if (rigger != AI)
+                other = rigger;
+        }
+        AI.StoreHookPos = AI.HookPos;
+        other?.StartCheckHoist();
+
         if (AI.m_tyingComplete)
         {
             AIGuideBehaviour.LoadCollected = true;

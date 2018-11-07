@@ -46,6 +46,7 @@ public class SendToAnimator
         if (value == m_oldValue) return;
         m_animator.StopPlayback();
         m_animator.SetTrigger(value);
+        Debug.Log("Forced: " + value);
         m_oldValue = value;
     }
 
