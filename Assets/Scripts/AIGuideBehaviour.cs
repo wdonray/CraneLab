@@ -15,9 +15,9 @@ public class AIGuideBehaviour : MonoBehaviour
     public float RotationSpeed, TargetDistance = 2f;
     [HideInInspector] public Vector3 GuideStartPos, StoreHookPos;
     [HideInInspector] public NavMeshAgent Agent;
-    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking;
-    public static bool WalkingToLoad, WalkingtoStartPos, LoadCollected;
-    public bool m_tieOnly, m_dead, CheckHoistCalled;
+    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, CheckHoistCalled;
+    public static bool WalkingToTarget, WalkingtoStartPos, LoadCollected;
+    public bool m_tieOnly, m_dead;
     private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist;
     private GuideHelper _guideHelper;
     private float _height;
@@ -88,8 +88,7 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="angle"></param>
     private bool Swing(Vector3 toHook, Vector3 toPlayer, int angle)
     {
-        var angleBetween = Vector3.SignedAngle(new Vector3(toHook.x, 0, toHook.z).normalized,
-            new Vector3(toPlayer.x, 0, toPlayer.z).normalized, new Vector3(0, 1, 0));
+        var angleBetween = Vector3.SignedAngle(new Vector3(toHook.x, 0, toHook.z).normalized, new Vector3(toPlayer.x, 0, toPlayer.z).normalized, new Vector3(0, 1, 0));
         var shouldntMove = angleBetween < angle && angleBetween > -angle;
 
         if (shouldntMove)
@@ -255,7 +254,7 @@ public class AIGuideBehaviour : MonoBehaviour
         if (m_tyingComplete == false)
         {
             var dir = transform.position - target;
-            if (WalkingToLoad)
+            if (WalkingToTarget)
             {
                 Agent.stoppingDistance = .01f;
                 //Rotate towards target
@@ -268,20 +267,23 @@ public class AIGuideBehaviour : MonoBehaviour
                 SendToAnimator.SendTriggerForce(gameObject, "Walk");
             }
 
-            if (!LoadCollected)
+            if (LoadCollected)
             {
-                if (Physics.OverlapSphere(target, 1.3f).Contains(m_hook.GetComponent<Collider>()))
+                var zone = _guideHelper.Zones[GuideHelper.Index];
+                var load = _guideHelper.Loads[GuideHelper.Index];
+
+                if (Physics.OverlapBox(target, zone.transform.localScale / 2, zone.transform.rotation).Contains(load.transform.GetChild(2).GetComponent<Collider>()))
                 {
                     //Crane in range of target, walk to target
-                    WalkingToLoad = true;
+                    WalkingToTarget = true;
                 }
             }
             else
             {
-                if (Physics.OverlapSphere(target, .7f).Contains(_guideHelper.Loads[GuideHelper.Index].transform.GetChild(2).GetComponent<Collider>()))
+                if (Physics.OverlapSphere(target, 1.3f).Contains(m_hook.GetComponent<Collider>()))
                 {
                     //Crane in range of target, walk to target
-                    WalkingToLoad = true;
+                    WalkingToTarget = true;
                 }
             }
 
@@ -289,7 +291,7 @@ public class AIGuideBehaviour : MonoBehaviour
             if (dist <= Agent.stoppingDistance)
             {
                 //In Range of Load, start walking towards it and begin tying up
-                WalkingToLoad = false;
+                WalkingToTarget = false;
                 SendToAnimator.ResetTrigger(gameObject, "Walk");
                 SendToAnimator.SendTrigger(gameObject, "TyingUp");
             }
@@ -322,6 +324,24 @@ public class AIGuideBehaviour : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        var load = _guideHelper.Loads[GuideHelper.Index];
+        var zone = _guideHelper.Zones[GuideHelper.Index];
+        if (LoadCollected)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireCube(zone.transform.position, zone.transform.localScale / 2);
+        }
+        else
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(load.transform.position, 1.3f);
+        }
+    }
+#endif
+
     /// <summary>
     ///     Calls this if the agent is hit
     /// </summary>
@@ -339,9 +359,10 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="hoistLowerDist"></param>
     private void GuideCrane(float swingAngle, float hoistInOutDist, float hoistLowerDist)
     {
-        var toCrane = LoadCollected ? DropZonePos - CranePos : LoadPos - CranePos;
-        var targetPos = (LoadCollected) ? DropZonePos : LoadPos;
+        var toCrane = (LoadCollected) ? DropZonePos - CranePos : LoadPos - CranePos;
         var hookToCrane = HookPos - CranePos;
+
+        var targetPos = (LoadCollected) ? DropZonePos : LoadPos;
         var source = (LoadCollected) ? LoadPos : HookPos;
 
         if (m_startedTying == false)
@@ -352,7 +373,7 @@ public class AIGuideBehaviour : MonoBehaviour
             if (!m_tieOnly)
             {
                 //If the other AI is walking not tying AI holds up stop
-                if (WalkingToLoad || WalkingtoStartPos)
+                if (WalkingToTarget || WalkingtoStartPos)
                 {
                     Stop();
                 }
