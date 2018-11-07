@@ -31,6 +31,8 @@ public class TyingUpStateMachine : StateMachineBehaviour
             {
                 GuideHelper.Index++;
             }
+            AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
+            AIGuideBehaviour.WalkingtoStartPos = true;
         }
         else
         {
