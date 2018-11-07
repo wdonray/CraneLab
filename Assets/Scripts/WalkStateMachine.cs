@@ -28,8 +28,12 @@ public class WalkStateMachine : StateMachineBehaviour
             if (rigger != AI)
                 other = rigger;
         }
-        other.StoreHookPos = other.HookPos;
-        other?.StartCheckHoist();
+
+        if (other != null)
+        {
+            other.StoreHookPos = other.HookPos;
+            other.StartCheckHoist();
+        }
 
         if (AI.m_tyingComplete)
         {

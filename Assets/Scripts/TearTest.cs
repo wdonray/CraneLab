@@ -19,14 +19,16 @@ public class TearTest : MonoBehaviour
     public ObiRope Rope;
     private IEnumerator _coroutine;
 
-    private bool _running;
+    private bool _running, _distanceReached;
     public static bool _failed, _passed;
     private float minTemp, maxTemp;
     // Use this for initialization
     void Awake()
     {
+        Minimum = 0;
+        Maximum = 0;
         _coroutine = StartBreakEvent(Minimum, Maximum, () => Break(2));
-        foreach (var obi in GetComponentsInChildren<ObiRope>())
+        foreach (var obi in transform.parent.GetComponentsInChildren<ObiRope>())
         {
             _ropes.Add(obi);
         }
@@ -56,10 +58,7 @@ public class TearTest : MonoBehaviour
         yield return new WaitForSeconds(TimePicked);
         Debug.Log("Time reached for " + transform.name);
         yield return new WaitUntil(CheckDistanceAway);
-        if (!_failed && _running == false)
-        {
-            StartCoroutine(PlacedDown());
-        }
+        _distanceReached = true;
         Debug.Log("Distance reached for " + transform.name);
         action.Invoke();
         Debug.Log(transform.name + ", " + Rope + " broke!");
@@ -89,14 +88,28 @@ public class TearTest : MonoBehaviour
                 {
                     case 3:
                         {
-                            minTemp = Minimum / 3.5f;
-                            maxTemp = Maximum / 4;
+                            minTemp = 20;
+                            maxTemp = 20;
+                            //minTemp = Minimum / 3.5f;
+                            //maxTemp = Maximum / 4;
+                        }
+                        break;
+                    case 2:
+                        {
+                            minTemp = 2;
+                            maxTemp = 2;
+                        }
+                        break;
+                    case 1:
+                        {
+                            minTemp = 1;
+                            maxTemp = 1;
                         }
                         break;
                     default:
                         {
-                            minTemp /= 3.5f;
-                            maxTemp /= 4;
+                            //minTemp /= 3.5f;
+                            //maxTemp /= 4;
                         }
                         break;
                 }
@@ -125,7 +138,7 @@ public class TearTest : MonoBehaviour
 
     private bool CheckIfStopped()
     {
-        return transform.GetChild(2).GetComponent<Rigidbody>().velocity.magnitude <= 0.1f;
+        return transform.GetComponent<Rigidbody>().velocity.magnitude <= 0.1f;
     }
 
     private IEnumerator PlacedDown()
@@ -137,6 +150,17 @@ public class TearTest : MonoBehaviour
         {
             _passed = true;
             Debug.Log("You Passed!");
+        }
+    }
+
+    void OnCollisionStay(Collision other)
+    {
+        if (_distanceReached)
+        {
+            if (!_failed && _running == false)
+            {
+                StartCoroutine(PlacedDown());
+            }
         }
     }
 }

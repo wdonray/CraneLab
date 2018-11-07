@@ -26,12 +26,15 @@ public class TyingUpStateMachine : StateMachineBehaviour
         AI.m_tyingComplete = true;
         if (AIGuideBehaviour.LoadCollected)
         {
-            guideHelper.Loads[GuideHelper.Index].GetComponentInChildren<HookLoop>().Drop();
-            GuideHelper.Index++;
+            guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>().Drop();
+            if (GuideHelper.Index < guideHelper.LoadToZone.Count)
+            {
+                GuideHelper.Index++;
+            }
         }
         else
         {
-            guideHelper.Loads[GuideHelper.Index].GetComponentInChildren<HookLoop>().HookUp(AI.m_hook.GetComponent<Collider>());
+            guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>().HookUp(AI.m_hook.GetComponent<Collider>());
         }
         AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
         AIGuideBehaviour.WalkingtoStartPos = true;
