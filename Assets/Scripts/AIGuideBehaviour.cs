@@ -34,6 +34,7 @@ public class AIGuideBehaviour : MonoBehaviour
 
     void Awake()
     {
+        ResetStaticVariables();
         _height = 2;
         GuideStartPos = transform.position;
         Agent = GetComponent<NavMeshAgent>();
@@ -55,21 +56,43 @@ public class AIGuideBehaviour : MonoBehaviour
         }
     }
 
+    public void ResetStaticVariables()
+    {
+        WalkingToTarget = false;
+        WalkingtoStartPos = false;
+        LoadCollected = false;
+    }
+    /// <summary>
+    ///     Sets the drop zone with the passed in argument 
+    /// </summary>
+    /// <param name="newZone"></param>
     public void SetDropZone(Transform newZone)
     {
         m_dropZone = newZone;
     }
 
+    /// <summary>
+    ///     Sets the load with the passed in argument 
+    /// </summary>
+    /// <param name="newLoad"></param>
     public void SetLoad(Transform newLoad)
     {
         m_load = newLoad;
     }
 
+    /// <summary>
+    ///     Sets the hook with the passed in argument 
+    /// </summary>
+    /// <param name="newHook"></param>
     public void SetHook(Transform newHook)
     {
         m_hook = newHook;
     }
 
+    /// <summary>
+    ///     Sets the crane with the passed in argument 
+    /// </summary>
+    /// <param name="newCrane"></param>
     public void SetCrane(Transform newCrane)
     {
         m_crane = newCrane;
@@ -268,7 +291,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 var dir = transform.position - target;
                 if (WalkingToTarget)
                 {
-                    Agent.stoppingDistance = .01f;
+                    Agent.stoppingDistance = .5f;
                     //Rotate towards target
                     var targetRotation = Quaternion.LookRotation(target - transform.position);
                     transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
@@ -283,8 +306,8 @@ public class AIGuideBehaviour : MonoBehaviour
                 {
                     var zone = _guideHelper.Zones[GuideHelper.Index];
                     var load = _guideHelper.Loads[GuideHelper.Index];
-                    var size = new Vector3(zone.transform.localScale.x, zone.transform.localScale.y / 3, zone.transform.localScale.z);
-                    if (Physics.OverlapBox(target, size, zone.transform.rotation).Contains(load.transform.GetChild(2).GetComponent<Collider>()))
+                    var size = new Vector3(zone.transform.localScale.x, .1f, zone.transform.localScale.z);
+                    if (Physics.OverlapBox(target, size, zone.transform.rotation).Contains(load.transform.parent.GetChild(2).GetComponent<Collider>()))
                     {
                         //Crane in range of target, walk to target
                         WalkingToTarget = true;
@@ -350,22 +373,28 @@ public class AIGuideBehaviour : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    private void OnDrawGizmos()
-    {
-        if (_guideHelper != null)
-        {
-            var load = _guideHelper.Loads[GuideHelper.Index];
-            var zone = _guideHelper.Zones[GuideHelper.Index];
+    /// <summary>
+    ///     Drawing the load and zone collision area
+    /// </summary>
+    //private void OnDrawGizmos()
+    //{
+    //    if (_complete == false)
+    //    {
+    //        if (_guideHelper != null)
+    //        {
+    //            var load = _guideHelper.Loads[GuideHelper.Index];
+    //            var zone = _guideHelper.Zones[GuideHelper.Index];
 
-            var size = new Vector3(zone.transform.localScale.x, zone.transform.localScale.y / 3,
-                zone.transform.localScale.z);
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireCube(zone.transform.position, size);
+    //            var size = new Vector3(zone.transform.localScale.x, .1f,
+    //                zone.transform.localScale.z);
+    //            Gizmos.color = Color.yellow;
+    //            Gizmos.DrawWireCube(zone.transform.position, size);
 
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(load.transform.GetChild(0).transform.position, 1.3f / 2);
-        }
-    }
+    //            Gizmos.color = Color.red;
+    //            Gizmos.DrawWireSphere(load.transform.GetChild(0).transform.position, 1.3f / 2);
+    //        }
+    //    }
+    //}
 #endif
 
     /// <summary>
@@ -387,7 +416,9 @@ public class AIGuideBehaviour : MonoBehaviour
     {
         var toCrane = (LoadCollected) ? DropZonePos - CranePos : LoadPos - CranePos;
         var sourceToCrane = HookPos - CranePos;
+        //TODO: Tested seems to get stuck in swing 
         //var sourceToCrane = (LoadCollected) ? LoadPos - CranePos : HookPos - CranePos;
+
         var targetPos = (LoadCollected) ? DropZonePos : LoadPos;
         Target = targetPos == DropZonePos ? m_dropZone.name : m_load.name;
         var source = (LoadCollected) ? LoadPos : HookPos;
@@ -410,6 +441,7 @@ public class AIGuideBehaviour : MonoBehaviour
             }
             else
             {
+                //Guide the crane
                 if (CheckHoistCalled == false)
                 {
                     SendToAnimator.ResetTrigger(gameObject, "Stop");
