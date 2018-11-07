@@ -12,6 +12,7 @@ public class GuideHelper : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
+        Index = 0;
         foreach (var rigger in FindObjectsOfType<AIGuideBehaviour>())
         {
             Riggers.Add(rigger);

@@ -31,13 +31,19 @@ public class TyingUpStateMachine : StateMachineBehaviour
             {
                 GuideHelper.Index++;
             }
+            AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
+            AIGuideBehaviour.WalkingtoStartPos = true;
         }
         else
         {
             guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>().HookUp(AI.m_hook.GetComponent<Collider>());
         }
-        AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
-        AIGuideBehaviour.WalkingtoStartPos = true;
+
+        if (guideHelper.Loads[GuideHelper.Index].GetComponent<HingeJoint>() == true)
+        {
+            AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
+            AIGuideBehaviour.WalkingtoStartPos = true;
+        }
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove(). Code that processes and affects root motion should be implemented here
