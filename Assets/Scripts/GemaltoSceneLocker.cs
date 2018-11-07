@@ -24,8 +24,18 @@ public class GemaltoSceneLocker : MonoBehaviour
         "3sY3KQL+YFo8nTMjc5UENg==";
 
 
+    private void Start()
+    {
+        print(KeyIsConnected());
+        {
+            print("Hello World!");
+            print(Hasp.Fingerprint);
+        }
+    }
 
-    private bool KetIsConnected()
+
+
+    private bool KeyIsConnected()
     {
         HaspFeature feature = HaspFeature.Default;
 
@@ -42,7 +52,7 @@ public class GemaltoSceneLocker : MonoBehaviour
 
     private bool KeyDateIsValid()
     {
-        if (KetIsConnected() == false) return false;
+        if (KeyIsConnected() == false) return false;
 
         System.DateTime time = System.DateTime.Now;
         HaspStatus status = hasp.GetRtc(ref time);
@@ -72,6 +82,7 @@ public class GemaltoSceneLocker : MonoBehaviour
 
         string info = null;
         HaspStatus status = Hasp.GetInfo(scope, format, vendorCode, ref info);
+
 
         return HaspStatus.StatusOk == status;
     }
