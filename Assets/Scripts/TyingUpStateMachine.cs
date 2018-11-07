@@ -24,8 +24,6 @@ public class TyingUpStateMachine : StateMachineBehaviour
     {
         AI.m_startedTying = false;
         AI.m_tyingComplete = true;
-        AI.StoreHookPos = AI.HookPos;
-        AI.StartCheckHoist();
         if (AIGuideBehaviour.LoadCollected)
         {
             guideHelper.Loads[GuideHelper.Index].GetComponentInChildren<HookLoop>().Drop();
