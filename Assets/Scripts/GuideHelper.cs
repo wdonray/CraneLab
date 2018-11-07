@@ -43,9 +43,13 @@ public class GuideHelper : MonoBehaviour
         {
             foreach (var rigger in Riggers)
             {
-                StartCoroutine(rigger.PauseAnimator(1));
-                SendToAnimator.ResetAllTriggers(rigger.gameObject);
-                SendToAnimator.SendTrigger(rigger.gameObject, "JobComplete");
+                rigger._complete = true;
+                if (rigger.m_tieOnly == false)
+                {
+                    StartCoroutine(rigger.PauseAnimator(1));
+                    SendToAnimator.ResetAllTriggers(rigger.gameObject);
+                    SendToAnimator.SendTrigger(rigger.gameObject, "JobComplete");
+                }
             }
         }
     }

@@ -8,6 +8,7 @@ using UnityEngine.AI;
 
 public class AIGuideBehaviour : MonoBehaviour
 {
+    public string Target;
     public Transform m_dropZone;
     public Transform m_load;
     public Transform m_hook;
@@ -17,7 +18,7 @@ public class AIGuideBehaviour : MonoBehaviour
     [HideInInspector] public NavMeshAgent Agent;
     [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, CheckHoistCalled;
     public static bool WalkingToTarget, WalkingtoStartPos, LoadCollected;
-    public bool m_tieOnly, m_dead;
+    public bool m_tieOnly, m_dead, _complete;
     private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist;
     private GuideHelper _guideHelper;
     private float _height;
@@ -45,9 +46,12 @@ public class AIGuideBehaviour : MonoBehaviour
 
     void LateUpdate()
     {
-        if (!m_dead)
+        if (!_complete)
         {
-            GuideCrane(4, 1, 1);
+            if (!m_dead)
+            {
+                GuideCrane(4, 1, 1);
+            }
         }
     }
 
@@ -83,12 +87,14 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <summary>
     ///     Gets the angle between the crane and the player and sets trigger to the correct direction
     /// </summary>
-    /// <param name="toHook"></param>
+    /// <param name="source"></param>
     /// <param name="toPlayer"></param>
     /// <param name="angle"></param>
-    private bool Swing(Vector3 toHook, Vector3 toPlayer, int angle)
+    private bool Swing(Vector3 source, Vector3 toPlayer, int angle)
     {
-        var angleBetween = Vector3.SignedAngle(new Vector3(toHook.x, 0, toHook.z).normalized, new Vector3(toPlayer.x, 0, toPlayer.z).normalized, new Vector3(0, 1, 0));
+        var angleBetween = Vector3.SignedAngle(new Vector3(source.x, 0, source.z).normalized,
+            new Vector3(toPlayer.x, 0, toPlayer.z).normalized, new Vector3(0, 1, 0));
+
         var shouldntMove = angleBetween < angle && angleBetween > -angle;
 
         if (shouldntMove)
@@ -251,93 +257,113 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="target"></param>
     private void Tie(Vector3 target)
     {
-        if (m_tyingComplete == false)
+        if (m_dead)
         {
-            var dir = transform.position - target;
-            if (WalkingToTarget)
-            {
-                Agent.stoppingDistance = .01f;
-                //Rotate towards target
-                var targetRotation = Quaternion.LookRotation(target - transform.position);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
-                Agent.isStopped = false;
-                //Walk to target and stop a distance away
-                Agent.SetDestination(target + (dir.normalized * TargetDistance));
-                Debug.DrawRay(target + (dir.normalized * TargetDistance), Vector3.up, Color.cyan);
-                SendToAnimator.SendTriggerForce(gameObject, "Walk");
-            }
-
-            if (LoadCollected)
-            {
-                var zone = _guideHelper.Zones[GuideHelper.Index];
-                var load = _guideHelper.Loads[GuideHelper.Index];
-
-                if (Physics.OverlapBox(target, zone.transform.localScale / 2, zone.transform.rotation).Contains(load.transform.GetChild(2).GetComponent<Collider>()))
-                {
-                    //Crane in range of target, walk to target
-                    WalkingToTarget = true;
-                }
-            }
-            else
-            {
-                if (Physics.OverlapSphere(target, 1.3f).Contains(m_hook.GetComponent<Collider>()))
-                {
-                    //Crane in range of target, walk to target
-                    WalkingToTarget = true;
-                }
-            }
-
-            var dist = Vector3.Distance(transform.position, target + (dir.normalized * TargetDistance));
-            if (dist <= Agent.stoppingDistance)
-            {
-                //In Range of Load, start walking towards it and begin tying up
-                WalkingToTarget = false;
-                SendToAnimator.ResetTrigger(gameObject, "Walk");
-                SendToAnimator.SendTrigger(gameObject, "TyingUp");
-            }
+            Death();
         }
         else
         {
-            Agent.stoppingDistance = .5f;
-
-            if (Vector3.Distance(transform.position, GuideStartPos) > Agent.stoppingDistance)
+            if (m_tyingComplete == false)
             {
-                if (WalkingtoStartPos)
+                var dir = transform.position - target;
+                if (WalkingToTarget)
                 {
-                    //Rotate towards start pos and walk there
-                    var targetRotation = Quaternion.LookRotation(GuideStartPos - transform.position);
+                    Agent.stoppingDistance = .01f;
+                    //Rotate towards target
+                    var targetRotation = Quaternion.LookRotation(target - transform.position);
                     transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
                     Agent.isStopped = false;
-                    Agent.SetDestination(GuideStartPos);
+                    //Walk to target and stop a distance away
+                    Agent.SetDestination(target + (dir.normalized * TargetDistance));
+                    Debug.DrawRay(target + (dir.normalized * TargetDistance), Vector3.up, Color.cyan);
                     SendToAnimator.SendTriggerForce(gameObject, "Walk");
+                }
+
+                if (LoadCollected)
+                {
+                    var zone = _guideHelper.Zones[GuideHelper.Index];
+                    var load = _guideHelper.Loads[GuideHelper.Index];
+                    var size = new Vector3(zone.transform.localScale.x, zone.transform.localScale.y / 3, zone.transform.localScale.z);
+                    if (Physics.OverlapBox(target, size, zone.transform.rotation).Contains(load.transform.GetChild(2).GetComponent<Collider>()))
+                    {
+                        //Crane in range of target, walk to target
+                        WalkingToTarget = true;
+                        CheckAndTie(target, dir);
+                    }
+                }
+                else
+                {
+                    var load = _guideHelper.Loads[GuideHelper.Index];
+                    if (Physics.OverlapSphere(load.transform.GetChild(0).transform.position, 1.3f / 2).Contains(m_hook.GetComponent<Collider>()))
+                    {
+                        //Crane in range of target, walk to target
+                        WalkingToTarget = true;
+                        CheckAndTie(target, dir);
+                    }
                 }
             }
             else
             {
-                //Stop walking and idle
-                WalkingtoStartPos = false;
-                Agent.isStopped = true;
-                SendToAnimator.ResetTrigger(gameObject, "Walk");
-                SendToAnimator.SendTrigger(gameObject, "Idle");
-                m_tyingComplete = false;
+                Agent.stoppingDistance = .5f;
+
+                if (Vector3.Distance(transform.position, GuideStartPos) > Agent.stoppingDistance)
+                {
+                    if (WalkingtoStartPos)
+                    {
+                        //Rotate towards start pos and walk there
+                        var targetRotation = Quaternion.LookRotation(GuideStartPos - transform.position);
+                        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation,
+                            RotationSpeed * Time.deltaTime);
+                        Agent.isStopped = false;
+                        Agent.SetDestination(GuideStartPos);
+                        SendToAnimator.SendTriggerForce(gameObject, "Walk");
+                    }
+                }
+                else
+                {
+                    //Stop walking and idle
+                    WalkingtoStartPos = false;
+                    Agent.isStopped = true;
+                    SendToAnimator.ResetTrigger(gameObject, "Walk");
+                    SendToAnimator.SendTrigger(gameObject, "Idle");
+                    m_tyingComplete = false;
+                }
             }
+        }
+    }
+
+    /// <summary>
+    ///     Check if in range of target and begin tying up
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="dir"></param>
+    private void CheckAndTie(Vector3 target, Vector3 dir)
+    {
+        var dist = Vector3.Distance(transform.position, target + (dir.normalized * TargetDistance));
+        if (dist <= Agent.stoppingDistance)
+        {
+            //In Range of Load, start walking towards it and begin tying up
+            WalkingToTarget = false;
+            SendToAnimator.ResetTrigger(gameObject, "Walk");
+            SendToAnimator.SendTrigger(gameObject, "TyingUp");
         }
     }
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
-        var load = _guideHelper.Loads[GuideHelper.Index];
-        var zone = _guideHelper.Zones[GuideHelper.Index];
-        if (LoadCollected)
+        if (_guideHelper != null)
         {
+            var load = _guideHelper.Loads[GuideHelper.Index];
+            var zone = _guideHelper.Zones[GuideHelper.Index];
+
+            var size = new Vector3(zone.transform.localScale.x, zone.transform.localScale.y / 3,
+                zone.transform.localScale.z);
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireCube(zone.transform.position, zone.transform.localScale / 2);
-        }
-        else
-        {
+            Gizmos.DrawWireCube(zone.transform.position, size);
+
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(load.transform.position, 1.3f);
+            Gizmos.DrawWireSphere(load.transform.GetChild(0).transform.position, 1.3f / 2);
         }
     }
 #endif
@@ -360,48 +386,46 @@ public class AIGuideBehaviour : MonoBehaviour
     private void GuideCrane(float swingAngle, float hoistInOutDist, float hoistLowerDist)
     {
         var toCrane = (LoadCollected) ? DropZonePos - CranePos : LoadPos - CranePos;
-        var hookToCrane = HookPos - CranePos;
-
+        var sourceToCrane = HookPos - CranePos;
+        //var sourceToCrane = (LoadCollected) ? LoadPos - CranePos : HookPos - CranePos;
         var targetPos = (LoadCollected) ? DropZonePos : LoadPos;
+        Target = targetPos == DropZonePos ? m_dropZone.name : m_load.name;
         var source = (LoadCollected) ? LoadPos : HookPos;
 
-        if (m_startedTying == false)
+        if (m_tieOnly)
+        {
+            if (m_startedTying == false)
+            {
+                FaceCrane(0.9f);
+                Tie(targetPos);
+            }
+        }
+        else
         {
             FaceCrane(0.9f);
-
-            //If you are not tying, guide the crane
-            if (!m_tieOnly)
+            //If the other AI is walking AI holds up stop
+            if (WalkingToTarget || WalkingtoStartPos)
             {
-                //If the other AI is walking not tying AI holds up stop
-                if (WalkingToTarget || WalkingtoStartPos)
+                Stop();
+            }
+            else
+            {
+                if (CheckHoistCalled == false)
                 {
-                    Stop();
-                }
-                else
-                {
-                    if (CheckHoistCalled == false)
+                    SendToAnimator.ResetTrigger(gameObject, "Stop");
+                    if (!Swing(sourceToCrane.normalized, toCrane.normalized, (int) swingAngle))
                     {
-                        SendToAnimator.ResetTrigger(gameObject, "Stop");
-                        if (!Swing(hookToCrane.normalized, toCrane.normalized, (int)swingAngle))
+                        if (!RaiseLowerBoom(source, targetPos))
                         {
-                            if (!RaiseLowerBoom(source, targetPos))
+                            if (!HoistInOut(source, targetPos, hoistInOutDist))
                             {
-                                if (!HoistInOut(source, targetPos, hoistInOutDist))
+                                if (!HoistOrLower(source, targetPos, hoistLowerDist))
                                 {
-                                    if (!HoistOrLower(source, targetPos, hoistLowerDist))
-                                    {
-
-                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-            else
-            {
-                //Else tie if needed
-                Tie(targetPos);
             }
         }
     }
