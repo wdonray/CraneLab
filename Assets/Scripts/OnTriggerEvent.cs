@@ -81,4 +81,10 @@ public class OnTriggerEvent : MonoBehaviour
 
         print(collisionObject.name);
     }
+
+    public void InvokeButtonOnClick(UnityEngine.UI.Button button)
+    {
+        if (button.interactable == false) return;
+        button.onClick.Invoke();
+    }
 }

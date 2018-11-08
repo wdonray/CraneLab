@@ -1864,8 +1864,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4062471383140700}
   - component: {fileID: 20258415995904988}
-  - component: {fileID: 92331388838092720}
-  - component: {fileID: 132915867592659804}
   - component: {fileID: 114692768506049614}
   m_Layer: 8
   m_Name: _Stats
@@ -6429,7 +6427,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1429491517606054}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.193201, y: 0.8579996, z: -0.18430114}
+  m_LocalPosition: {x: -3.2118, y: 0.876, z: -0.184}
   m_LocalScale: {x: 0.075, y: 0.075, z: 0.075}
   m_Children:
   - {fileID: 4017255439425406}
@@ -15188,13 +15186,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!92 &92331388838092720
-Behaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1346576901223322}
-  m_Enabled: 1
 --- !u!95 &95290359390761608
 Animator:
   serializedVersion: 3
@@ -27346,12 +27337,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_MethodName: ReloadCurrentSceneAsync
-        m_Mode: 1
+        m_MethodName: GoToSceneAsync
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -27750,29 +27741,6 @@ Behaviour:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1237552848805198}
   m_Enabled: 0
---- !u!132 &132915867592659804
-GUIText:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1346576901223322}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Text: 
-  m_Anchor: 0
-  m_Alignment: 0
-  m_PixelOffset: {x: 0, y: 0}
-  m_LineSpacing: 1
-  m_TabSize: 4
-  m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-  m_Material: {fileID: 0}
-  m_FontSize: 32
-  m_FontStyle: 1
-  m_Color:
-    serializedVersion: 2
-    rgba: 4278221311
-  m_PixelCorrect: 1
-  m_RichText: 1
 --- !u!135 &135172645642976408
 SphereCollider:
   m_ObjectHideFlags: 1
