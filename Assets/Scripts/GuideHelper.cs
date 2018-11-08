@@ -47,9 +47,14 @@ public class GuideHelper : MonoBehaviour
                 rigger._complete = true;
                 if (rigger.m_tieOnly == false)
                 {
-                    StartCoroutine(rigger.PauseAnimator(1));
+                    SendToAnimator.stop = false;
                     SendToAnimator.ResetAllTriggers(rigger.gameObject);
                     SendToAnimator.SendTrigger(rigger.gameObject, "JobComplete");
+                }
+                else
+                {
+                    rigger.Agent.isStopped = true;
+                    SendToAnimator.SendTrigger(rigger.gameObject, "Idle");
                 }
             }
         }
