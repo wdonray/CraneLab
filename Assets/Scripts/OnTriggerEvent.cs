@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Collider))]
+//[RequireComponent(typeof(Collider))]
 public class OnTriggerEvent : MonoBehaviour
 {
     public string m_Tag = "";
-
+    [SerializeField] private GameObject Helmet, ThrowHand;
     [Space]
 
     [SerializeField]
@@ -23,12 +23,12 @@ public class OnTriggerEvent : MonoBehaviour
     private GameObject collisionObject;
     private bool canTrigger = true;
     private int objectsInTrigger = 0;
+    private bool attached = false;
 
-
-    void Start ()
+    void Start()
     {
         //GetComponent<Collider>().isTrigger = true;
-	}
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -80,6 +80,28 @@ public class OnTriggerEvent : MonoBehaviour
             collisionObject.transform.parent = null;
 
         print(collisionObject.name);
+    }
+    
+    public void Grab()
+    {
+        StartCoroutine(AttachToHand());
+    }
+
+    private IEnumerator AttachToHand()
+    {
+        while (attached)
+        {
+            Helmet.transform.position = ThrowHand.transform.position;
+            Helmet.GetComponent<Rigidbody>().isKinematic = true;
+            yield return new WaitForEndOfFrame();
+        }
+        Helmet.GetComponent<Rigidbody>().isKinematic = false;
+        Helmet.GetComponent<Rigidbody>().AddForce(Vector3.forward * 2f);
+    }
+
+    public void Throw()
+    {
+        attached = false;
     }
 
     public void InvokeButtonOnClick(UnityEngine.UI.Button button)

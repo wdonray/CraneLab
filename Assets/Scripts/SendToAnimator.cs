@@ -6,6 +6,7 @@ public class SendToAnimator
 {
     public static bool stop;
     private static string m_oldValue;
+    private static bool sentOnce;
 
     public static void SendTrigger(GameObject sender, string value)
     {
@@ -62,6 +63,16 @@ public class SendToAnimator
         foreach (AnimatorControllerParameter parameter in m_animator.parameters)
         {
             m_animator.ResetTrigger(parameter.name);
+        }
+    }
+
+    public static void SendTriggerOnce(GameObject sender, string value)
+    {
+        var m_animator = sender.GetComponent<Animator>();
+        if (sentOnce == false)
+        {
+            sentOnce = true;
+            m_animator.SetTrigger(value);
         }
     }
 }

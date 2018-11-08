@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
+using Mouledoux.Callback;
+using Mouledoux.Components;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -16,23 +18,22 @@ public class AIGuideBehaviour : MonoBehaviour
     public float RotationSpeed, TargetDistance = 2f;
     [HideInInspector] public Vector3 GuideStartPos, StoreHookPos;
     [HideInInspector] public NavMeshAgent Agent;
-    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, CheckHoistCalled;
+    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, CheckHoistCalled, Emergancy;
     public static bool WalkingToTarget, WalkingtoStartPos, LoadCollected;
     public bool m_tieOnly, m_dead, _complete;
-    private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist;
+    private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist, _tearTriggered, _tearFailed, _tearPassed;
     private GuideHelper _guideHelper;
     private float _height;
-
     public Vector3 CranePos => m_crane.transform.position;
     public Vector3 HookPos => m_hook.position;
     public Vector3 LoadPos => m_load.position;
     public Vector3 DropZonePos => m_dropZone.position;
     public Vector3 LookAtCrane => new Vector3(CranePos.x, transform.position.y, CranePos.z);
     public Vector3 LookAtLoad => new Vector3(LoadPos.x, transform.position.y, LoadPos.z);
-    public Vector3 LookatHook => new Vector3(HookPos.x, transform.position.y, HookPos.z);
+    public Vector3 LookAtHook => new Vector3(HookPos.x, transform.position.y, HookPos.z);
     public Vector3 LookAtStart => new Vector3(GuideStartPos.x, transform.position.y, GuideStartPos.z);
 
-    void Awake()
+    void Start()
     {
         ResetStaticVariables();
         _height = 2;
@@ -41,7 +42,12 @@ public class AIGuideBehaviour : MonoBehaviour
         transform.LookAt(LookAtCrane);
         StoreHookPos = HookPos;
         if (!m_tieOnly)
+        {
             StartCheckHoist();
+            var id = gameObject.GetInstanceID();
+            Mediator.instance.NotifySubscribers(id.ToString(), new Packet());
+        }
+
         _guideHelper = FindObjectOfType<GuideHelper>();
     }
 
@@ -278,11 +284,46 @@ public class AIGuideBehaviour : MonoBehaviour
     ///     If the crane is in range of the target walk over and start the tying animation
     /// </summary>
     /// <param name="target"></param>
-    private void Tie(Vector3 target)
+    /// <param name="tearTriggered"></param>
+    /// <param name="passed"></param>
+    /// <param name="failed"></param>
+    private void Tie(Vector3 target, bool tearTriggered, bool passed, bool failed)
     {
         if (m_dead)
         {
             Death();
+        }
+        else if (tearTriggered)
+        {
+            LoadCollected = false;
+            if (passed)
+            {
+                var dir = transform.position - target;
+                Agent.stoppingDistance = .5f;
+                var targetRotation = Quaternion.LookRotation(target - transform.position);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
+                Agent.isStopped = false;
+                //Walk to target and stop a distance away
+                Agent.SetDestination(target + (dir.normalized * TargetDistance));
+                Debug.DrawRay(target + (dir.normalized * TargetDistance), Vector3.up, Color.cyan);
+                SendToAnimator.SendTriggerForce(gameObject, "Walk");
+                CheckAndTie(target, dir);
+            }
+            else
+            {
+                WalkingtoStartPos = false;
+                WalkingToTarget = false;
+                Agent.isStopped = true;
+                SendToAnimator.SendTrigger(gameObject, "Idle");
+            }
+
+            if (failed)
+            {
+                WalkingtoStartPos = false;
+                WalkingToTarget = false;
+                Agent.isStopped = true;
+                SendToAnimator.SendTrigger(gameObject, "Idle");
+            }
         }
         else
         {
@@ -376,25 +417,25 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <summary>
     ///     Drawing the load and zone collision area
     /// </summary>
-    private void OnDrawGizmos()
-    {
-        if (_complete == false)
-        {
-            if (_guideHelper != null)
-            {
-                var load = _guideHelper.Loads[(GuideHelper.Index > 2) ? 2 : GuideHelper.Index];
-                var zone = _guideHelper.Zones[(GuideHelper.Index > 2) ? 2 : GuideHelper.Index];
+    //private void OnDrawGizmos()
+    //{
+    //    if (_complete == false)
+    //    {
+    //        if (_guideHelper != null)
+    //        {
+    //            var load = _guideHelper.Loads[(GuideHelper.Index > 2) ? 2 : GuideHelper.Index];
+    //            var zone = _guideHelper.Zones[(GuideHelper.Index > 2) ? 2 : GuideHelper.Index];
 
-                var size = new Vector3(zone.transform.localScale.x, .1f,
-                    zone.transform.localScale.z);
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawWireCube(zone.transform.position, size);
+    //            var size = new Vector3(zone.transform.localScale.x, .1f,
+    //                zone.transform.localScale.z);
+    //            Gizmos.color = Color.yellow;
+    //            Gizmos.DrawWireCube(zone.transform.position, size);
 
-                Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(load.transform.GetChild(0).transform.position, 1.3f / 2);
-            }
-        }
-    }
+    //            Gizmos.color = Color.red;
+    //            Gizmos.DrawWireSphere(load.transform.GetChild(0).transform.position, 1.3f / 2);
+    //        }
+    //    }
+    //}
 #endif
 
     /// <summary>
@@ -421,12 +462,26 @@ public class AIGuideBehaviour : MonoBehaviour
         Target = targetPos == DropZonePos ? m_dropZone.name : m_load.transform.parent.name;
         var source = (LoadCollected) ? LoadPos : HookPos;
 
+        if (_guideHelper.tearEnabled)
+        {
+            if (GuideHelper.Index < _guideHelper.LoadToZone.Count)
+            {
+                _tearTriggered = _guideHelper.Loads[GuideHelper.Index].transform.parent
+                    .GetComponentInChildren<TearTest>()._distanceReached;
+                _tearFailed = _guideHelper.Loads[GuideHelper.Index].transform.parent.GetComponentInChildren<TearTest>()
+                    ._failed;
+                _tearPassed = _guideHelper.Loads[GuideHelper.Index].transform.parent.GetComponentInChildren<TearTest>()
+                    ._passed;
+            }
+        }
+
+
         if (m_tieOnly)
         {
             if (m_startedTying == false)
             {
                 FaceCrane(0.9f);
-                Tie(targetPos);
+                Tie(targetPos, _tearTriggered, _tearPassed, _tearFailed);
             }
         }
         else
@@ -436,6 +491,25 @@ public class AIGuideBehaviour : MonoBehaviour
             if (WalkingToTarget || WalkingtoStartPos)
             {
                 Stop();
+            }
+            else if (_tearTriggered)
+            {
+                if (_tearFailed)
+                {
+                    SendToAnimator.SendTriggerOnce(gameObject, "Failed");
+                }
+                else if (_tearPassed)
+                {
+                    GuideHelper.Index = _guideHelper.LoadToZone.Count;
+                }
+                else
+                {
+                    if (Emergancy == false)
+                    {
+                        Emergancy = true;
+                        SendToAnimator.SendTrigger(gameObject, "EmergancyStop");
+                    }
+                }
             }
             else
             {
@@ -514,6 +588,8 @@ public class AIGuideBehaviour : MonoBehaviour
     private bool Check(float height)
     {
         var dist = HookPos.y - StoreHookPos.y;
+        if (Emergancy)
+            return true;
         return (dist > height);
     }
 

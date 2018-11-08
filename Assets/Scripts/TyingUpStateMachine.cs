@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Mouledoux.Callback;
+using Mouledoux.Components;
 using UnityEngine;
 
 public class TyingUpStateMachine : StateMachineBehaviour
@@ -30,6 +32,8 @@ public class TyingUpStateMachine : StateMachineBehaviour
             if (GuideHelper.Index < guideHelper.LoadToZone.Count)
             {
                 GuideHelper.Index++;
+                guideHelper.reached = true;
+                Mediator.instance.NotifySubscribers(AI.gameObject.GetInstanceID().ToString(), new Packet());
             }
             AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
             AIGuideBehaviour.WalkingtoStartPos = true;

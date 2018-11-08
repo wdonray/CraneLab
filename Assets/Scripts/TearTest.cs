@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Leap;
 using Leap.Unity;
 using Obi;
 using UnityEngine;
@@ -19,8 +20,8 @@ public class TearTest : MonoBehaviour
     public ObiRope Rope;
     private IEnumerator _coroutine;
 
-    private bool _running, _distanceReached;
-    public static bool _failed, _passed;
+    [HideInInspector] public bool _running, _distanceReached;
+    public bool _failed, _passed;
     private float minTemp, maxTemp;
     // Use this for initialization
     void Awake()
@@ -155,6 +156,7 @@ public class TearTest : MonoBehaviour
 
     void OnCollisionStay(Collision other)
     {
+        if (other.transform.tag == "Hook") return;
         if (_distanceReached)
         {
             if (!_failed && _running == false)
