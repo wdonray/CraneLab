@@ -81,7 +81,7 @@ public class OnTriggerEvent : MonoBehaviour
 
         print(collisionObject.name);
     }
-
+    
     public void Grab()
     {
         StartCoroutine(AttachToHand());
@@ -98,8 +98,15 @@ public class OnTriggerEvent : MonoBehaviour
         Helmet.GetComponent<Rigidbody>().isKinematic = false;
         Helmet.GetComponent<Rigidbody>().AddForce(Vector3.forward * 2f);
     }
+
     public void Throw()
     {
         attached = false;
+    }
+
+    public void InvokeButtonOnClick(UnityEngine.UI.Button button)
+    {
+        if (button.interactable == false) return;
+        button.onClick.Invoke();
     }
 }
