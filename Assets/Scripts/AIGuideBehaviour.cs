@@ -209,9 +209,9 @@ public class AIGuideBehaviour : MonoBehaviour
         hookToCrane.y = 0;
         targetToCrane.y = 0;
 
-        var m_hoist = (source.y < target.y - .5f);
+        var hoist = (source.y < target.y - .5f);
 
-        if (m_hoist)
+        if (hoist)
         {
             if ((hookToCrane.magnitude > targetToCrane.magnitude) && (hookToCrane - targetToCrane).magnitude > 1)
             {
@@ -376,25 +376,25 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <summary>
     ///     Drawing the load and zone collision area
     /// </summary>
-    //private void OnDrawGizmos()
-    //{
-    //    if (_complete == false)
-    //    {
-    //        if (_guideHelper != null)
-    //        {
-    //            var load = _guideHelper.Loads[GuideHelper.Index];
-    //            var zone = _guideHelper.Zones[GuideHelper.Index];
+    private void OnDrawGizmos()
+    {
+        if (_complete == false)
+        {
+            if (_guideHelper != null)
+            {
+                var load = _guideHelper.Loads[(GuideHelper.Index > 2) ? 2 : GuideHelper.Index];
+                var zone = _guideHelper.Zones[(GuideHelper.Index > 2) ? 2 : GuideHelper.Index];
 
-    //            var size = new Vector3(zone.transform.localScale.x, .1f,
-    //                zone.transform.localScale.z);
-    //            Gizmos.color = Color.yellow;
-    //            Gizmos.DrawWireCube(zone.transform.position, size);
+                var size = new Vector3(zone.transform.localScale.x, .1f,
+                    zone.transform.localScale.z);
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireCube(zone.transform.position, size);
 
-    //            Gizmos.color = Color.red;
-    //            Gizmos.DrawWireSphere(load.transform.GetChild(0).transform.position, 1.3f / 2);
-    //        }
-    //    }
-    //}
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(load.transform.GetChild(0).transform.position, 1.3f / 2);
+            }
+        }
+    }
 #endif
 
     /// <summary>
@@ -415,12 +415,10 @@ public class AIGuideBehaviour : MonoBehaviour
     private void GuideCrane(float swingAngle, float hoistInOutDist, float hoistLowerDist)
     {
         var toCrane = (LoadCollected) ? DropZonePos - CranePos : LoadPos - CranePos;
-        var sourceToCrane = HookPos - CranePos;
-        //TODO: Tested seems to get stuck in swing 
-        //var sourceToCrane = (LoadCollected) ? LoadPos - CranePos : HookPos - CranePos;
+        var sourceToCrane = (LoadCollected) ? LoadPos - CranePos : HookPos - CranePos;
 
         var targetPos = (LoadCollected) ? DropZonePos : LoadPos;
-        Target = targetPos == DropZonePos ? m_dropZone.name : m_load.name;
+        Target = targetPos == DropZonePos ? m_dropZone.name : m_load.transform.parent.name;
         var source = (LoadCollected) ? LoadPos : HookPos;
 
         if (m_tieOnly)
@@ -445,7 +443,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 if (CheckHoistCalled == false)
                 {
                     SendToAnimator.ResetTrigger(gameObject, "Stop");
-                    if (!Swing(sourceToCrane.normalized, toCrane.normalized, (int) swingAngle))
+                    if (!Swing(sourceToCrane.normalized, toCrane.normalized, (int)swingAngle))
                     {
                         if (!RaiseLowerBoom(source, targetPos))
                         {

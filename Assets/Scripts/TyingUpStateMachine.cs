@@ -39,10 +39,13 @@ public class TyingUpStateMachine : StateMachineBehaviour
             guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>().HookUp(AI.m_hook.GetComponent<Collider>());
         }
 
-        if (guideHelper.Loads[GuideHelper.Index].GetComponent<HingeJoint>() == true)
+        if (GuideHelper.Index < guideHelper.LoadToZone.Count)
         {
-            AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
-            AIGuideBehaviour.WalkingtoStartPos = true;
+            if (guideHelper.Loads[GuideHelper.Index].GetComponent<HingeJoint>() == true)
+            {
+                AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
+                AIGuideBehaviour.WalkingtoStartPos = true;
+            }
         }
     }
 
