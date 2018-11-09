@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Leap;
 using Leap.Unity;
+using Mouledoux.Callback;
+using Mouledoux.Components;
 using Obi;
 using UnityEngine;
 using UnityEngine.AI;
@@ -122,6 +124,7 @@ public class TearTest : MonoBehaviour
             {
                 _failed = true;
                 Debug.Log("You failed!");
+                Mediator.instance.NotifySubscribers("EmergancyCallback", new Packet());
             }
         }
     }
@@ -151,6 +154,7 @@ public class TearTest : MonoBehaviour
         {
             _passed = true;
             Debug.Log("You Passed!");
+            Mediator.instance.NotifySubscribers("EmergancyCallback", new Packet());
         }
     }
 

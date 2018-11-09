@@ -33,7 +33,10 @@ public class TyingUpStateMachine : StateMachineBehaviour
             {
                 GuideHelper.Index++;
                 guideHelper.reached = true;
-                Mediator.instance.NotifySubscribers(AI.gameObject.GetInstanceID().ToString(), new Packet());
+                if (guideHelper.tearEnabled == false)
+                {
+                    Mediator.instance.NotifySubscribers(AI.gameObject.GetInstanceID().ToString(), new Packet());
+                }
             }
             AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
             AIGuideBehaviour.WalkingtoStartPos = true;
