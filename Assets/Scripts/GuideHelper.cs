@@ -96,13 +96,13 @@ public class GuideHelper : MonoBehaviour
                 {
                     CurrentTaskText.text = "Good Job";
                     yield return new WaitForSeconds(2);
-                    CurrentTaskText.text = "Move (" + LoadToZone[Index].Load.transform.parent.name + ") to " +
+                    CurrentTaskText.text = "Move " + LoadToZone[Index].Load.transform.parent.name + " to " +
                                            LoadToZone[Index].Zone.transform.tag;
                     reached = false;
                 }
                 else
                 {
-                    CurrentTaskText.text = "Move (" + LoadToZone[Index].Load.transform.parent.name + ") to " +
+                    CurrentTaskText.text = "Move " + LoadToZone[Index].Load.transform.parent.name + " to " +
                                            LoadToZone[Index].Zone.transform.tag;
                 }
             }

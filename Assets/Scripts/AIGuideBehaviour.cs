@@ -391,16 +391,11 @@ public class AIGuideBehaviour : MonoBehaviour
                     SendToAnimator.SendTrigger(gameObject, "Idle");
                     m_tyingComplete = false;
 
-                    if (_guideHelper.tearEnabled == false)
+                    if (GetComponent<TeleportAI>())
                     {
-                        if (_guideHelper.reached)
-                        {
-                            if (GetComponent<TeleportAI>())
-                            {
-                                Mediator.instance.NotifySubscribers("Teleport", new Packet());
-                            }
-                        }
+                        Mediator.instance.NotifySubscribers("Teleport", new Packet());
                     }
+
                 }
             }
         }
