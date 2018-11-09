@@ -32,4 +32,9 @@ public class TeleportAI : MonoBehaviour
         gameObject.transform.position = TeleportHere.position;
         gameObject.GetComponent<NavMeshAgent>().enabled = true;
     }
+
+    public void OnDestroy()
+    {
+        _subscriptions.UnsubscribeAll();
+    }
 }
