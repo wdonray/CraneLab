@@ -11,6 +11,8 @@ public class RandomMovement : MonoBehaviour
     public Vector3 randomPos;
     public Vector3 newPos;
 
+    public float offset;
+
     [Space]
 
     public Vector3 eulerMovement;
@@ -33,7 +35,7 @@ public class RandomMovement : MonoBehaviour
         Vector3 newPos = initPosition;
         newPos.y += Mathf.Cos(Time.time) * sliderStrength;
 
-        Vector3 newEulers = eulerMovement * Mathf.Sin(Time.time) * sliderStrength;
+        Vector3 newEulers = eulerMovement * Mathf.Sin(Time.time + offset) * sliderStrength;
         Quaternion newRot = Quaternion.Euler(newEulers);
 
         transform.localPosition = newPos;
