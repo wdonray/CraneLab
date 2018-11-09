@@ -367,9 +367,9 @@ public class AIGuideBehaviour : MonoBehaviour
             }
             else
             {
-                Agent.stoppingDistance = .5f;
-
-                if (Vector3.Distance(transform.position, GuideStartPos) > Agent.stoppingDistance)
+                Agent.stoppingDistance = 1f;
+                var dist = Vector3.Distance(transform.position, GuideStartPos);
+                if (dist > Agent.stoppingDistance)
                 {
                     if (WalkingtoStartPos)
                     {
@@ -516,6 +516,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 {
                     if (Emergancy == false)
                     {
+                        SendToAnimator.stop = false;
                         Emergancy = true;
                         SendToAnimator.SendTrigger(gameObject, "EmergancyStop");
                     }
