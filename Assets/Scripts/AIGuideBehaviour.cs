@@ -41,14 +41,13 @@ public class AIGuideBehaviour : MonoBehaviour
         Agent = GetComponent<NavMeshAgent>();
         transform.LookAt(LookAtCrane);
         StoreHookPos = HookPos;
+        _guideHelper = FindObjectOfType<GuideHelper>();
         if (!m_tieOnly)
         {
             StartCheckHoist();
             var id = gameObject.GetInstanceID();
             Mediator.instance.NotifySubscribers(id.ToString(), new Packet());
         }
-
-        _guideHelper = FindObjectOfType<GuideHelper>();
     }
 
     void LateUpdate()
@@ -391,6 +390,17 @@ public class AIGuideBehaviour : MonoBehaviour
                     SendToAnimator.ResetTrigger(gameObject, "Walk");
                     SendToAnimator.SendTrigger(gameObject, "Idle");
                     m_tyingComplete = false;
+
+                    if (_guideHelper.tearEnabled == false)
+                    {
+                        if (_guideHelper.reached)
+                        {
+                            if (GetComponent<TeleportAI>())
+                            {
+                                Mediator.instance.NotifySubscribers("Teleport", new Packet());
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -486,7 +496,7 @@ public class AIGuideBehaviour : MonoBehaviour
         }
         else
         {
-            FaceCrane(0.9f);
+            //FaceCrane(0.9f);
             //If the other AI is walking AI holds up stop
             if (WalkingToTarget || WalkingtoStartPos)
             {
@@ -595,6 +605,7 @@ public class AIGuideBehaviour : MonoBehaviour
 
     public void StartCheckHoist()
     {
-        StartCoroutine(CheckHoist());
+        if (!Emergancy)
+            StartCoroutine(CheckHoist());
     }
 }

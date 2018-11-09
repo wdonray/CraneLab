@@ -17,7 +17,7 @@ public class GuideHelper : MonoBehaviour
     public Dictionary<int, LoadAndZone> LoadToZone = new Dictionary<int, LoadAndZone>();
 
     private Mediator.Subscriptions _subscriptions;
-    private Callback _taskCallback;
+    private Callback _taskCallback, _emergancyCallback;
 
     public bool reached, tearEnabled;
     // Use this for initialization
@@ -36,6 +36,9 @@ public class GuideHelper : MonoBehaviour
         {
             LoadToZone.Add(i, new LoadAndZone(Loads[i], Zones[i]));
         }
+
+        _emergancyCallback += UpdateEmergancyText;
+        _subscriptions.Subscribe("EmergancyCallback", _emergancyCallback);
     }
 
     // Update is called once per frame
@@ -77,9 +80,11 @@ public class GuideHelper : MonoBehaviour
     private void UpdateTaskText(Packet emptyPacket)
     {
         CurrentTaskText.gameObject.SetActive(true);
+
         StartCoroutine(ChangeText());
         StartCoroutine(WaitAxisCheck());
     }
+
 
     private IEnumerator ChangeText()
     {
@@ -163,8 +168,19 @@ public class GuideHelper : MonoBehaviour
         }
     }
 
-    public void GrabHat()
+    public void UpdateEmergancyText(Packet emptyPacket)
     {
-
+        CurrentTaskText.gameObject.SetActive(true);
+        if (tearEnabled)
+        {
+            if (LoadToZone[Index].Load.transform.parent.GetComponentInChildren<TearTest>()._passed)
+            {
+                CurrentTaskText.text = "You Passed!";
+            }
+            else if (LoadToZone[Index].Load.transform.parent.GetComponentInChildren<TearTest>()._failed)
+            {
+                CurrentTaskText.text = "You Failed!";
+            }
+        }
     }
 }
