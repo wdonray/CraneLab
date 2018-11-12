@@ -14,35 +14,39 @@ using Random = UnityEngine.Random;
 
 public class TearTest : MonoBehaviour
 {
-    public float Minimum, Maximum;
-    public float TimePicked;
+    //public float Minimum, Maximum;
+    //public float TimePicked;
     public float DistanceToTrigger;
-    private Vector3 _startPos, _currentPos;
+    private Vector3 _startPos;
+    private Vector3 _currentPos => transform.position;
+
     [SerializeField] private List<ObiRope> _ropes = new List<ObiRope>();
     public ObiRope Rope;
     private IEnumerator _coroutine;
 
     [HideInInspector] public bool _running, _distanceReached;
     public bool _failed, _passed;
-    private float minTemp, maxTemp;
+    //private float minTemp, maxTemp;
+    private float _delay;
     // Use this for initialization
     void Awake()
     {
-        Minimum = 0;
-        Maximum = 0;
-        _coroutine = StartBreakEvent(Minimum, Maximum, () => Break(2));
+        //Minimum = 0;
+        //Maximum = 0;
+        //_coroutine = StartBreakEvent(Minimum, Maximum, () => Break(2));
+        _coroutine = BreakCoRo(2);
         foreach (var obi in transform.parent.GetComponentsInChildren<ObiRope>())
         {
             _ropes.Add(obi);
         }
         Rope = _ropes[Random.Range(0, _ropes.Count)];
         _startPos = transform.position;
-        StartBreakCoroutine();
+        //StartBreakCoroutine();
     }
 
     void Update()
     {
-        _currentPos = transform.position;
+        //_currentPos = transform.position;
     }
 
     public void StartBreakCoroutine()
@@ -55,77 +59,61 @@ public class TearTest : MonoBehaviour
         StopCoroutine(_coroutine);
     }
 
-    public IEnumerator StartBreakEvent(float minimum, float maximum, UnityAction action)
+    private IEnumerator Start()
     {
-        TimePicked = Random.Range(minimum, maximum);
-        yield return new WaitForSeconds(TimePicked);
-        Debug.Log("Time reached for " + transform.name);
         yield return new WaitUntil(CheckDistanceAway);
         _distanceReached = true;
-        Debug.Log("Distance reached for " + transform.name);
-        action.Invoke();
-        Debug.Log(transform.name + ", " + Rope + " broke!");
+        StartBreakCoroutine();
     }
 
-    private void Break(int ropeIndex)
+    private IEnumerator BreakCoRo(int ropeIndex)
     {
-        if (_passed == false)
+        Rope.DistanceConstraints.RemoveFromSolver(null);
+        Rope.BendingConstraints.RemoveFromSolver(null);
+
+        Rope.Tear(ropeIndex);
+
+        Rope.BendingConstraints.AddToSolver(this);
+        Rope.DistanceConstraints.AddToSolver(this);
+
+        Rope.BendingConstraints.SetActiveConstraints();
+
+        Rope.Solver.UpdateActiveParticles();
+
+        _ropes.Remove(Rope);
+
+        if (_ropes.Count > 0)
         {
-            Rope.DistanceConstraints.RemoveFromSolver(null);
-            Rope.BendingConstraints.RemoveFromSolver(null);
-
-            Rope.Tear(ropeIndex);
-
-            Rope.BendingConstraints.AddToSolver(this);
-            Rope.DistanceConstraints.AddToSolver(this);
-
-            Rope.BendingConstraints.SetActiveConstraints();
-
-            Rope.Solver.UpdateActiveParticles();
-
-            _ropes.Remove(Rope);
-            if (_ropes.Count > 0)
+            Rope = _ropes[Random.Range(0, _ropes.Count)];
+            switch (_ropes.Count)
             {
-                Rope = _ropes[Random.Range(0, _ropes.Count)];
-                switch (_ropes.Count)
-                {
-                    case 3:
-                        {
-                            minTemp = 20;
-                            maxTemp = 20;
-                            //minTemp = Minimum / 3.5f;
-                            //maxTemp = Maximum / 4;
-                        }
-                        break;
-                    case 2:
-                        {
-                            minTemp = 2;
-                            maxTemp = 2;
-                        }
-                        break;
-                    case 1:
-                        {
-                            minTemp = 1;
-                            maxTemp = 1;
-                        }
-                        break;
-                    default:
-                        {
-                            //minTemp /= 3.5f;
-                            //maxTemp /= 4;
-                        }
-                        break;
-                }
-
-                _coroutine = StartBreakEvent(minTemp, maxTemp, () => Break(2));
-                StartBreakCoroutine();
+                case 3:
+                    {
+                        _delay = 20;
+                    }
+                    break;
+                case 2:
+                    {
+                        _delay = 2;
+                    }
+                    break;
+                case 1:
+                    {
+                        _delay = 1;
+                    }
+                    break;
+                default:
+                    break;
             }
-            else
-            {
-                _failed = true;
-                Debug.Log("You failed!");
-                Mediator.instance.NotifySubscribers("EmergancyCallback", new Packet());
-            }
+            yield return new WaitForSeconds(_delay);
+            _coroutine = BreakCoRo(2);
+            StartBreakCoroutine();
+        }
+        else
+        {
+            _failed = true;
+            Debug.Log("You failed!");
+            Mediator.instance.NotifySubscribers("EmergancyCallback", new Packet());
         }
     }
 
@@ -149,7 +137,17 @@ public class TearTest : MonoBehaviour
     {
         _running = true;
         yield return new WaitForSeconds(0.3f);
-        yield return new WaitUntil(CheckIfStopped);
+        float timer = 0;
+
+        while (timer < 3f)
+        {
+            if (CheckIfStopped()) timer += Time.deltaTime;
+            else timer = 0f;
+            yield return null;
+
+            if (_failed) yield break;
+        }
+
         if (_failed == false)
         {
             _passed = true;
@@ -160,7 +158,8 @@ public class TearTest : MonoBehaviour
 
     void OnCollisionStay(Collision other)
     {
-        if (other.transform.tag == "Hook") return;
+        if (other.transform.CompareTag("Link") || other.transform.CompareTag("Hook")) return;
+
         if (_distanceReached)
         {
             if (!_failed && _running == false)
