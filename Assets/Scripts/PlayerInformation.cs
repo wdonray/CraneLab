@@ -1,14 +1,29 @@
-﻿using System.Collections;
+﻿using UnityEngine;
+
+using System.IO;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class PlayerInformation : MonoBehaviour
 {
-    public static string firstName;
-    public static string lastName;
-    public static string email;
+    private string firstName;
+    private string lastName;
+    private string email;
+
+    private List<string> keysUsed = new List<string>();
+    private Dictionary<string, string> scenarioScoreData = new Dictionary<string, string>();
+    
+
+
+    public string getFirstName => firstName;
+    public string getLastName => lastName;
+    public string getEmail => email;
+
 
     public UnityEngine.Events.UnityEvent onStart;
+
 
     public void Start()
     {
@@ -43,6 +58,25 @@ public class PlayerInformation : MonoBehaviour
         SetEmail(input.text);
     }
 
+
+    public void NameToTextBox(UnityEngine.UI.Text textBox)
+    {
+        textBox.text = firstName + " " + lastName;
+    }
+    public void DateToTextBox(UnityEngine.UI.Text textBox)
+    {
+        textBox.text = Date();
+    }
+
+
+    private string Date()
+    {
+        return System.DateTime.Now.Year.ToString() + "/ " +
+            System.DateTime.Now.Month.ToString() + "/ " +
+            System.DateTime.Now.Day.ToString();
+    }
+
+
     public void AppendToFile()
     {
         string filePath = Application.dataPath + "/" + "UserInformation.csv";
@@ -60,20 +94,15 @@ public class PlayerInformation : MonoBehaviour
         file.Close();
     }
 
-    private string Date()
-    {
-        return System.DateTime.Now.Year.ToString() + "/ " +
-            System.DateTime.Now.Month.ToString() + "/ " +
-            System.DateTime.Now.Day.ToString();
-    }
 
-    public void NameToTextBox(UnityEngine.UI.Text textBox)
-    {
-        textBox.text = firstName + " " + lastName;
-    }
 
-    public void DateToTextBox(UnityEngine.UI.Text textBox)
+    private struct ScenarioData
     {
-        textBox.text = Date();
+        public string date;
+
+        public bool pass;
+        public string score;
+
+        public string keyID;
     }
 }
