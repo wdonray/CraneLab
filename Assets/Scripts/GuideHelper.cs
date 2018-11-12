@@ -20,6 +20,8 @@ public class GuideHelper : MonoBehaviour
     private Callback _taskCallback, _emergancyCallback;
 
     public bool reached, tearEnabled;
+
+    [SerializeField] private string PassedMessage, FailedMessage;
     // Use this for initialization
     void Awake()
     {
@@ -176,10 +178,12 @@ public class GuideHelper : MonoBehaviour
             if (LoadToZone[Index].Load.transform.parent.GetComponentInChildren<TearTest>()._passed)
             {
                 CurrentTaskText.text = "You Passed!";
+                Mediator.instance.NotifySubscribers(PassedMessage, new Packet());
             }
             else if (LoadToZone[Index].Load.transform.parent.GetComponentInChildren<TearTest>()._failed)
             {
                 CurrentTaskText.text = "You Failed!";
+                Mediator.instance.NotifySubscribers(FailedMessage, new Packet());
             }
         }
     }
