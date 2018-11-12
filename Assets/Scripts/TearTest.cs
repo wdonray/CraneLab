@@ -84,32 +84,36 @@ public class TearTest : MonoBehaviour
 
         if (_ropes.Count > 0)
         {
-            Rope = _ropes[Random.Range(0, _ropes.Count)];
-            switch (_ropes.Count)
+            if (!_passed && !_failed)
             {
-                case 3:
+                Rope = _ropes[Random.Range(0, _ropes.Count)];
+                switch (_ropes.Count)
+                {
+                    case 3:
                     {
                         _delay = 20;
                     }
-                    break;
-                case 2:
+                        break;
+                    case 2:
                     {
                         _delay = 2;
                     }
-                    break;
-                case 1:
+                        break;
+                    case 1:
                     {
                         _delay = 1;
                     }
-                    break;
-                default:
-                    break;
+                        break;
+                    default:
+                        break;
+                }
+
+                yield return new WaitForSeconds(_delay);
+                _coroutine = BreakCoRo(2);
+                StartBreakCoroutine();
             }
-            yield return new WaitForSeconds(_delay);
-            _coroutine = BreakCoRo(2);
-            StartBreakCoroutine();
         }
-        else
+        else if(!_passed)
         {
             _failed = true;
             Debug.Log("You failed!");

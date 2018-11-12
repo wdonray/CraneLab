@@ -8,8 +8,9 @@ using UnityEngine.AI;
 public class TeleportAI : MonoBehaviour
 {
     private Mediator.Subscriptions _subscriptions;
-    public Transform TeleportHere;
+    public Transform TeleportHere, StartPos;
     private Callback _teleportCallback;
+    private bool teleported;
 
 	// Use this for initialization
 	void Awake () {
@@ -25,12 +26,26 @@ public class TeleportAI : MonoBehaviour
 
     private IEnumerator StartTeleport()
     {
-        gameObject.GetComponent<NavMeshAgent>().enabled = false;
-        yield return new WaitForEndOfFrame();
-        gameObject.GetComponent<AIGuideBehaviour>().GuideStartPos = TeleportHere.position;
-        gameObject.transform.parent = TeleportHere;
-        gameObject.transform.position = TeleportHere.position;
-        gameObject.GetComponent<NavMeshAgent>().enabled = true;
+        if (teleported == false)
+        {
+            gameObject.GetComponent<NavMeshAgent>().enabled = false;
+            yield return new WaitForEndOfFrame();
+            gameObject.GetComponent<AIGuideBehaviour>().GuideStartPos = TeleportHere.position;
+            gameObject.transform.parent = TeleportHere;
+            gameObject.transform.position = TeleportHere.position;
+            gameObject.GetComponent<NavMeshAgent>().enabled = true;
+            teleported = true;
+        }
+        else
+        {
+            gameObject.GetComponent<NavMeshAgent>().enabled = false;
+            yield return new WaitForEndOfFrame();
+            gameObject.GetComponent<AIGuideBehaviour>().GuideStartPos = StartPos.position;
+            gameObject.transform.parent = StartPos.parent;
+            gameObject.transform.position = StartPos.position;
+            gameObject.GetComponent<NavMeshAgent>().enabled = true;
+            teleported = false;
+        }
     }
 
     public void OnDestroy()

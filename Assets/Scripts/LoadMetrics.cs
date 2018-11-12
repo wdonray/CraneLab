@@ -14,17 +14,28 @@ public class LoadMetrics : MonoBehaviour
 
     [SerializeField] private Rigidbody LiftRigidBody => FindParentRigidBody<Rigidbody>(gameObject);
 
+    public bool _ranIntoSomething = false;
+
+    private Vector3 StoreStartLift;
+
+    private bool _heightReached = false;
+
     // Use this for initialization
     private void Awake()
     {
         if (LiftRigidBody == null)
             Destroy(this);
 
+        if (LiftRigidBody != null)
+            LiftRigidBody.gameObject.AddComponent<LiftColliderBridge>().Init(this);
+
+        StoreStartLift = LiftRigidBody.transform.position;
+
         FailChecks = new List<BoolChecks>
         {
             MovedTooFast,
             LeaningTooMuch,
-            ChangeVelocityTooFast
+            ChangeVelocityTooFast,
         };
     }
 
@@ -32,6 +43,14 @@ public class LoadMetrics : MonoBehaviour
     {
         StartCoroutine(StoreLastFramesVelocity());
         yield break;
+    }
+
+    private void Update()
+    {
+        if (Check(2))
+        {
+            _heightReached = true;
+        }
     }
 
     /// <summary>
@@ -78,6 +97,12 @@ public class LoadMetrics : MonoBehaviour
         }
     }
 
+    /// <summary>
+    ///     Finds the first parent above this object with a rigidbody
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="startObject"></param>
+    /// <returns></returns>
     public static T FindParentRigidBody<T>(GameObject startObject) where  T : Component
     {
         T returnObject = null;
@@ -89,5 +114,29 @@ public class LoadMetrics : MonoBehaviour
             returnObject = currentObject.GetComponent<T>();
         }
         return returnObject;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="height"></param>
+    /// <returns></returns>
+    private bool Check(float height)
+    {
+        var dist = LiftRigidBody.transform.position.y - StoreStartLift.y;
+        return (dist > height);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="other"></param>
+    public void OnCollisionEnter(Collision other)
+    {
+        if (_heightReached)
+        {
+            if (other.transform.CompareTag("Hook") || other.transform.CompareTag("Link")) return;
+            _ranIntoSomething = true;
+        }
     }
 }
