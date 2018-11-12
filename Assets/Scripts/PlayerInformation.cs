@@ -16,13 +16,13 @@ public class PlayerInformation : MonoBehaviour
     private Dictionary<string, string> scenarioScoreData = new Dictionary<string, string>();
     
 
-
     public string getFirstName => firstName;
     public string getLastName => lastName;
     public string getEmail => email;
 
 
     public UnityEngine.Events.UnityEvent onStart;
+
 
 
     public void Start()
@@ -93,10 +93,26 @@ public class PlayerInformation : MonoBehaviour
         file.WriteLine(info);
         file.Close();
     }
+    
+
+    private void SerializePlaytimeData(PlayTimeData ptd)
+    {
+        FileStream fs = new FileStream("dbmm.dat", FileMode.OpenOrCreate);
+        BinaryFormatter formatter = new BinaryFormatter();
+
+        formatter.Serialize(fs, ptd);
+    }
+
+    private void DeserializePlaytimeData(out PlayTimeData ptd)
+    {
+        FileStream fs = new FileStream("dbmm.dat", FileMode.Open);
+        BinaryFormatter formatter = new BinaryFormatter();
+
+        ptd = (PlayTimeData)formatter.Deserialize(fs);
+    }
 
 
-
-    private struct ScenarioData
+    private struct PlayTimeData
     {
         public string date;
 
