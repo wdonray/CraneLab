@@ -1,56 +1,57 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using Mouledoux.Callback;
 using Mouledoux.Components;
 using UnityEngine;
 
+[RequireComponent(typeof(LoadMetrics))]
+[RequireComponent(typeof(QuickSubscribe))]
 public class PersonalLiftTest : MonoBehaviour
 {
-    public float SpeedLimit;
-    private Rigidbody _rigidbody => GetComponent<Rigidbody>();
-    private List<bool> _failChecks;
+    [SerializeField] private string FailedMessage;
+    private LoadMetrics _loadMetrics => GetComponent<LoadMetrics>();
     private Mediator.Subscriptions _subscriptions;
-    private Callback _failedPersonalLift;
+    private readonly Callback _failedPersonalLift;
+    private QuickSubscribe _quickSubscribe => GetComponent<QuickSubscribe>();
 
-    void Awake ()
-	{
-        _subscriptions= new Mediator.Subscriptions();
-
-        _failChecks = new List<bool>
-        {
-            MovedTooFast()
-        };
-
-        _subscriptions.Subscribe("FailedPersonalLift", _failedPersonalLift);
-	}
-	
-	IEnumerator Start () {
-		yield return new WaitUntil(CheckForAnyFails);
-        Mediator.instance.NotifySubscribers("FailedPersonalLift", new Packet());
-	}
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    private bool MovedTooFast()
+    void Awake()
     {
-        return _rigidbody.velocity.magnitude >= SpeedLimit;
+        _quickSubscribe.m_subMessage = FailedMessage;
+        _subscriptions = new Mediator.Subscriptions();
+        _subscriptions.Subscribe(FailedMessage, _failedPersonalLift);
+    }
+
+    private IEnumerator Start()
+    {
+        yield return new WaitUntil(CheckForAnyFails);
+        Mediator.instance.NotifySubscribers(FailedMessage, new Packet());
     }
 
     /// <summary>
-    /// 
+    ///     Checks if any bool in the list is true
     /// </summary>
     /// <returns></returns>
     private bool CheckForAnyFails()
     {
-        foreach (var check in _failChecks)
+        if (_loadMetrics != null)
         {
-            if (check)
+            foreach (var check in _loadMetrics.FailChecks)
             {
-                return true;
+                if (check())
+                {
+                    print(check.Method.Name + "(): Failed this check ");
+                    return true;
+                }
             }
         }
+
         return false;
+    }
+
+    public void OnDestroy()
+    {
+        _subscriptions.UnsubscribeAll();
     }
 }
