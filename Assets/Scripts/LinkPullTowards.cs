@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class LinkPullTowards : MonoBehaviour
 {
-    public float PullForce = 700;
+    public float PullForce;
+
+    private void Awake()
+    {
+        PullForce = 400;
+    }
 
     public void OnTriggerStay(Collider other)
     {

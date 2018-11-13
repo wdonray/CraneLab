@@ -7,26 +7,32 @@ public class HookLoop : MonoBehaviour
 {
     Rigidbody m_hook;
     HingeJoint m_connectionJoint;
-
+    public bool CanAutoHook = false;
     float grabTimer = 0;
 
-    //Mouledoux.Components.Mediator.Subscriptions subscription = new Mouledoux.Components.Mediator.Subscriptions();
-    //Mouledoux.Callback.Callback onDrop;
+    Mouledoux.Components.Mediator.Subscriptions subscription = new Mouledoux.Components.Mediator.Subscriptions();
+    Mouledoux.Callback.Callback onDrop;
 
-    //private void Awake()
-    //{
-    //    OnEnable();
-    //}
+    private void Awake()
+    {
+        OnEnable();
+    }
 
-    //private void OnEnable()
-    //{
-    //    onDrop += Drop;
-    //    subscription.Subscribe("drop", onDrop);
-    //}
+    private void OnEnable()
+    {
+        onDrop += Drop;
+        subscription.Subscribe("drop", onDrop);
+    }
 
     void Update()
     {
         grabTimer -= Time.deltaTime;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag("Hook") || !CanAutoHook) return;
+        HookUp(other);
     }
 
 
@@ -65,13 +71,13 @@ public class HookLoop : MonoBehaviour
         grabTimer = 3f;
     }
 
-    //public void Drop(Mouledoux.Callback.Packet packet)
-    //{
-    //    Drop();
-    //}
+    public void Drop(Mouledoux.Callback.Packet packet)
+    {
+        Drop();
+    }
 
-    //private void OnDestroy()
-    //{
-    //    subscription.UnsubscribeAll();
-    //}
+    private void OnDestroy()
+    {
+        subscription.UnsubscribeAll();
+    }
 }
