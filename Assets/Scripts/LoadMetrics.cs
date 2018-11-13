@@ -1,41 +1,41 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LoadMetrics : MonoBehaviour
 {
     public delegate bool BoolChecks();
 
-    public List<BoolChecks> FailChecks;
-
-    public float SpeedLimit = 10, VelocityLimit = 10;
-
+    private bool _heightReached;
+    public bool RanIntoSomething;
     private Vector3 _storeLastFrame;
-
+    public List<BoolChecks> FailChecks;
+    public float SpeedLimit = 10, VelocityLimit = 10;
+    private Vector3 _storeStartLift;
     [SerializeField] private Rigidbody LiftRigidBody => FindParentRigidBody<Rigidbody>(gameObject);
-
-    public bool _ranIntoSomething = false;
-
-    private Vector3 StoreStartLift;
-
-    private bool _heightReached = false;
+    private GuideHelper _guideHelper => FindObjectOfType<GuideHelper>();
+    public Transform GroundTransform;
 
     // Use this for initialization
     private void Awake()
     {
         if (LiftRigidBody == null)
+        {
             Destroy(this);
+        }
 
         if (LiftRigidBody != null)
+        {
+            _storeStartLift = LiftRigidBody.transform.position;
             LiftRigidBody.gameObject.AddComponent<LiftColliderBridge>().Init(this);
-
-        StoreStartLift = LiftRigidBody.transform.position;
+        }
 
         FailChecks = new List<BoolChecks>
         {
             MovedTooFast,
             LeaningTooMuch,
-            ChangeVelocityTooFast,
+            ChangeVelocityTooFast
         };
     }
 
@@ -47,10 +47,7 @@ public class LoadMetrics : MonoBehaviour
 
     private void Update()
     {
-        if (Check(2))
-        {
-            _heightReached = true;
-        }
+        if (Check(2)) _heightReached = true;
     }
 
     /// <summary>
@@ -103,7 +100,7 @@ public class LoadMetrics : MonoBehaviour
     /// <typeparam name="T"></typeparam>
     /// <param name="startObject"></param>
     /// <returns></returns>
-    public static T FindParentRigidBody<T>(GameObject startObject) where  T : Component
+    public static T FindParentRigidBody<T>(GameObject startObject) where T : Component
     {
         T returnObject = null;
         var currentObject = startObject;
@@ -113,30 +110,45 @@ public class LoadMetrics : MonoBehaviour
             currentObject = currentObject.transform.parent.gameObject;
             returnObject = currentObject.GetComponent<T>();
         }
+
         return returnObject;
     }
 
     /// <summary>
-    /// 
+    ///     Check if above certain height
     /// </summary>
     /// <param name="height"></param>
     /// <returns></returns>
     private bool Check(float height)
     {
-        var dist = LiftRigidBody.transform.position.y - StoreStartLift.y;
-        return (dist > height);
+        var dist = LiftRigidBody.transform.position.y - _storeStartLift.y;
+        return dist > height;
     }
 
     /// <summary>
-    /// 
+    ///     If crashed into something 
     /// </summary>
     /// <param name="other"></param>
     public void OnCollisionEnter(Collision other)
     {
         if (_heightReached)
         {
-            if (other.transform.CompareTag("Hook") || other.transform.CompareTag("Link")) return;
-            _ranIntoSomething = true;
+            if (other.transform.CompareTag("Hook") || other.transform.CompareTag("Link"))
+            {
+                return;
+            }
+
+            if (_guideHelper.Zones[0].transform.GetComponentsInChildren<Transform>().Any(child => other.transform.CompareTag(child.tag)))
+            {
+                return;
+            }
+
+            if (other.transform == GroundTransform)
+            {
+                return;
+            }
+
+            RanIntoSomething = true;
         }
     }
 }

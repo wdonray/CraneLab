@@ -21,8 +21,9 @@ public class AIGuideBehaviour : MonoBehaviour
     [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, CheckHoistCalled, Emergancy;
     public static bool WalkingToTarget, WalkingtoStartPos, LoadCollected;
     public bool m_tieOnly, m_dead, _complete;
-    private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist, _tearTriggered, _tearFailed, _tearPassed;
+    private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist, _tearTriggered, _tearFailed, _tearPassed, _liftFailed;
     private GuideHelper _guideHelper;
+    private AIGuideWalk _guideWalk;
     private float _height;
     public Vector3 CranePos => m_crane.transform.position;
     public Vector3 HookPos => m_hook.position;
@@ -42,6 +43,8 @@ public class AIGuideBehaviour : MonoBehaviour
         transform.LookAt(LookAtCrane);
         StoreHookPos = HookPos;
         _guideHelper = FindObjectOfType<GuideHelper>();
+        _guideWalk = gameObject.AddComponent<AIGuideWalk>();
+        _guideWalk.Agent = Agent;
         if (!m_tieOnly)
         {
             StartCheckHoist();
@@ -63,6 +66,7 @@ public class AIGuideBehaviour : MonoBehaviour
 
     public void ResetStaticVariables()
     {
+        SendToAnimator.sentOnce = false;
         WalkingToTarget = false;
         WalkingtoStartPos = false;
         LoadCollected = false;
@@ -244,41 +248,6 @@ public class AIGuideBehaviour : MonoBehaviour
         return false;
     }
 
-    //Old tie logic
-    //private void Tie(Vector3 target)
-    //{
-    //    if (m_tyingComplete == false)
-    //    {
-    //        if (m_targetReached == false)
-    //        {
-    //            // CRANE IN RANGE OF LOAD
-    //            if (Physics.OverlapSphere(target, .5f).Contains(m_hook.GetComponent<Collider>()))
-    //            {
-    //                transform.LookAt(cranePos);
-    //                m_targetReached = true;
-    //            }
-    //        }
-
-    //        if (m_targetReached)
-    //        {
-    //            Agent.SetDestination(target);
-    //            SendToAnimator.SendTrigger(gameObject, "Walk");
-    //        }
-
-    //        if (m_startedTying == false)
-    //        {
-    //            Agent.stoppingDistance = 1f;
-    //            if (Physics.OverlapSphere(target, Agent.stoppingDistance)
-    //                .Contains(transform.GetComponent<Collider>()))
-    //            {
-    //                m_startedTying = true;
-    //                Agent.isStopped = true;
-    //                SendToAnimator.SendTrigger(gameObject, "TyingUp");
-    //            }
-    //        }
-    //    }
-    //}
-
     /// <summary>
     ///     If the crane is in range of the target walk over and start the tying animation
     /// </summary>
@@ -288,6 +257,7 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="failed"></param>
     private void Tie(Vector3 target, bool tearTriggered, bool passed, bool failed)
     {
+        var dir = transform.position - target;
         if (m_dead)
         {
             Death();
@@ -297,49 +267,33 @@ public class AIGuideBehaviour : MonoBehaviour
             LoadCollected = false;
             if (passed)
             {
-                var dir = transform.position - target;
-                Agent.stoppingDistance = .5f;
-                var targetRotation = Quaternion.LookRotation(target - transform.position);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
-                Agent.isStopped = false;
                 //Walk to target and stop a distance away
-                Agent.SetDestination(target + (dir.normalized * TargetDistance));
-                Debug.DrawRay(target + (dir.normalized * TargetDistance), Vector3.up, Color.cyan);
-                SendToAnimator.SendTriggerForce(gameObject, "Walk");
+                _guideWalk.RotateTowards(target, RotationSpeed);
+                _guideWalk.WalkTowardsDistance(target, dir, .5f, TargetDistance);
                 CheckAndTie(target, dir);
             }
             else
             {
-                WalkingtoStartPos = false;
-                WalkingToTarget = false;
-                Agent.isStopped = true;
-                SendToAnimator.SendTrigger(gameObject, "Idle");
+                //Stop walking and idle
+                WalkingToTarget = false; WalkingtoStartPos = false;
+                _guideWalk.StopWalking();
             }
 
             if (failed)
             {
-                WalkingtoStartPos = false;
-                WalkingToTarget = false;
-                Agent.isStopped = true;
-                SendToAnimator.SendTrigger(gameObject, "Idle");
+                //Stop walking and idle
+                WalkingToTarget = false; WalkingtoStartPos = false;
+                _guideWalk.StopWalking();
             }
         }
         else
         {
             if (m_tyingComplete == false)
             {
-                var dir = transform.position - target;
                 if (WalkingToTarget)
                 {
-                    Agent.stoppingDistance = .5f;
-                    //Rotate towards target
-                    var targetRotation = Quaternion.LookRotation(target - transform.position);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
-                    Agent.isStopped = false;
-                    //Walk to target and stop a distance away
-                    Agent.SetDestination(target + (dir.normalized * TargetDistance));
-                    Debug.DrawRay(target + (dir.normalized * TargetDistance), Vector3.up, Color.cyan);
-                    SendToAnimator.SendTriggerForce(gameObject, "Walk");
+                    _guideWalk.RotateTowards(target, RotationSpeed);
+                    _guideWalk.WalkTowardsDistance(target, dir, .5f, TargetDistance);
                 }
 
                 if (LoadCollected)
@@ -367,30 +321,21 @@ public class AIGuideBehaviour : MonoBehaviour
             }
             else
             {
-                Agent.stoppingDistance = 1f;
                 var dist = Vector3.Distance(transform.position, GuideStartPos);
                 if (dist > Agent.stoppingDistance)
                 {
                     if (WalkingtoStartPos)
                     {
                         //Rotate towards start pos and walk there
-                        var targetRotation = Quaternion.LookRotation(GuideStartPos - transform.position);
-                        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation,
-                            RotationSpeed * Time.deltaTime);
-                        Agent.isStopped = false;
-                        Agent.SetDestination(GuideStartPos);
-                        SendToAnimator.SendTriggerForce(gameObject, "Walk");
+                        _guideWalk.RotateTowards(target, RotationSpeed);
+                        _guideWalk.WalkTowards(GuideStartPos, 1f);
                     }
                 }
                 else
                 {
                     //Stop walking and idle
-                    WalkingtoStartPos = false;
-                    Agent.isStopped = true;
-                    SendToAnimator.ResetTrigger(gameObject, "Walk");
-                    SendToAnimator.SendTrigger(gameObject, "Idle");
-                    m_tyingComplete = false;
-
+                    m_tyingComplete = false; WalkingtoStartPos = false;
+                    _guideWalk.StopWalking();
                     if (LoadCollected)
                     {
                         if (GetComponent<TeleportAI>())
@@ -420,31 +365,6 @@ public class AIGuideBehaviour : MonoBehaviour
         }
     }
 
-#if UNITY_EDITOR
-    /// <summary>
-    ///     Drawing the load and zone collision area
-    /// </summary>
-    //private void OnDrawGizmos()
-    //{
-    //    if (_complete == false)
-    //    {
-    //        if (_guideHelper != null)
-    //        {
-    //            var load = _guideHelper.Loads[(GuideHelper.Index > 2) ? 2 : GuideHelper.Index];
-    //            var zone = _guideHelper.Zones[(GuideHelper.Index > 2) ? 2 : GuideHelper.Index];
-
-    //            var size = new Vector3(zone.transform.localScale.x, .1f,
-    //                zone.transform.localScale.z);
-    //            Gizmos.color = Color.yellow;
-    //            Gizmos.DrawWireCube(zone.transform.position, size);
-
-    //            Gizmos.color = Color.red;
-    //            Gizmos.DrawWireSphere(load.transform.GetChild(0).transform.position, 1.3f / 2);
-    //        }
-    //    }
-    //}
-#endif
-
     /// <summary>
     ///     Calls this if the agent is hit
     /// </summary>
@@ -452,6 +372,18 @@ public class AIGuideBehaviour : MonoBehaviour
     {
         m_dead = true;
         SendToAnimator.SendTrigger(gameObject, "Death");
+    }
+
+    public void Failed()
+    {
+        SendToAnimator.SendTriggerOnce(gameObject, "Failed");
+    }
+
+    public void LiftFailed()
+    {
+        Mediator.instance.NotifySubscribers("EmergancyCallback", new Packet());
+        SendToAnimator.ResetAllTriggers(gameObject);
+        _liftFailed = true;
     }
 
     /// <summary>
@@ -503,7 +435,7 @@ public class AIGuideBehaviour : MonoBehaviour
             {
                 if (_tearFailed)
                 {
-                    SendToAnimator.SendTriggerOnce(gameObject, "Failed");
+                    Failed();
                 }
                 else if (_tearPassed)
                 {
@@ -518,6 +450,10 @@ public class AIGuideBehaviour : MonoBehaviour
                         SendToAnimator.SendTrigger(gameObject, "EmergancyStop");
                     }
                 }
+            }
+            else if (_liftFailed)
+            {
+                Failed();
             }
             else
             {
@@ -585,7 +521,7 @@ public class AIGuideBehaviour : MonoBehaviour
         SendToAnimator.ResetTrigger(gameObject, "Stop");
         SendToAnimator.stop = false;
         SendToAnimator.SendTriggerForce(gameObject, "Hoist");
-        yield return new WaitUntil(() => Check(_height));
+        yield return new WaitUntil(() => Check(_height) || _liftFailed);
         CheckHoistCalled = false;
     }
 

@@ -36,20 +36,20 @@ public class PersonalLiftTest : MonoBehaviour
     private bool CheckForAnyFails()
     {
         if (_loadMetrics == null) return false;
-        if (_loadMetrics._ranIntoSomething == false)
+        if (_loadMetrics.RanIntoSomething == false)
         {
             foreach (var check in _loadMetrics.FailChecks)
             {
                 if (check())
                 {
-                    print(check.Method.Name + "(): Failed this check ");
+                    print(check.Method.Name + "(): Failed this check");
                     return true;
                 }
             }
         }
         else
         {
-            print("RanIntoSomething: Failed this check ");
+            print("RanIntoSomething: Failed this check");
             return true;
         }
 

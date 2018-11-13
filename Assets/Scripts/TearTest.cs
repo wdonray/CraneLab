@@ -14,8 +14,6 @@ using Random = UnityEngine.Random;
 
 public class TearTest : MonoBehaviour
 {
-    //public float Minimum, Maximum;
-    //public float TimePicked;
     public float DistanceToTrigger;
     private Vector3 _startPos;
     private Vector3 _currentPos => transform.position;
@@ -26,14 +24,10 @@ public class TearTest : MonoBehaviour
 
     [HideInInspector] public bool _running, _distanceReached;
     public bool _failed, _passed;
-    //private float minTemp, maxTemp;
     private float _delay;
-    // Use this for initialization
+
     void Awake()
     {
-        //Minimum = 0;
-        //Maximum = 0;
-        //_coroutine = StartBreakEvent(Minimum, Maximum, () => Break(2));
         _coroutine = BreakCoRo(2);
         foreach (var obi in transform.parent.GetComponentsInChildren<ObiRope>())
         {
@@ -41,12 +35,6 @@ public class TearTest : MonoBehaviour
         }
         Rope = _ropes[Random.Range(0, _ropes.Count)];
         _startPos = transform.position;
-        //StartBreakCoroutine();
-    }
-
-    void Update()
-    {
-        //_currentPos = transform.position;
     }
 
     public void StartBreakCoroutine()
@@ -123,7 +111,7 @@ public class TearTest : MonoBehaviour
 
     void OnDestroy()
     {
-        StopBreakCoroutine();
+        StopAllCoroutines();
     }
 
     private bool CheckDistanceAway()
