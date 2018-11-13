@@ -6,7 +6,7 @@ public class SendToAnimator
 {
     public static bool stop;
     private static string m_oldValue;
-    private static bool sentOnce;
+    public static bool sentOnce;
 
     public static void SendTrigger(GameObject sender, string value)
     {

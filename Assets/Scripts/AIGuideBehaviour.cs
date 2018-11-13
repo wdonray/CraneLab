@@ -63,6 +63,7 @@ public class AIGuideBehaviour : MonoBehaviour
 
     public void ResetStaticVariables()
     {
+        SendToAnimator.sentOnce = false;
         WalkingToTarget = false;
         WalkingtoStartPos = false;
         LoadCollected = false;
@@ -244,41 +245,6 @@ public class AIGuideBehaviour : MonoBehaviour
         return false;
     }
 
-    //Old tie logic
-    //private void Tie(Vector3 target)
-    //{
-    //    if (m_tyingComplete == false)
-    //    {
-    //        if (m_targetReached == false)
-    //        {
-    //            // CRANE IN RANGE OF LOAD
-    //            if (Physics.OverlapSphere(target, .5f).Contains(m_hook.GetComponent<Collider>()))
-    //            {
-    //                transform.LookAt(cranePos);
-    //                m_targetReached = true;
-    //            }
-    //        }
-
-    //        if (m_targetReached)
-    //        {
-    //            Agent.SetDestination(target);
-    //            SendToAnimator.SendTrigger(gameObject, "Walk");
-    //        }
-
-    //        if (m_startedTying == false)
-    //        {
-    //            Agent.stoppingDistance = 1f;
-    //            if (Physics.OverlapSphere(target, Agent.stoppingDistance)
-    //                .Contains(transform.GetComponent<Collider>()))
-    //            {
-    //                m_startedTying = true;
-    //                Agent.isStopped = true;
-    //                SendToAnimator.SendTrigger(gameObject, "TyingUp");
-    //            }
-    //        }
-    //    }
-    //}
-
     /// <summary>
     ///     If the crane is in range of the target walk over and start the tying animation
     /// </summary>
@@ -419,31 +385,6 @@ public class AIGuideBehaviour : MonoBehaviour
             SendToAnimator.SendTrigger(gameObject, "TyingUp");
         }
     }
-
-#if UNITY_EDITOR
-    /// <summary>
-    ///     Drawing the load and zone collision area
-    /// </summary>
-    //private void OnDrawGizmos()
-    //{
-    //    if (_complete == false)
-    //    {
-    //        if (_guideHelper != null)
-    //        {
-    //            var load = _guideHelper.Loads[(GuideHelper.Index > 2) ? 2 : GuideHelper.Index];
-    //            var zone = _guideHelper.Zones[(GuideHelper.Index > 2) ? 2 : GuideHelper.Index];
-
-    //            var size = new Vector3(zone.transform.localScale.x, .1f,
-    //                zone.transform.localScale.z);
-    //            Gizmos.color = Color.yellow;
-    //            Gizmos.DrawWireCube(zone.transform.position, size);
-
-    //            Gizmos.color = Color.red;
-    //            Gizmos.DrawWireSphere(load.transform.GetChild(0).transform.position, 1.3f / 2);
-    //        }
-    //    }
-    //}
-#endif
 
     /// <summary>
     ///     Calls this if the agent is hit
