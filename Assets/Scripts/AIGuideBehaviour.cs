@@ -21,7 +21,7 @@ public class AIGuideBehaviour : MonoBehaviour
     [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, CheckHoistCalled, Emergancy;
     public static bool WalkingToTarget, WalkingtoStartPos, LoadCollected;
     public bool m_tieOnly, m_dead, _complete;
-    private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist, _tearTriggered, _tearFailed, _tearPassed;
+    private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist, _tearTriggered, _tearFailed, _tearPassed, _liftFailed;
     private GuideHelper _guideHelper;
     private AIGuideWalk _guideWalk;
     private float _height;
@@ -374,6 +374,18 @@ public class AIGuideBehaviour : MonoBehaviour
         SendToAnimator.SendTrigger(gameObject, "Death");
     }
 
+    public void Failed()
+    {
+        SendToAnimator.SendTriggerOnce(gameObject, "Failed");
+    }
+
+    public void LiftFailed()
+    {
+        Mediator.instance.NotifySubscribers("EmergancyCallback", new Packet());
+        SendToAnimator.ResetAllTriggers(gameObject);
+        _liftFailed = true;
+    }
+
     /// <summary>
     ///      Guide and or tie the crane using the functions created above
     /// </summary>
@@ -423,7 +435,7 @@ public class AIGuideBehaviour : MonoBehaviour
             {
                 if (_tearFailed)
                 {
-                    SendToAnimator.SendTriggerOnce(gameObject, "Failed");
+                    Failed();
                 }
                 else if (_tearPassed)
                 {
@@ -438,6 +450,10 @@ public class AIGuideBehaviour : MonoBehaviour
                         SendToAnimator.SendTrigger(gameObject, "EmergancyStop");
                     }
                 }
+            }
+            else if (_liftFailed)
+            {
+                Failed();
             }
             else
             {
@@ -505,7 +521,7 @@ public class AIGuideBehaviour : MonoBehaviour
         SendToAnimator.ResetTrigger(gameObject, "Stop");
         SendToAnimator.stop = false;
         SendToAnimator.SendTriggerForce(gameObject, "Hoist");
-        yield return new WaitUntil(() => Check(_height));
+        yield return new WaitUntil(() => Check(_height) || _liftFailed);
         CheckHoistCalled = false;
     }
 

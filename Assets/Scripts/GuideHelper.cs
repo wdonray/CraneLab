@@ -49,6 +49,10 @@ public class GuideHelper : MonoBehaviour
         ActiveLoadToZone(Index);
     }
 
+    /// <summary>
+    ///     Each riggers zone and load will be set unless the game is over and complete 
+    /// </summary>
+    /// <param name="index"></param>
     void ActiveLoadToZone(int index)
     {
         if (index < Loads.Count)
@@ -85,6 +89,10 @@ public class GuideHelper : MonoBehaviour
         }
     }
 
+    /// <summary>
+    ///     Start the change text event and wait for movement
+    /// </summary>
+    /// <param name="emptyPacket"></param>
     private void UpdateTaskText(Packet emptyPacket)
     {
         CurrentTaskText.gameObject.SetActive(true);
@@ -93,7 +101,10 @@ public class GuideHelper : MonoBehaviour
         StartCoroutine(WaitAxisCheck());
     }
 
-
+    /// <summary>
+    ///     Update the text based on the current game state
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator ChangeText()
     {
         if (CurrentTaskText.gameObject.activeInHierarchy)
@@ -120,6 +131,11 @@ public class GuideHelper : MonoBehaviour
             }
         }
     }
+
+    /// <summary>
+    ///     Wait for input from users
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator WaitAxisCheck()
     {
         var newAxisCheck = new AxisCheckStruct("RIGHT_VERTICAL", new UnityEvent(), StartTaskComplete, 0, 0.2f);
@@ -128,6 +144,10 @@ public class GuideHelper : MonoBehaviour
         newAxisCheck.OnComplete.Invoke();
     }
 
+    /// <summary>
+    ///     Turn text off and stop all coroutines
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator TaskOff()
     {
         yield return new WaitForSeconds(2);
@@ -135,6 +155,9 @@ public class GuideHelper : MonoBehaviour
         StopAllCoroutines();
     }
 
+    /// <summary>
+    ///     Start the task of coroutine
+    /// </summary>
     private void StartTaskComplete()
     {
         StartCoroutine(TaskOff());
@@ -145,6 +168,9 @@ public class GuideHelper : MonoBehaviour
         _subscriptions.UnsubscribeAll();
     }
 
+    /// <summary>
+    ///     Used to store and check axis information
+    /// </summary>
     public struct AxisCheckStruct
     {
         public string AxisString;
@@ -165,6 +191,9 @@ public class GuideHelper : MonoBehaviour
         }
     }
 
+    /// <summary>
+    ///     Store the current load and zone
+    /// </summary>
     public struct LoadAndZone
     {
         public GameObject Load, Zone;
@@ -176,6 +205,11 @@ public class GuideHelper : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    ///     If you passed or failed the tear test update this text
+    /// </summary>
+    /// <param name="emptyPacket"></param>
     public void UpdateEmergancyText(Packet emptyPacket)
     {
         CurrentTaskText.gameObject.SetActive(true);
@@ -191,6 +225,10 @@ public class GuideHelper : MonoBehaviour
                 CurrentTaskText.text = "You Failed!";
                 Mediator.instance.NotifySubscribers(FailedMessage, new Packet());
             }
+        }
+        else
+        {
+            CurrentTaskText.text = "You Failed!";
         }
     }
 }

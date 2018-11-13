@@ -42,14 +42,14 @@ public class PersonalLiftTest : MonoBehaviour
             {
                 if (check())
                 {
-                    print(check.Method.Name + "(): Failed this check ");
+                    print(check.Method.Name + "(): Failed this check");
                     return true;
                 }
             }
         }
         else
         {
-            print("RanIntoSomething: Failed this check ");
+            print("RanIntoSomething: Failed this check");
             return true;
         }
 
