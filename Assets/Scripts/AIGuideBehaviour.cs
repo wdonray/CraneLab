@@ -23,6 +23,7 @@ public class AIGuideBehaviour : MonoBehaviour
     public bool m_tieOnly, m_dead, _complete;
     private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist, _tearTriggered, _tearFailed, _tearPassed;
     private GuideHelper _guideHelper;
+    private AIGuideWalk _guideWalk;
     private float _height;
     public Vector3 CranePos => m_crane.transform.position;
     public Vector3 HookPos => m_hook.position;
@@ -42,6 +43,8 @@ public class AIGuideBehaviour : MonoBehaviour
         transform.LookAt(LookAtCrane);
         StoreHookPos = HookPos;
         _guideHelper = FindObjectOfType<GuideHelper>();
+        _guideWalk = gameObject.AddComponent<AIGuideWalk>();
+        _guideWalk.Agent = Agent;
         if (!m_tieOnly)
         {
             StartCheckHoist();
@@ -254,6 +257,7 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <param name="failed"></param>
     private void Tie(Vector3 target, bool tearTriggered, bool passed, bool failed)
     {
+        var dir = transform.position - target;
         if (m_dead)
         {
             Death();
@@ -263,49 +267,33 @@ public class AIGuideBehaviour : MonoBehaviour
             LoadCollected = false;
             if (passed)
             {
-                var dir = transform.position - target;
-                Agent.stoppingDistance = .5f;
-                var targetRotation = Quaternion.LookRotation(target - transform.position);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
-                Agent.isStopped = false;
                 //Walk to target and stop a distance away
-                Agent.SetDestination(target + (dir.normalized * TargetDistance));
-                Debug.DrawRay(target + (dir.normalized * TargetDistance), Vector3.up, Color.cyan);
-                SendToAnimator.SendTriggerForce(gameObject, "Walk");
+                _guideWalk.RotateTowards(target, RotationSpeed);
+                _guideWalk.WalkTowardsDistance(target, dir, .5f, TargetDistance);
                 CheckAndTie(target, dir);
             }
             else
             {
-                WalkingtoStartPos = false;
-                WalkingToTarget = false;
-                Agent.isStopped = true;
-                SendToAnimator.SendTrigger(gameObject, "Idle");
+                //Stop walking and idle
+                WalkingToTarget = false; WalkingtoStartPos = false;
+                _guideWalk.StopWalking();
             }
 
             if (failed)
             {
-                WalkingtoStartPos = false;
-                WalkingToTarget = false;
-                Agent.isStopped = true;
-                SendToAnimator.SendTrigger(gameObject, "Idle");
+                //Stop walking and idle
+                WalkingToTarget = false; WalkingtoStartPos = false;
+                _guideWalk.StopWalking();
             }
         }
         else
         {
             if (m_tyingComplete == false)
             {
-                var dir = transform.position - target;
                 if (WalkingToTarget)
                 {
-                    Agent.stoppingDistance = .5f;
-                    //Rotate towards target
-                    var targetRotation = Quaternion.LookRotation(target - transform.position);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
-                    Agent.isStopped = false;
-                    //Walk to target and stop a distance away
-                    Agent.SetDestination(target + (dir.normalized * TargetDistance));
-                    Debug.DrawRay(target + (dir.normalized * TargetDistance), Vector3.up, Color.cyan);
-                    SendToAnimator.SendTriggerForce(gameObject, "Walk");
+                    _guideWalk.RotateTowards(target, RotationSpeed);
+                    _guideWalk.WalkTowardsDistance(target, dir, .5f, TargetDistance);
                 }
 
                 if (LoadCollected)
@@ -333,30 +321,21 @@ public class AIGuideBehaviour : MonoBehaviour
             }
             else
             {
-                Agent.stoppingDistance = 1f;
                 var dist = Vector3.Distance(transform.position, GuideStartPos);
                 if (dist > Agent.stoppingDistance)
                 {
                     if (WalkingtoStartPos)
                     {
                         //Rotate towards start pos and walk there
-                        var targetRotation = Quaternion.LookRotation(GuideStartPos - transform.position);
-                        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation,
-                            RotationSpeed * Time.deltaTime);
-                        Agent.isStopped = false;
-                        Agent.SetDestination(GuideStartPos);
-                        SendToAnimator.SendTriggerForce(gameObject, "Walk");
+                        _guideWalk.RotateTowards(target, RotationSpeed);
+                        _guideWalk.WalkTowards(GuideStartPos, 1f);
                     }
                 }
                 else
                 {
                     //Stop walking and idle
-                    WalkingtoStartPos = false;
-                    Agent.isStopped = true;
-                    SendToAnimator.ResetTrigger(gameObject, "Walk");
-                    SendToAnimator.SendTrigger(gameObject, "Idle");
-                    m_tyingComplete = false;
-
+                    m_tyingComplete = false; WalkingtoStartPos = false;
+                    _guideWalk.StopWalking();
                     if (LoadCollected)
                     {
                         if (GetComponent<TeleportAI>())
