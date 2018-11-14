@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Mouledoux.Callback;
 
 
 public class HookLoop : MonoBehaviour
@@ -12,6 +13,7 @@ public class HookLoop : MonoBehaviour
 
     Mouledoux.Components.Mediator.Subscriptions subscription = new Mouledoux.Components.Mediator.Subscriptions();
     Mouledoux.Callback.Callback onDrop;
+    public Mouledoux.Callback.Callback onPickUp;
 
     private void Awake()
     {
@@ -21,7 +23,9 @@ public class HookLoop : MonoBehaviour
     private void OnEnable()
     {
         onDrop += Drop;
+        onPickUp += AIGuideBehaviour.GuideWalkedBool;
         subscription.Subscribe("drop", onDrop);
+        subscription.Subscribe(transform.GetInstanceID().ToString(), onPickUp);
     }
 
     void Update()
