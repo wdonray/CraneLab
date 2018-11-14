@@ -22,6 +22,7 @@ public class RandomMovement : MonoBehaviour
 	void Start ()
     {
         initPosition = transform.localPosition;
+        initEulers = transform.localEulerAngles;
         newPos = initPosition;
 
         sliderStrength = slider.value;
