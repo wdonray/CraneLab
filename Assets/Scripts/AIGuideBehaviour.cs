@@ -374,11 +374,17 @@ public class AIGuideBehaviour : MonoBehaviour
         SendToAnimator.SendTrigger(gameObject, "Death");
     }
 
+    /// <summary>
+    ///     Test for every test that can fail
+    /// </summary>
     public void Failed()
     {
         SendToAnimator.SendTriggerOnce(gameObject, "Failed");
     }
-
+    
+    /// <summary>
+    ///     Used for failing the lift test
+    /// </summary>
     public void LiftFailed()
     {
         Mediator.instance.NotifySubscribers("EmergancyCallback", new Packet());
