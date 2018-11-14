@@ -3,73 +3,98 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 
 public static class PlayDataSerialization
 {
-    public static string SerializePlaytimeData(List<PlayTimeData> ptd)
+    public static string binaryData = UnityEngine.Application.dataPath  + "/databaseBinary.dat";
+    public static string XMLData = UnityEngine.Application.dataPath     + "/databaseXML.dat";
+
+    // string is the players' name/ email/ unique ID
+    public static Dictionary<string, PlayerHistory> playerHistory;
+
+
+
+
+
+
+    // ..............................................................................................................................................
+    public static string SerializePlaytimeData(Dictionary<string, PlayerHistory> playData)
     {
-        string defaultPath = UnityEngine.Application.dataPath + "/dbmm.dat";
-        string backupPath = UnityEngine.Application.dataPath + "/dbbu.dat";
-
-        FileStream fs1 = new FileStream(defaultPath, FileMode.OpenOrCreate);
-        FileStream fs2 = new FileStream(backupPath, FileMode.OpenOrCreate);
+        FileStream fstream = new FileStream(binaryData, FileMode.OpenOrCreate);
         BinaryFormatter formatter = new BinaryFormatter();
+        
+        formatter.Serialize(fstream, playData);
 
-        formatter.Serialize(fs1, ptd);
-        formatter.Serialize(fs2, ptd);
-
-        return System.IO.File.GetLastWriteTimeUtc(defaultPath).ToString() + "\n" +
-        System.IO.File.GetLastWriteTimeUtc(backupPath).ToString();
+        return System.IO.File.GetLastWriteTimeUtc(binaryData).ToString();
     }
 
 
-    private static void DeserializePlaytimeData(out List<PlayTimeData> ptd)
+
+    // ..............................................................................................................................................
+    private static void DeserializePlaytimeData()
     {
-        FileStream fs = new FileStream("dbmm.dat", FileMode.Open);
+        FileStream fstream = new FileStream(binaryData, FileMode.Open);
         BinaryFormatter formatter = new BinaryFormatter();
 
-        ptd = (List<PlayTimeData>)formatter.Deserialize(fs);
+        playerHistory = (Dictionary <string, PlayerHistory>) formatter.Deserialize(fstream);
     }
 
 
-    public static IEnumerator GenerateRandomData(List<PlayTimeData> ptd)
+
+
+
+    // ..............................................................................................................................................
+    [System.Serializable]
+    public struct PlayerHistory 
     {
-        for (int i = 0; i < 1000; i++)
+        // string is the scenario name
+        public Dictionary<string, List<PlaySession>> playerHistory;
+
+        public string AddScenarioToPlayHistory(string scenario, string date, string time, string pass, string keyID)
         {
-            PlayTimeData player = new PlayTimeData();
-            player.date = "Today";
-            player.keyID = UnityEngine.Random.Range(0, 1000000).ToString();
+            SessionData sd = new SessionData(time, pass, keyID);
 
-            ptd.Add(player);
-            yield return null;
+            return scenario + " " +
+                date + " " +
+                time + " " +
+                pass + " " +
+                keyID;
+        }
+    }
+
+
+    // ..............................................................................................................................................
+    [System.Serializable]
+    public struct PlaySession
+    {
+        // string is the date of the session
+        public Dictionary<string, List<SessionData>> sessionInfo;
+
+        public void AddSessionToHistory(string scenario, SessionData session)
+        {
+            if (sessionInfo == null) sessionInfo = new Dictionary<string, List<SessionData>>();
+
+            if (!sessionInfo.ContainsKey(scenario)) sessionInfo.Add(scenario, new List<SessionData>());
+            sessionInfo[scenario].Add(session);
         }
 
-        UnityEngine.Debug.Log(SerializePlaytimeData(ptd));
-
     }
 
 
-    
-
+    // ..............................................................................................................................................
     [System.Serializable]
-    public class PlayTimeData
+    public struct SessionData 
     {
-        public string date;
-        public Dictionary<string, bool> scenarioPassFail = new Dictionary<string, bool>();
+        public string time;
+        public string pass;
         public string keyID;
-    }
 
-    [System.Serializable]
-    public struct ScenarioData
-    {
-        public string date;
-        public bool pass;
-        public string keyID;
-    }
-
-    [System.Serializable]
-    public struct PlayerHistor
-    {
-        public Dictionary<string, ScenarioData> playerHistory;
+        public SessionData(string t, string p, string k)
+        {
+            time = t;
+            pass = p;
+            keyID = k;
+        }
     }
 }

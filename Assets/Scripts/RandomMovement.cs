@@ -7,7 +7,9 @@ public class RandomMovement : MonoBehaviour
     public UnityEngine.UI.Slider slider;
     private float sliderStrength;
 
-    public Vector3 initPosition;
+    private Vector3 initPosition;
+    private Vector3 initEulers;
+
     public Vector3 randomPos;
     public Vector3 newPos;
 
@@ -19,7 +21,7 @@ public class RandomMovement : MonoBehaviour
 
 	void Start ()
     {
-        initPosition = transform.position;
+        initPosition = transform.localPosition;
         newPos = initPosition;
 
         sliderStrength = slider.value;
@@ -32,10 +34,10 @@ public class RandomMovement : MonoBehaviour
     {
         sliderStrength += (slider.value - sliderStrength) * Time.deltaTime;
 
-        Vector3 newPos = initPosition;
+        newPos = initPosition;
         newPos.y += Mathf.Cos(Time.time) * sliderStrength;
 
-        Vector3 newEulers = eulerMovement * Mathf.Sin(Time.time + offset) * sliderStrength;
+        Vector3 newEulers = initEulers + (eulerMovement * Mathf.Sin(Time.time + offset) * sliderStrength);
         Quaternion newRot = Quaternion.Euler(newEulers);
 
         transform.localPosition = newPos;
