@@ -24,7 +24,7 @@ public class AIGuideBehaviour : MonoBehaviour
     public bool m_tieOnly, m_dead, _complete;
     private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist, _tearTriggered, _tearFailed, _tearPassed, _liftFailed;
     private GuideHelper _guideHelper;
-    private AIGuideWalk _guideWalk;
+    [HideInInspector] public AIGuideWalk _guideWalk;
     private float _height;
     public Vector3 CranePos => m_crane.transform.position;
     public Vector3 HookPos => m_hook.position;

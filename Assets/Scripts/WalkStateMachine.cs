@@ -21,20 +21,13 @@ public class WalkStateMachine : StateMachineBehaviour
         var targetPos = (AIGuideBehaviour.LoadCollected) ? AI.DropZonePos : AI.LoadPos;
         var zone = guideHelper.Zones[GuideHelper.Index];
         var load = guideHelper.Loads[GuideHelper.Index];
-        if (AIGuideBehaviour.LoadCollected)
-        {
-            var size = new Vector3(zone.transform.localScale.x, .1f, zone.transform.localScale.z);
-            if (!(Physics.OverlapBox(targetPos, size, zone.transform.rotation)).Contains(load.transform.parent.GetChild(2).GetComponent<Collider>()))
-            {
-                AIGuideBehaviour.WalkingToTarget = false;
-            }
-        }
-        else
+        if (!AIGuideBehaviour.LoadCollected)
         {
             if (!Physics.OverlapSphere(load.transform.GetChild(0).transform.position, 1.3f / 2)
                 .Contains(AI.m_hook.GetComponent<Collider>()))
             {
                 AIGuideBehaviour.WalkingToTarget = false;
+                AI._guideWalk.StopWalking();
             }
         }
     }
