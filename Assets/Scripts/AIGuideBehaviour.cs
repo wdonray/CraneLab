@@ -20,7 +20,7 @@ public class AIGuideBehaviour : MonoBehaviour
     [HideInInspector] public Vector3 GuideStartPos, StoreHookPos;
     [HideInInspector] public NavMeshAgent Agent;
     [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, CheckHoistCalled, Emergancy;
-    public static bool WalkingToTarget, WalkingtoStartPos, LoadCollected, _guideWalked;
+    public static bool WalkingToTarget, WalkingtoStartPos, LoadCollected, GuideWalkToLocation;
     public bool m_tieOnly, m_dead, _complete;
     private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist, _tearTriggered, _tearFailed, _tearPassed, _liftFailed;
     private GuideHelper _guideHelper;
@@ -71,7 +71,7 @@ public class AIGuideBehaviour : MonoBehaviour
         WalkingToTarget = false;
         WalkingtoStartPos = false;
         LoadCollected = false;
-        _guideWalked = true;
+        GuideWalkToLocation = true;
     }
     /// <summary>
     ///     Sets the drop zone with the passed in argument 
@@ -395,9 +395,9 @@ public class AIGuideBehaviour : MonoBehaviour
         _liftFailed = true;
     }
 
-    public static void GuideWalkedBool(Packet emptyPacket)
+    public static void GuideWalkBool(Packet emptyPacket)
     {
-        _guideWalked = true;
+        GuideWalkToLocation = true;
     }
 
     /// <summary>
@@ -441,7 +441,15 @@ public class AIGuideBehaviour : MonoBehaviour
             //If the other AI is walking AI holds up stop
             if (WalkingToTarget || WalkingtoStartPos)
             {
-                Stop();
+                if (Emergancy)
+                {
+                    WalkingToTarget = false;
+                    WalkingToTarget = false;
+                }
+                else
+                {
+                    Stop();
+                }
             }
             else if (_tearTriggered)
             {
@@ -471,37 +479,13 @@ public class AIGuideBehaviour : MonoBehaviour
             {
                 if (GuideWalkPos != null)
                 {
-                    if (_guideWalked)
-                    {
-                        if (LoadCollected)
-                        {
-                            if (Vector3.Distance(transform.position, GuideWalkPos.position) > 1)
-                            {
-                                SendToAnimator.ResetAllTriggers(gameObject);
-                                _guideWalk.RotateTowards(GuideWalkPos.position, RotationSpeed);
-                                _guideWalk.WalkTowards(GuideWalkPos.position, 0f);
-                            }
-                            else
-                            {
-
-                                GuideWalkPos.position = GuideStartPos;
-                                Agent.isStopped = true;
-                                SendToAnimator.ResetAllTriggers(gameObject);
-                                CheckHoistCalled = false;
-                                StartCheckHoist();
-                                _guideWalked = false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        _guideWalk.RotateTowards(LookAtCrane, RotationSpeed);
-                    }
+                    // If there is a pos to walk to walk there when needed
+                    _guideWalk.RiggerGuideWalk(this, GuideStartPos, GuideWalkPos, RotationSpeed);
                 }
 
-                //Guide the crane
                 if (CheckHoistCalled == false)
                 {
+                    //Guide the crane
                     SendToAnimator.ResetTrigger(gameObject, "Stop");
                     if (!Swing(sourceToCrane.normalized, toCrane.normalized, (int)swingAngle))
                     {
