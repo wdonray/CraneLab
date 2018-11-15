@@ -131,7 +131,7 @@ public class TearTest : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         float timer = 0;
 
-        while (timer < 3f)
+        while (timer < 1.5f)
         {
             if (CheckIfStopped()) timer += Time.deltaTime;
             else timer = 0f;

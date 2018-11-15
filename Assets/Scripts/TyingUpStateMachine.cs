@@ -44,6 +44,7 @@ public class TyingUpStateMachine : StateMachineBehaviour
         else
         {
             guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>().HookUp(AI.m_hook.GetComponent<Collider>());
+            Mediator.instance.NotifySubscribers(guideHelper.Loads[GuideHelper.Index].transform.GetInstanceID().ToString(), new Packet());
         }
 
         if (GuideHelper.Index < guideHelper.LoadToZone.Count)

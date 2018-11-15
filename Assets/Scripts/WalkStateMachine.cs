@@ -23,21 +23,24 @@ public class WalkStateMachine : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         AIGuideBehaviour other = null;
-        foreach (var rigger in guideHelper.Riggers)
+        if (AI.m_tieOnly)
         {
-            if (rigger != AI)
-                other = rigger;
-        }
+            foreach (var rigger in guideHelper.Riggers)
+            {
+                if (rigger != AI)
+                    other = rigger;
+            }
 
-        if (other != null)
-        {
-            other.StoreHookPos = other.HookPos;
-            other.StartCheckHoist();
-        }
+            if (other != null)
+            {
+                other.StoreHookPos = other.HookPos;
+                other.StartCheckHoist();
+            }
 
-        if (AI.m_tyingComplete)
-        {
-            AIGuideBehaviour.LoadCollected = true;
+            if (AI.m_tyingComplete)
+            {
+                AIGuideBehaviour.LoadCollected = true;
+            }
         }
         AI.m_walking = false;
     }
