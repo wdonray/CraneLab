@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class WalkStateMachine : StateMachineBehaviour
@@ -14,10 +15,29 @@ public class WalkStateMachine : StateMachineBehaviour
         AI.m_walking = true;
     }
 
-    // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-    //override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-    //
-    //}
+    //OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
+    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        var targetPos = (AIGuideBehaviour.LoadCollected) ? AI.DropZonePos : AI.LoadPos;
+        var zone = guideHelper.Zones[GuideHelper.Index];
+        var load = guideHelper.Loads[GuideHelper.Index];
+        if (AIGuideBehaviour.LoadCollected)
+        {
+            var size = new Vector3(zone.transform.localScale.x, .1f, zone.transform.localScale.z);
+            if (!(Physics.OverlapBox(targetPos, size, zone.transform.rotation)).Contains(load.transform.parent.GetChild(2).GetComponent<Collider>()))
+            {
+                AIGuideBehaviour.WalkingToTarget = false;
+            }
+        }
+        else
+        {
+            if (!Physics.OverlapSphere(load.transform.GetChild(0).transform.position, 1.3f / 2)
+                .Contains(AI.m_hook.GetComponent<Collider>()))
+            {
+                AIGuideBehaviour.WalkingToTarget = false;
+            }
+        }
+    }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
