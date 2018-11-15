@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Mouledoux.Callback;
 
 
 public class HookLoop : MonoBehaviour
@@ -12,6 +13,7 @@ public class HookLoop : MonoBehaviour
 
     Mouledoux.Components.Mediator.Subscriptions subscription = new Mouledoux.Components.Mediator.Subscriptions();
     Mouledoux.Callback.Callback onDrop;
+    public Mouledoux.Callback.Callback onPickUp;
 
     private void Awake()
     {
@@ -21,7 +23,9 @@ public class HookLoop : MonoBehaviour
     private void OnEnable()
     {
         onDrop += Drop;
+        onPickUp += AIGuideBehaviour.GuideWalkBool;
         subscription.Subscribe("drop", onDrop);
+        subscription.Subscribe(transform.GetInstanceID().ToString(), onPickUp);
     }
 
     void Update()
@@ -32,32 +36,32 @@ public class HookLoop : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Hook") || !CanAutoHook) return;
-        HookUp(other);
+        StartCoroutine(HookUp(other));
     }
 
 
-    public void HookUp(Collider other)
+    public IEnumerator HookUp(Collider other)
     {
-        if (m_hook != null || grabTimer > 0) return;
+        if (m_hook != null || grabTimer > 0) yield break;
 
-        transform.position = Vector3.Lerp(transform.position, other.transform.position, Time.deltaTime * 1f);
-
-        if (Vector3.Distance(transform.position, other.transform.position) <= 1f)
+        while (Vector3.Distance(transform.position, other.transform.position) >= .01f)
         {
-            m_hook = other.GetComponent<Rigidbody>();
-            m_connectionJoint = gameObject.AddComponent<HingeJoint>();
-            m_connectionJoint.connectedBody = m_hook;
-            m_connectionJoint.autoConfigureConnectedAnchor = false;
-            m_connectionJoint.anchor = new Vector3(0, 0, 0);
-            m_connectionJoint.connectedAnchor = new Vector3(0, 0, -0.5f);
-
-            JointLimits newLimits = new JointLimits();
-            newLimits.min = -60f;
-            newLimits.max = 60f;
-            m_connectionJoint.useLimits = true;
-            m_connectionJoint.limits = newLimits;
+            transform.position = Vector3.Lerp(transform.position, other.transform.position, Time.deltaTime * 1f);
+            yield return null;
         }
 
+        m_hook = other.GetComponent<Rigidbody>();
+        m_connectionJoint = gameObject.AddComponent<HingeJoint>();
+        m_connectionJoint.connectedBody = m_hook;
+        m_connectionJoint.autoConfigureConnectedAnchor = false;
+        m_connectionJoint.anchor = new Vector3(0, 0, 0);
+        m_connectionJoint.connectedAnchor = new Vector3(0, 0, -0.5f);
+
+        JointLimits newLimits = new JointLimits();
+        newLimits.min = -60f;
+        newLimits.max = 60f;
+        m_connectionJoint.useLimits = true;
+        m_connectionJoint.limits = newLimits;
     }
 
 

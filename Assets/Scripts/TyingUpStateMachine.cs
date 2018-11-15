@@ -24,11 +24,12 @@ public class TyingUpStateMachine : StateMachineBehaviour
     //OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        var hookLoop = guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>();
         AI.m_startedTying = false;
         AI.m_tyingComplete = true;
         if (AIGuideBehaviour.LoadCollected)
         {
-            guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>().Drop();
+            hookLoop.Drop();
             if (GuideHelper.Index < guideHelper.LoadToZone.Count)
             {
                 GuideHelper.Index++;
@@ -43,15 +44,19 @@ public class TyingUpStateMachine : StateMachineBehaviour
         }
         else
         {
-            guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>().HookUp(AI.m_hook.GetComponent<Collider>());
-        }
-
-        if (GuideHelper.Index < guideHelper.LoadToZone.Count)
-        {
-            if (guideHelper.Loads[GuideHelper.Index].GetComponent<HingeJoint>() == true)
+            hookLoop.StartCoroutine(hookLoop.HookUp(AI.m_hook.GetComponent<Collider>()));
+            Mediator.instance.NotifySubscribers(guideHelper.Loads[GuideHelper.Index].transform.GetInstanceID().ToString(), new Packet());
+            if (GuideHelper.Index < guideHelper.LoadToZone.Count)
             {
-                AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
-                AIGuideBehaviour.WalkingtoStartPos = true;
+                if (guideHelper.Loads[GuideHelper.Index].GetComponent<HingeJoint>() == true)
+                {
+                    AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
+                    AIGuideBehaviour.WalkingtoStartPos = true;
+                }
+                else
+                {
+                    AI.m_tyingComplete = false;
+                }
             }
         }
     }

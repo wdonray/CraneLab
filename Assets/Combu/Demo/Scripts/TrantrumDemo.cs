@@ -48,6 +48,11 @@ public class TrantrumDemo : TrantrumDemoScene
 
     public Text textFiles;
 
+
+
+
+
+    // ............................................................................................
     public void UserRegister()
     {
         if (string.IsNullOrEmpty(registerUsername.text) || string.IsNullOrEmpty(registerPassword.text))
@@ -85,6 +90,9 @@ public class TrantrumDemo : TrantrumDemoScene
         });
     }
 
+
+
+    // ............................................................................................
     public void NewsLoad()
     {
         textNews.text = "Loading...";
@@ -107,6 +115,9 @@ public class TrantrumDemo : TrantrumDemoScene
         });
     }
 
+
+
+    // ............................................................................................
     public void CustomDataLoad()
     {
         customError.text = "";
@@ -120,6 +131,9 @@ public class TrantrumDemo : TrantrumDemoScene
         }
     }
 
+
+
+    // ............................................................................................
     public void CustomDataPost()
     {
         if (string.IsNullOrEmpty(customKey.text))
@@ -147,6 +161,9 @@ public class TrantrumDemo : TrantrumDemoScene
         }
     }
 
+
+
+    // ............................................................................................
     public void AppCustomDataLoad()
     {
         appCustomError.text = "";
@@ -160,6 +177,9 @@ public class TrantrumDemo : TrantrumDemoScene
         }
     }
 
+
+
+    // ............................................................................................
     public void AppCustomDataPost()
     {
         if (string.IsNullOrEmpty(appCustomKey.text))
@@ -187,6 +207,9 @@ public class TrantrumDemo : TrantrumDemoScene
         }
     }
 
+
+
+    // ............................................................................................
     public void UserFriends()
     {
         textContacts.text = "Loading...";
@@ -208,6 +231,9 @@ public class TrantrumDemo : TrantrumDemoScene
         });
     }
 
+
+
+    // ............................................................................................
     public void UserFriendsAdd()
     {
         string username = contactUsername.text.Trim();
@@ -230,6 +256,9 @@ public class TrantrumDemo : TrantrumDemoScene
         }
     }
 
+
+
+    // ............................................................................................
     public void UserFriendsRemove()
     {
         string username = contactUsername.text.Trim();
@@ -252,6 +281,9 @@ public class TrantrumDemo : TrantrumDemoScene
         }
     }
 
+
+
+    // ............................................................................................
     public void LeaderboardsScores()
     {
         leaderboardError.text = "";
@@ -279,6 +311,9 @@ public class TrantrumDemo : TrantrumDemoScene
         });
     }
 
+
+
+    // ............................................................................................
     public void LeaderboardsPost()
     {
         if (string.IsNullOrEmpty(leaderboardScore.text))
@@ -301,6 +336,9 @@ public class TrantrumDemo : TrantrumDemoScene
         });
     }
 
+
+
+    // ............................................................................................
     public void AchievementsLoad()
     {
         achievementError.text = "";
@@ -322,6 +360,9 @@ public class TrantrumDemo : TrantrumDemoScene
         });
     }
 
+
+
+    // ............................................................................................
     public void AchievementsPost()
     {
         int progress = 0;
@@ -348,6 +389,9 @@ public class TrantrumDemo : TrantrumDemoScene
         });
     }
 
+
+
+    // ............................................................................................
     public void MessagesLoad()
     {
         mailError.text = "";
@@ -375,6 +419,9 @@ public class TrantrumDemo : TrantrumDemoScene
         });
     }
 
+
+
+    // ............................................................................................
     public void MessagesPost()
     {
         if (string.IsNullOrEmpty(mailRecipient.text) || string.IsNullOrEmpty(mailSubject.text) || string.IsNullOrEmpty(mailMessage.text))
@@ -400,6 +447,9 @@ public class TrantrumDemo : TrantrumDemoScene
         }
     }
 
+
+
+    // ............................................................................................
     public void UserFilesLoad()
     {
         textFiles.text = "Loading...";
@@ -414,6 +464,9 @@ public class TrantrumDemo : TrantrumDemoScene
         });
     }
 
+
+
+    // ............................................................................................
     public void UserFilesUpload()
     {
         var screenshot = CombuManager.CaptureScreenshot();

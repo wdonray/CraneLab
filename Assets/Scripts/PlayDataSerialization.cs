@@ -8,14 +8,20 @@ using System.Xml.Serialization;
 public static class PlayDataSerialization
 {
     public static string binaryData = UnityEngine.Application.dataPath  + "/databaseBinary.dat";
-    public static string XMLData = UnityEngine.Application.dataPath     + "/databaseXML.dat";
+    public static string csvFile = UnityEngine.Application.dataPath     + "/userInfo.csv";
 
     // string is the players' name/ email/ unique ID
     public static Dictionary<string, PlayerHistory> playerHistory;
 
 
+    public static void AddToPlayHistory(string playerName, string scenario, string date, string time, string pass, string keyID)
+    {
+        if (playerHistory == null) playerHistory = new Dictionary<string, PlayerHistory>();
 
+        if (!playerHistory.ContainsKey(scenario)) playerHistory.Add(scenario, new PlayerHistory());
 
+        playerHistory[playerName].AddScenarioToPlayHistory(scenario, date, time, pass, keyID);
+    }
 
 
     // ..............................................................................................................................................
@@ -41,7 +47,16 @@ public static class PlayDataSerialization
     }
 
 
-
+    public static void GenerateRandomUser()
+    {
+        AddToPlayHistory(
+            "TestDummy:" + UnityEngine.Time.time.ToString(),
+            "HelloWorld",
+            System.DateTime.Today.ToString(), 
+            System.DateTime.Now.ToString(), 
+            "pass",
+            "12345678");
+    }
 
 
     // ..............................................................................................................................................
@@ -49,36 +64,36 @@ public static class PlayDataSerialization
     public struct PlayerHistory 
     {
         // string is the scenario name
-        public Dictionary<string, List<PlaySession>> playerHistory;
+        public Dictionary<string, PlaySessions> sessionHistory;
 
-        public string AddScenarioToPlayHistory(string scenario, string date, string time, string pass, string keyID)
+        public void AddScenarioToPlayHistory(string scenario, string date, string time, string pass, string keyID)
         {
             SessionData sd = new SessionData(time, pass, keyID);
 
-            return scenario + " " +
-                date + " " +
-                time + " " +
-                pass + " " +
-                keyID;
+            if (sessionHistory == null) sessionHistory = new Dictionary<string, PlaySessions>();
+
+            if (!sessionHistory.ContainsKey(scenario)) sessionHistory.Add(scenario, new PlaySessions());
+
+            sessionHistory[scenario].AddSessionToHistory(date, sd);
         }
     }
 
 
     // ..............................................................................................................................................
     [System.Serializable]
-    public struct PlaySession
+    public struct PlaySessions
     {
         // string is the date of the session
         public Dictionary<string, List<SessionData>> sessionInfo;
 
-        public void AddSessionToHistory(string scenario, SessionData session)
+        public void AddSessionToHistory(string date, SessionData session)
         {
             if (sessionInfo == null) sessionInfo = new Dictionary<string, List<SessionData>>();
 
-            if (!sessionInfo.ContainsKey(scenario)) sessionInfo.Add(scenario, new List<SessionData>());
-            sessionInfo[scenario].Add(session);
-        }
+            if (!sessionInfo.ContainsKey(date)) sessionInfo.Add(date, new List<SessionData>());
 
+            sessionInfo[date].Add(session);
+        }
     }
 
 

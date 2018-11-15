@@ -15,11 +15,12 @@ public class AIGuideBehaviour : MonoBehaviour
     public Transform m_load;
     public Transform m_hook;
     public Transform m_crane;
+    public Transform GuideWalkPos;
     public float RotationSpeed, TargetDistance = 2f;
     [HideInInspector] public Vector3 GuideStartPos, StoreHookPos;
     [HideInInspector] public NavMeshAgent Agent;
     [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, CheckHoistCalled, Emergancy;
-    public static bool WalkingToTarget, WalkingtoStartPos, LoadCollected;
+    public static bool WalkingToTarget, WalkingtoStartPos, LoadCollected, GuideWalkToLocation;
     public bool m_tieOnly, m_dead, _complete;
     private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist, _tearTriggered, _tearFailed, _tearPassed, _liftFailed;
     private GuideHelper _guideHelper;
@@ -70,6 +71,7 @@ public class AIGuideBehaviour : MonoBehaviour
         WalkingToTarget = false;
         WalkingtoStartPos = false;
         LoadCollected = false;
+        GuideWalkToLocation = true;
     }
     /// <summary>
     ///     Sets the drop zone with the passed in argument 
@@ -327,7 +329,7 @@ public class AIGuideBehaviour : MonoBehaviour
                     if (WalkingtoStartPos)
                     {
                         //Rotate towards start pos and walk there
-                        _guideWalk.RotateTowards(target, RotationSpeed);
+                        _guideWalk.RotateTowards(GuideStartPos, RotationSpeed);
                         _guideWalk.WalkTowards(GuideStartPos, 1f);
                     }
                 }
@@ -335,6 +337,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 {
                     //Stop walking and idle
                     m_tyingComplete = false; WalkingtoStartPos = false;
+                    FaceCrane(0.9f);
                     _guideWalk.StopWalking();
                     if (LoadCollected)
                     {
@@ -381,7 +384,7 @@ public class AIGuideBehaviour : MonoBehaviour
     {
         SendToAnimator.SendTriggerOnce(gameObject, "Failed");
     }
-    
+
     /// <summary>
     ///     Used for failing the lift test
     /// </summary>
@@ -390,6 +393,11 @@ public class AIGuideBehaviour : MonoBehaviour
         Mediator.instance.NotifySubscribers("EmergancyCallback", new Packet());
         SendToAnimator.ResetAllTriggers(gameObject);
         _liftFailed = true;
+    }
+
+    public static void GuideWalkBool(Packet emptyPacket)
+    {
+        GuideWalkToLocation = true;
     }
 
     /// <summary>
@@ -425,17 +433,23 @@ public class AIGuideBehaviour : MonoBehaviour
         {
             if (m_startedTying == false)
             {
-                FaceCrane(0.9f);
                 Tie(targetPos, _tearTriggered, _tearPassed, _tearFailed);
             }
         }
         else
         {
-            //FaceCrane(0.9f);
             //If the other AI is walking AI holds up stop
             if (WalkingToTarget || WalkingtoStartPos)
             {
-                Stop();
+                if (Emergancy)
+                {
+                    WalkingToTarget = false;
+                    WalkingToTarget = false;
+                }
+                else
+                {
+                    Stop();
+                }
             }
             else if (_tearTriggered)
             {
@@ -463,9 +477,15 @@ public class AIGuideBehaviour : MonoBehaviour
             }
             else
             {
-                //Guide the crane
+                if (GuideWalkPos != null)
+                {
+                    // If there is a pos to walk to walk there when needed
+                    _guideWalk.RiggerGuideWalk(this, GuideStartPos, GuideWalkPos, RotationSpeed);
+                }
+
                 if (CheckHoistCalled == false)
                 {
+                    //Guide the crane
                     SendToAnimator.ResetTrigger(gameObject, "Stop");
                     if (!Swing(sourceToCrane.normalized, toCrane.normalized, (int)swingAngle))
                     {
