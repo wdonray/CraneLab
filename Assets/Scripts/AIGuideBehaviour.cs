@@ -486,16 +486,19 @@ public class AIGuideBehaviour : MonoBehaviour
 
                 if (CheckHoistCalled == false)
                 {
-                    //Guide the crane
-                    SendToAnimator.ResetTrigger(gameObject, "Stop");
-                    if (!Swing(sourceToCrane.normalized, toCrane.normalized, (int)swingAngle))
+                    if (Agent.isStopped)
                     {
-                        if (!RaiseLowerBoom(source, targetPos))
+                        //Guide the crane
+                        SendToAnimator.ResetTrigger(gameObject, "Stop");
+                        if (!Swing(sourceToCrane.normalized, toCrane.normalized, (int) swingAngle))
                         {
-                            if (!HoistInOut(source, targetPos, hoistInOutDist))
+                            if (!RaiseLowerBoom(source, targetPos))
                             {
-                                if (!HoistOrLower(source, targetPos, hoistLowerDist))
+                                if (!HoistInOut(source, targetPos, hoistInOutDist))
                                 {
+                                    if (!HoistOrLower(source, targetPos, hoistLowerDist))
+                                    {
+                                    }
                                 }
                             }
                         }

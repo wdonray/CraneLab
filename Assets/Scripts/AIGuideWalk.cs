@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class AIGuideWalk : MonoBehaviour
 {
     [HideInInspector] public NavMeshAgent Agent;
-
+    private bool testBool;
     /// <summary>
     ///     Rotate towards target
     /// </summary>
@@ -75,17 +75,20 @@ public class AIGuideWalk : MonoBehaviour
                 {
                     SendToAnimator.ResetAllTriggers(gameObject);
                     RotateTowards(guideWalkPos.position, rotationSpeed);
-                    WalkTowards(guideWalkPos.position, 0f);
+                    WalkTowards(guideWalkPos.position, 1f);
                 }
                 else
                 {
-
-                    guideWalkPos.position = guideStartPos;
-                    Agent.isStopped = true;
-                    SendToAnimator.ResetAllTriggers(gameObject);
-                    aiGuide.CheckHoistCalled = false;
-                    aiGuide.StartCheckHoist();
-                    AIGuideBehaviour.GuideWalkToLocation = false;
+                    if (!testBool)
+                    {
+                        guideWalkPos.position = guideStartPos;
+                        Agent.isStopped = true;
+                        SendToAnimator.ResetAllTriggers(gameObject);
+                        aiGuide.CheckHoistCalled = false;
+                        aiGuide.StartCheckHoist();
+                        AIGuideBehaviour.GuideWalkToLocation = false;
+                        testBool = true;
+                    }
                 }
             }
         }
