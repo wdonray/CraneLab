@@ -46,7 +46,7 @@ public class TyingUpStateMachine : StateMachineBehaviour
         }
         else
         {
-            Mediator.instance.NotifySubscribers(guideHelper.Loads[GuideHelper.Index].transform.GetInstanceID().ToString(), new Packet());
+            //Mediator.instance.NotifySubscribers(guideHelper.Loads[GuideHelper.Index].transform.GetInstanceID().ToString(), new Packet());
 
             if (GuideHelper.Index < guideHelper.LoadToZone.Count)
             {

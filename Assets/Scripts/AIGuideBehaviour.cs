@@ -395,7 +395,7 @@ public class AIGuideBehaviour : MonoBehaviour
         _liftFailed = true;
     }
 
-    public static void GuideWalkBool(Packet emptyPacket)
+    public void GuideWalkBool()
     {
         GuideWalkToLocation = true;
     }
@@ -465,6 +465,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 {
                     if (Emergancy == false)
                     {
+                        SendToAnimator.ResetAllTriggers(gameObject);
                         SendToAnimator.stop = false;
                         Emergancy = true;
                         SendToAnimator.SendTrigger(gameObject, "EmergancyStop");
