@@ -8,11 +8,14 @@ public class TyingUpStateMachine : StateMachineBehaviour
 {
     private AIGuideBehaviour AI;
     private GuideHelper guideHelper;
+    private HookLoop hookLoop => guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>();
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         guideHelper = FindObjectOfType<GuideHelper>();
         AI = animator.gameObject.GetComponent<AIGuideBehaviour>();
+        if (!AIGuideBehaviour.LoadCollected)
+            hookLoop.StartCoroutine(hookLoop.HookUp(AI.m_hook.GetComponent<Collider>()));
         //AI.m_startedTying = true;
     }
 
@@ -24,7 +27,6 @@ public class TyingUpStateMachine : StateMachineBehaviour
     //OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        var hookLoop = guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>();
         AI.m_startedTying = false;
         AI.m_tyingComplete = true;
         if (AIGuideBehaviour.LoadCollected)
@@ -44,8 +46,8 @@ public class TyingUpStateMachine : StateMachineBehaviour
         }
         else
         {
-            hookLoop.StartCoroutine(hookLoop.HookUp(AI.m_hook.GetComponent<Collider>()));
             Mediator.instance.NotifySubscribers(guideHelper.Loads[GuideHelper.Index].transform.GetInstanceID().ToString(), new Packet());
+
             if (GuideHelper.Index < guideHelper.LoadToZone.Count)
             {
                 if (guideHelper.Loads[GuideHelper.Index].GetComponent<HingeJoint>() == true)

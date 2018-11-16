@@ -10,7 +10,7 @@ public class HookLoop : MonoBehaviour
     HingeJoint m_connectionJoint;
     public bool CanAutoHook = false;
     float grabTimer = 0;
-
+    [HideInInspector] public bool Hooked;
     Mouledoux.Components.Mediator.Subscriptions subscription = new Mouledoux.Components.Mediator.Subscriptions();
     Mouledoux.Callback.Callback onDrop;
     public Mouledoux.Callback.Callback onPickUp;
@@ -44,31 +44,40 @@ public class HookLoop : MonoBehaviour
     {
         if (m_hook != null || grabTimer > 0) yield break;
 
-        while (Vector3.Distance(transform.position, other.transform.position) >= .01f)
+        Rigidbody rb = GetComponent<Rigidbody>();
+        rb.isKinematic = true;
+
+        while (Vector3.Distance(transform.position, other.transform.position) >= .1f)
         {
-            transform.position = Vector3.Lerp(transform.position, other.transform.position, Time.deltaTime * 1f);
+            transform.position = Vector3.Lerp(transform.position, other.transform.position, Time.deltaTime * 50f);
             yield return null;
         }
 
-        m_hook = other.GetComponent<Rigidbody>();
-        m_connectionJoint = gameObject.AddComponent<HingeJoint>();
-        m_connectionJoint.connectedBody = m_hook;
-        m_connectionJoint.autoConfigureConnectedAnchor = false;
-        m_connectionJoint.anchor = new Vector3(0, 0, 0);
-        m_connectionJoint.connectedAnchor = new Vector3(0, 0, -0.5f);
+        if (Vector3.Distance(transform.position, other.transform.position) <= .1f)
+        {
+            Hooked = true;
+            m_hook = other.GetComponent<Rigidbody>();
+            m_connectionJoint = gameObject.AddComponent<HingeJoint>();
+            m_connectionJoint.connectedBody = m_hook;
+            m_connectionJoint.autoConfigureConnectedAnchor = false;
+            m_connectionJoint.anchor = new Vector3(0, 0, 0);
+            m_connectionJoint.connectedAnchor = new Vector3(0, 0, -0.5f);
 
-        JointLimits newLimits = new JointLimits();
-        newLimits.min = -60f;
-        newLimits.max = 60f;
-        m_connectionJoint.useLimits = true;
-        m_connectionJoint.limits = newLimits;
+            JointLimits newLimits = new JointLimits();
+            newLimits.min = -60f;
+            newLimits.max = 60f;
+            m_connectionJoint.useLimits = true;
+            m_connectionJoint.limits = newLimits;
+            m_connectionJoint.enableCollision = false;
+            rb.isKinematic = false;
+        }
     }
 
 
     public void Drop()
     {
         m_hook = null;
-
+        Hooked = false;
         if (m_connectionJoint != null)
             Destroy(m_connectionJoint);
 
