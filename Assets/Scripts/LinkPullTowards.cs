@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class LinkPullTowards : MonoBehaviour
 {
-    public float PullForce;
+    private float _pullForce;
 
     private void Awake()
     {
-        PullForce = 400;
+        _pullForce = 400;
     }
 
     public void OnTriggerStay(Collider other)
@@ -16,7 +16,7 @@ public class LinkPullTowards : MonoBehaviour
         if (other.tag != "Hook") return;
         var forceDirection = transform.position -  other.transform.position;
         float dist = Vector3.Distance(transform.position, other.transform.position);
-        dist /= GetComponent<SphereCollider>().radius;
-        other.GetComponent<Rigidbody>().AddForce(forceDirection.normalized * (PullForce * dist)); 
+        dist /= GetComponent<CapsuleCollider>().radius;
+        other.GetComponent<Rigidbody>().AddForce(forceDirection.normalized * (_pullForce * dist)); 
     }
 }

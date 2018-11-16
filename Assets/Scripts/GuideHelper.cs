@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 public class GuideHelper : MonoBehaviour
 {
+    public GameObject CompleteParticleSystem;
     public static int Index;
     public Text CurrentTaskText;
     [HideInInspector] public List<AIGuideBehaviour> Riggers = new List<AIGuideBehaviour>();
@@ -25,6 +26,7 @@ public class GuideHelper : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
+        CompleteParticleSystem.gameObject.SetActive(false);
         _subscriptions = new Mediator.Subscriptions();
         _taskCallback += UpdateTaskText;
         Index = 0;
@@ -114,7 +116,11 @@ public class GuideHelper : MonoBehaviour
                 if (reached)
                 {
                     CurrentTaskText.text = "Good Job";
+                    var sum = Index - 1;
+                    var particle = Instantiate(CompleteParticleSystem, Loads[sum].transform.parent);
+                    particle.gameObject.SetActive(true);
                     yield return new WaitForSeconds(2);
+                    Destroy(particle);
                     CurrentTaskText.text = "Move " + LoadToZone[Index].Load.transform.parent.name + " to " +
                                            LoadToZone[Index].Zone.transform.tag;
                     reached = false;
@@ -218,7 +224,10 @@ public class GuideHelper : MonoBehaviour
             if (LoadToZone[Index].Load.transform.parent.GetComponentInChildren<TearTest>()._passed)
             {
                 CurrentTaskText.text = "You Passed!";
+                var particle = Instantiate(CompleteParticleSystem, Loads[Index].transform.parent);
+                particle.gameObject.SetActive(true);
                 Mediator.instance.NotifySubscribers(PassedMessage, new Packet());
+                StartCoroutine(DestroyAfter(2, particle));
             }
             else if (LoadToZone[Index].Load.transform.parent.GetComponentInChildren<TearTest>()._failed)
             {
@@ -230,5 +239,11 @@ public class GuideHelper : MonoBehaviour
         {
             CurrentTaskText.text = "You Failed!";
         }
+    }
+
+    private IEnumerator DestroyAfter(float delay, GameObject obj)
+    {
+        yield return new WaitForSeconds(delay);
+        Destroy(obj);
     }
 }
