@@ -50,7 +50,7 @@ public class TyingUpStateMachine : StateMachineBehaviour
 
             if (GuideHelper.Index < guideHelper.LoadToZone.Count)
             {
-                if (guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>().Hooked)
+                if (guideHelper.Loads[GuideHelper.Index].GetComponent<HingeJoint>() == true)
                 {
                     AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
                     AIGuideBehaviour.WalkingtoStartPos = true;

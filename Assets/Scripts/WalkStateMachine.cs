@@ -18,8 +18,6 @@ public class WalkStateMachine : StateMachineBehaviour
     //OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        var targetPos = (AIGuideBehaviour.LoadCollected) ? AI.DropZonePos : AI.LoadPos;
-        var zone = guideHelper.Zones[GuideHelper.Index];
         var load = guideHelper.Loads[GuideHelper.Index];
         if (!AIGuideBehaviour.LoadCollected)
         {
@@ -50,10 +48,10 @@ public class WalkStateMachine : StateMachineBehaviour
                 other.StartCheckHoist();
             }
 
-            if (AI.m_tyingComplete)
-            {
-                AIGuideBehaviour.LoadCollected = true;
-            }
+            //if (AI.m_tyingComplete)
+            //{
+            //    AIGuideBehaviour.LoadCollected = true;
+            //}
         }
         AI.m_walking = false;
     }
