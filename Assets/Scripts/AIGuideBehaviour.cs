@@ -25,6 +25,7 @@ public class AIGuideBehaviour : MonoBehaviour
     private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist, _tearTriggered, _tearFailed, _tearPassed, _liftFailed;
     private GuideHelper _guideHelper;
     [HideInInspector] public AIGuideWalk _guideWalk;
+    [HideInInspector]
     private float _height;
     public Vector3 CranePos => m_crane.transform.position;
     public Vector3 HookPos => m_hook.position;
@@ -62,6 +63,7 @@ public class AIGuideBehaviour : MonoBehaviour
             if (!m_dead)
             {
                 GuideCrane(4, 1, 1);
+                print("LoadCollected: <color=red>" + LoadCollected + "</color>");
             }
         }
     }
@@ -572,5 +574,13 @@ public class AIGuideBehaviour : MonoBehaviour
     {
         if (!Emergancy)
             StartCoroutine(CheckHoist());
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.parent.GetChild(0).CompareTag("Link"))
+        {
+            Death();
+        }
     }
 }

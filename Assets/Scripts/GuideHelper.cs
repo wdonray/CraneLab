@@ -18,7 +18,7 @@ public class GuideHelper : MonoBehaviour
     public Dictionary<int, LoadAndZone> LoadToZone = new Dictionary<int, LoadAndZone>();
 
     private Mediator.Subscriptions _subscriptions;
-    private Callback _taskCallback, _emergancyCallback;
+    [HideInInspector] public Callback _taskCallback, _emergancyCallback;
 
     public bool reached, tearEnabled;
 
