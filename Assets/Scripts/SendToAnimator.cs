@@ -5,7 +5,7 @@ using UnityEngine;
 public class SendToAnimator
 {
     public static bool stop;
-    private static string m_oldValue;
+    public static string m_oldValue, m_oldValueForce;
     public static bool sentOnce;
 
     public static void SendTrigger(GameObject sender, string value)
@@ -38,17 +38,25 @@ public class SendToAnimator
 
         m_oldValue = value;
         m_animator.SetTrigger(m_oldValue);
+        m_aiGuide.AnimationPlaying = value;
         Debug.Log(m_oldValue);
     }
 
     public static void SendTriggerForce(GameObject sender, string value)
     {
         var m_animator = sender.GetComponent<Animator>();
-        if (value == m_oldValue) return;
+        var m_aiGuide = m_animator.gameObject.GetComponent<AIGuideBehaviour>();
+
+        if ((value + sender.name) == (m_oldValueForce + sender.name))
+        {
+            return;
+        }
+
         m_animator.StopPlayback();
-        m_animator.SetTrigger(value);
-        Debug.Log("Forced: " + value);
-        m_oldValue = value;
+        m_oldValueForce = value;
+        m_animator.SetTrigger(m_oldValueForce);
+        m_aiGuide.AnimationPlaying = value;
+        Debug.Log(sender.name + " Forced: " + value);
     }
 
     public static void ResetTrigger(GameObject sender, string value)
@@ -69,10 +77,13 @@ public class SendToAnimator
     public static void SendTriggerOnce(GameObject sender, string value)
     {
         var m_animator = sender.GetComponent<Animator>();
+        var m_aiGuide = m_animator.gameObject.GetComponent<AIGuideBehaviour>();
         if (sentOnce == false)
         {
             sentOnce = true;
             m_animator.SetTrigger(value);
+            m_aiGuide.AnimationPlaying = value;
+            Debug.Log("Played Once:" + value);
         }
     }
 }

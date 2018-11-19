@@ -7,15 +7,39 @@ public class AIGuideWayPoints : MonoBehaviour
 {
     private AIGuideBehaviour aiGuide => GetComponent<AIGuideBehaviour>();
     public List<Transform> Points = new List<Transform>();
+    public bool WayPointsActive;
 
-    void MoveToNextPoint()
+    private void Start()
     {
-        var sum = GuideHelper.Index - 1;
-        if (aiGuide.m_tieOnly)
+        WayPointsActive = Points.Count != 0;
+    }
+
+    public void MoveToNextPoint()
+    {
+        if (aiGuide._complete == false)
         {
-            aiGuide.GuideStartPos = Points[sum].transform.localPosition;
+            if (Vector3.Distance(transform.position, Points[GuideHelper.Index].transform.position) > 1)
+            {
+                if (aiGuide.m_tieOnly)
+                {
+                    aiGuide.GuideStartPos = Points[GuideHelper.Index].transform.position;
+                }
+                SendToAnimator.ResetAllTriggers(gameObject);
+                SendToAnimator.stop = false;
+                aiGuide._guideWalk.RotateTowards(Points[GuideHelper.Index].transform.position, 2);
+                aiGuide._guideWalk.WalkTowards(Points[GuideHelper.Index].transform.position, 1);
+            }
+            else
+            {
+                if (aiGuide.m_tieOnly == false)
+                {
+                    aiGuide.CheckHoistCalled = false;
+                    aiGuide.StartCheckHoist();
+                }
+                aiGuide._guideWalk.RotateTowards(aiGuide.LookAtCrane, 2);
+                aiGuide._guideWalk.StopWalking();
+                aiGuide.MovingToWayPoint = false;
+            }
         }
-        aiGuide._guideWalk.RotateTowards(Points[sum].transform.localPosition, 2);
-        aiGuide._guideWalk.WalkTowards(Points[sum].transform.localPosition, 0);
     }
 }

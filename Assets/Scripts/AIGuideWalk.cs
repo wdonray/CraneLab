@@ -42,6 +42,7 @@ public class AIGuideWalk : MonoBehaviour
     {
         Agent.stoppingDistance = stoppingDistance;
         Agent.isStopped = false;
+        Debug.DrawRay(target, Vector3.up, Color.cyan);
         Agent.SetDestination(target);
         SendToAnimator.SendTriggerForce(gameObject, "Walk");
     }

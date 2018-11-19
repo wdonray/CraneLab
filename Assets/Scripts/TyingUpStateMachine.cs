@@ -47,13 +47,25 @@ public class TyingUpStateMachine : StateMachineBehaviour
         else
         {
             //Mediator.instance.NotifySubscribers(guideHelper.Loads[GuideHelper.Index].transform.GetInstanceID().ToString(), new Packet());
-
+            AIGuideBehaviour other = null;
             if (GuideHelper.Index < guideHelper.LoadToZone.Count)
             {
                 if (guideHelper.Loads[GuideHelper.Index].GetComponent<HingeJoint>() == true)
                 {
                     AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
                     AIGuideBehaviour.WalkingtoStartPos = true;
+
+                    foreach (var rigger in guideHelper.Riggers)
+                    {
+                        if (rigger != AI)
+                            other = rigger;
+                    }
+
+                    if (AI.WayPoints.WayPointsActive)
+                    {
+                        AI.MovingToWayPoint = true;
+                        other.MovingToWayPoint = true;
+                    }
                 }
                 else
                 {
