@@ -111,12 +111,13 @@ public class GuideHelper : MonoBehaviour
     {
         if (CurrentTaskText.gameObject.activeInHierarchy)
         {
+            var sum = Index - 1;
             if (Index < Loads.Count)
             {
+
                 if (reached)
                 {
                     CurrentTaskText.text = "Good Job";
-                    var sum = Index - 1;
                     var particle = Instantiate(CompleteParticleSystem, Loads[sum].transform.parent.GetChild(2).transform);
                     particle.transform.localPosition = new Vector3(particle.transform.localPosition.x,  particle.transform.localPosition.y + 1);
                     particle.gameObject.SetActive(true);
@@ -135,7 +136,7 @@ public class GuideHelper : MonoBehaviour
             else
             {
                 CurrentTaskText.text = "Job Complete";
-                var particle = Instantiate(CompleteParticleSystem, Loads[Loads.Count].transform.parent.GetChild(2).transform);
+                var particle = Instantiate(CompleteParticleSystem, Loads[sum].transform.parent.GetChild(2).transform);
                 particle.transform.localPosition = new Vector3(particle.transform.localPosition.x, particle.transform.localPosition.x + 1);
                 particle.gameObject.SetActive(true);
                 yield return new WaitForSeconds(2);
