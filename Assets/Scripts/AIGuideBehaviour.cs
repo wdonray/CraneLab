@@ -418,6 +418,7 @@ public class AIGuideBehaviour : MonoBehaviour
     public void GuideWalkBool()
     {
         GuideWalkToLocation = true;
+        CheckHoistCalled = false;
     }
 
     /// <summary>

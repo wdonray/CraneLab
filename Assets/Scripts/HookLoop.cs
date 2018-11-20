@@ -73,9 +73,19 @@ public class HookLoop : MonoBehaviour
         m_hook = null;
         Hooked = false;
         if (m_connectionJoint != null)
+        {
             Destroy(m_connectionJoint);
+            StartCoroutine(LockLink());
+        }
 
         grabTimer = 3f;
+    }
+
+    IEnumerator LockLink()
+    {
+        yield return new WaitForSeconds(2);
+        Rigidbody rb = GetComponent<Rigidbody>();
+        rb.isKinematic = true;
     }
 
     public void Drop(Mouledoux.Callback.Packet packet)

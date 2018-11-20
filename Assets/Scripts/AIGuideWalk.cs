@@ -71,19 +71,19 @@ public class AIGuideWalk : MonoBehaviour
         {
             if (AIGuideBehaviour.LoadCollected)
             {
-                if (Vector3.Distance(transform.position, guideWalkPos.position) > 1)
+                if (Vector3.Distance(transform.position, guideWalkPos.position) > .5f)
                 {
                     SendToAnimator.ResetAllTriggers(gameObject);
                     RotateTowards(guideWalkPos.position, rotationSpeed);
-                    WalkTowards(guideWalkPos.position, 1f);
+                    WalkTowards(guideWalkPos.position, .5f);
                 }
                 else
                 {
                     guideWalkPos.position = guideStartPos;
-                    Agent.isStopped = true;
+                    SendToAnimator.StopPlayack(aiGuide.gameObject);
+                    StopWalking();
                     SendToAnimator.ResetAllTriggers(gameObject);
                     aiGuide.CheckHoistCalled = false;
-                    aiGuide.StartCheckHoist();
                     AIGuideBehaviour.GuideWalkToLocation = false;
                 }
             }
