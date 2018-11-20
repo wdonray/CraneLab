@@ -7,7 +7,7 @@ public class ZonePullTowards : MonoBehaviour {
     private float _pullForce;
 
     void Awake () {
-        _pullForce = 5000;
+        _pullForce = 2500;
     }
 
     public void OnTriggerStay(Collider other)

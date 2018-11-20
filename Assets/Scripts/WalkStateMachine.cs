@@ -18,14 +18,17 @@ public class WalkStateMachine : StateMachineBehaviour
     //OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        var load = guideHelper.Loads[GuideHelper.Index];
-        if (!AIGuideBehaviour.LoadCollected)
+        if (AI._complete == false)
         {
-            if (!Physics.OverlapSphere(load.transform.GetChild(0).transform.position, 1.3f / 2)
-                .Contains(AI.m_hook.GetComponent<Collider>()))
+            var load = guideHelper.Loads[GuideHelper.Index];
+            if (!AIGuideBehaviour.LoadCollected)
             {
-                AIGuideBehaviour.WalkingToTarget = false;
-                AI._guideWalk.StopWalking();
+                if (!Physics.OverlapSphere(load.transform.GetChild(0).transform.position, 1.3f / 2)
+                    .Contains(AI.m_hook.GetComponent<Collider>()))
+                {
+                    AIGuideBehaviour.WalkingToTarget = false;
+                    AI._guideWalk.StopWalking();
+                }
             }
         }
     }
@@ -45,7 +48,17 @@ public class WalkStateMachine : StateMachineBehaviour
             if (other != null)
             {
                 other.StoreHookPos = other.HookPos;
-                other.StartCheckHoist();
+                if (other.WayPoints !=null)
+                {
+                    if (other.WayPoints.WayPointsActive == false)
+                    {
+                        other.StartCheckHoist();
+                    }
+                }
+                else
+                {
+                    other.StartCheckHoist();
+                }
             }
 
             //if (AI.m_tyingComplete)

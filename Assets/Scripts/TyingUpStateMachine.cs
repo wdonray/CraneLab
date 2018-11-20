@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Mouledoux.Callback;
 using Mouledoux.Components;
@@ -7,15 +8,12 @@ using UnityEngine;
 public class TyingUpStateMachine : StateMachineBehaviour
 {
     private AIGuideBehaviour AI;
-    private GuideHelper guideHelper;
+    private GuideHelper guideHelper => FindObjectOfType<GuideHelper>();
     private HookLoop hookLoop => guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>();
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        guideHelper = FindObjectOfType<GuideHelper>();
         AI = animator.gameObject.GetComponent<AIGuideBehaviour>();
-        if (!AIGuideBehaviour.LoadCollected)
-            hookLoop.StartCoroutine(hookLoop.HookUp(AI.m_hook.GetComponent<Collider>()));
         //AI.m_startedTying = true;
     }
 
@@ -46,17 +44,31 @@ public class TyingUpStateMachine : StateMachineBehaviour
         }
         else
         {
-            Mediator.instance.NotifySubscribers(guideHelper.Loads[GuideHelper.Index].transform.GetInstanceID().ToString(), new Packet());
-
+            //Mediator.instance.NotifySubscribers(guideHelper.Loads[GuideHelper.Index].transform.GetInstanceID().ToString(), new Packet());
+            AIGuideBehaviour other = null;
+            hookLoop.HookUp(AI.m_hook.GetComponent<Collider>());
             if (GuideHelper.Index < guideHelper.LoadToZone.Count)
             {
                 if (guideHelper.Loads[GuideHelper.Index].GetComponent<HingeJoint>() == true)
                 {
                     AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
                     AIGuideBehaviour.WalkingtoStartPos = true;
+
+                    foreach (var rigger in guideHelper.Riggers)
+                    {
+                        if (rigger != AI)
+                            other = rigger;
+                    }
+
+                    if (AI.WayPoints != null && AI.WayPoints.WayPointsActive)
+                    {
+                        AI.MovingToWayPoint = true;
+                        other.MovingToWayPoint = true;
+                    }
                 }
                 else
                 {
+                    SendToAnimator.m_oldValue = String.Empty;
                     AI.m_tyingComplete = false;
                 }
             }

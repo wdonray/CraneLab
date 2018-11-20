@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CenterOfMass : MonoBehaviour
 {
@@ -10,15 +7,19 @@ public class CenterOfMass : MonoBehaviour
 	void Start ()
 	{
 	    _rb = GetComponent<Rigidbody>();
-	    _rb.centerOfMass = Center;
 	}
 
-    void OnDrawGizmos()
+    void Update()
     {
-        if (_rb != null)
-        {
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireCube(_rb.centerOfMass, Vector3.one);
-        }
+        _rb.centerOfMass = Center;
     }
+
+    //void OnDrawGizmos()
+    //{
+    //    if (_rb != null)
+    //    {
+    //        Gizmos.color = Color.magenta;
+    //        Gizmos.DrawWireCube(_rb.centerOfMass, Vector3.one);
+    //    }
+    //}
 }

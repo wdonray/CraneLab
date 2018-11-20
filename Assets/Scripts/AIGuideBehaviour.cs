@@ -10,7 +10,7 @@ using UnityEngine.AI;
 
 public class AIGuideBehaviour : MonoBehaviour
 {
-    public string Target;
+    public string Target, AnimationPlaying;
     public Transform m_dropZone;
     public Transform m_load;
     public Transform m_hook;
@@ -19,12 +19,13 @@ public class AIGuideBehaviour : MonoBehaviour
     public float RotationSpeed, TargetDistance = 2f;
     [HideInInspector] public Vector3 GuideStartPos, StoreHookPos;
     [HideInInspector] public NavMeshAgent Agent;
-    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, CheckHoistCalled, Emergancy;
+    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, CheckHoistCalled, Emergancy, MovingToWayPoint;
     public static bool WalkingToTarget, WalkingtoStartPos, LoadCollected, GuideWalkToLocation;
     public bool m_tieOnly, m_dead, _complete;
     private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist, _tearTriggered, _tearFailed, _tearPassed, _liftFailed;
     private GuideHelper _guideHelper;
     [HideInInspector] public AIGuideWalk _guideWalk;
+    [HideInInspector] public AIGuideWayPoints WayPoints => GetComponent<AIGuideWayPoints>();
     private float _height;
     public Vector3 CranePos => m_crane.transform.position;
     public Vector3 HookPos => m_hook.position;
@@ -46,6 +47,7 @@ public class AIGuideBehaviour : MonoBehaviour
         _guideHelper = FindObjectOfType<GuideHelper>();
         _guideWalk = gameObject.AddComponent<AIGuideWalk>();
         _guideWalk.Agent = Agent;
+        Agent.isStopped = true;
         if (!m_tieOnly)
         {
             StartCheckHoist();
@@ -60,7 +62,23 @@ public class AIGuideBehaviour : MonoBehaviour
         {
             if (!m_dead)
             {
-                GuideCrane(4, 1, 1);
+                if (WayPoints != null && WayPoints.WayPointsActive)
+                {
+                    
+                    if (MovingToWayPoint)
+                    {
+                        WayPoints.MoveToNextPoint();
+                    }
+                    else
+                    {
+                        GuideCrane(4, 1, 1);
+                    }
+                }
+                else
+                {
+                    GuideCrane(4, 1, 1);
+                }
+                print("LoadCollected: <color=red>" + LoadCollected + "</color>");
             }
         }
     }
@@ -68,6 +86,8 @@ public class AIGuideBehaviour : MonoBehaviour
     public void ResetStaticVariables()
     {
         SendToAnimator.sentOnce = false;
+        SendToAnimator.m_oldValue = String.Empty;
+        SendToAnimator.m_oldValueForce = String.Empty;
         WalkingToTarget = false;
         WalkingtoStartPos = false;
         LoadCollected = false;
@@ -337,7 +357,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 {
                     //Stop walking and idle
                     m_tyingComplete = false; WalkingtoStartPos = false;
-                    FaceCrane(0.9f);
+                    _guideWalk.RotateTowards(LookAtCrane, 2);
                     _guideWalk.StopWalking();
                     if (LoadCollected)
                     {
@@ -395,7 +415,7 @@ public class AIGuideBehaviour : MonoBehaviour
         _liftFailed = true;
     }
 
-    public static void GuideWalkBool(Packet emptyPacket)
+    public void GuideWalkBool()
     {
         GuideWalkToLocation = true;
     }
@@ -465,6 +485,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 {
                     if (Emergancy == false)
                     {
+                        SendToAnimator.ResetAllTriggers(gameObject);
                         SendToAnimator.stop = false;
                         Emergancy = true;
                         SendToAnimator.SendTrigger(gameObject, "EmergancyStop");
@@ -485,16 +506,19 @@ public class AIGuideBehaviour : MonoBehaviour
 
                 if (CheckHoistCalled == false)
                 {
-                    //Guide the crane
-                    SendToAnimator.ResetTrigger(gameObject, "Stop");
-                    if (!Swing(sourceToCrane.normalized, toCrane.normalized, (int)swingAngle))
+                    if (Agent.isStopped)
                     {
-                        if (!RaiseLowerBoom(source, targetPos))
+                        //Guide the crane
+                        SendToAnimator.ResetAllTriggers(gameObject);
+                        if (!Swing(sourceToCrane.normalized, toCrane.normalized, (int)swingAngle))
                         {
-                            if (!HoistInOut(source, targetPos, hoistInOutDist))
+                            if (!RaiseLowerBoom(source, targetPos))
                             {
-                                if (!HoistOrLower(source, targetPos, hoistLowerDist))
+                                if (!HoistInOut(source, targetPos, hoistInOutDist))
                                 {
+                                    if (!HoistOrLower(source, targetPos, hoistLowerDist))
+                                    {
+                                    }
                                 }
                             }
                         }
@@ -544,9 +568,9 @@ public class AIGuideBehaviour : MonoBehaviour
     private IEnumerator CheckHoist()
     {
         CheckHoistCalled = true;
-        SendToAnimator.ResetTrigger(gameObject, "Stop");
+        SendToAnimator.ResetAllTriggers(gameObject);
         SendToAnimator.stop = false;
-        SendToAnimator.SendTriggerForce(gameObject, "Hoist");
+        SendToAnimator.SendTriggerForceContinues(gameObject, "Hoist");
         yield return new WaitUntil(() => Check(_height) || _liftFailed);
         CheckHoistCalled = false;
     }
@@ -567,5 +591,13 @@ public class AIGuideBehaviour : MonoBehaviour
     {
         if (!Emergancy)
             StartCoroutine(CheckHoist());
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.parent.GetChild(0).CompareTag("Link"))
+        {
+            Death();
+        }
     }
 }
