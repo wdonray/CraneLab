@@ -6,6 +6,7 @@ using Mouledoux.Callback;
 
 public class HookLoop : MonoBehaviour
 {
+    private LinkPullTowards magnet => GetComponent<LinkPullTowards>();
     Rigidbody m_hook;
     HingeJoint m_connectionJoint;
     public bool CanAutoHook = false;
@@ -36,24 +37,17 @@ public class HookLoop : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Hook") || !CanAutoHook) return;
-        StartCoroutine(HookUp(other));
+        HookUp(other);
     }
 
 
-    public IEnumerator HookUp(Collider other)
+    public void HookUp(Collider other)
     {
-        if (m_hook != null || grabTimer > 0) yield break;
+        if (m_hook != null || grabTimer > 0) return;
 
         Rigidbody rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
-
-        while (Vector3.Distance(transform.position, other.transform.position) >= .1f)
-        {
-            transform.position = Vector3.Lerp(transform.position, other.transform.position, Time.deltaTime * 50f);
-            yield return null;
-        }
-
-        if (Vector3.Distance(transform.position, other.transform.position) <= .1f)
+        if (magnet.Pulling)
         {
             Hooked = true;
             m_hook = other.GetComponent<Rigidbody>();

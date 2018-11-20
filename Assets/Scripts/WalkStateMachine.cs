@@ -48,7 +48,17 @@ public class WalkStateMachine : StateMachineBehaviour
             if (other != null)
             {
                 other.StoreHookPos = other.HookPos;
-                other.StartCheckHoist();
+                if (other.WayPoints !=null)
+                {
+                    if (other.WayPoints.WayPointsActive == false)
+                    {
+                        other.StartCheckHoist();
+                    }
+                }
+                else
+                {
+                    other.StartCheckHoist();
+                }
             }
 
             //if (AI.m_tyingComplete)

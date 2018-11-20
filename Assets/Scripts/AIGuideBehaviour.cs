@@ -62,8 +62,9 @@ public class AIGuideBehaviour : MonoBehaviour
         {
             if (!m_dead)
             {
-                if (WayPoints.WayPointsActive)
+                if (WayPoints != null && WayPoints.WayPointsActive)
                 {
+                    
                     if (MovingToWayPoint)
                     {
                         WayPoints.MoveToNextPoint();
@@ -356,7 +357,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 {
                     //Stop walking and idle
                     m_tyingComplete = false; WalkingtoStartPos = false;
-                    FaceCrane(0.9f);
+                    _guideWalk.RotateTowards(LookAtCrane, 2);
                     _guideWalk.StopWalking();
                     if (LoadCollected)
                     {
@@ -508,7 +509,7 @@ public class AIGuideBehaviour : MonoBehaviour
                     if (Agent.isStopped)
                     {
                         //Guide the crane
-                        SendToAnimator.ResetTrigger(gameObject, "Stop");
+                        SendToAnimator.ResetAllTriggers(gameObject);
                         if (!Swing(sourceToCrane.normalized, toCrane.normalized, (int)swingAngle))
                         {
                             if (!RaiseLowerBoom(source, targetPos))
@@ -567,10 +568,10 @@ public class AIGuideBehaviour : MonoBehaviour
     private IEnumerator CheckHoist()
     {
         CheckHoistCalled = true;
-        SendToAnimator.ResetTrigger(gameObject, "Stop");
+        SendToAnimator.ResetAllTriggers(gameObject);
         SendToAnimator.stop = false;
-        SendToAnimator.SendTriggerForce(gameObject, "Hoist");
-        yield return new WaitUntil(() => Check(_height) || _liftFailed || MovingToWayPoint);
+        SendToAnimator.SendTriggerForceContinues(gameObject, "Hoist");
+        yield return new WaitUntil(() => Check(_height) || _liftFailed);
         CheckHoistCalled = false;
     }
 

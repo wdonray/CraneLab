@@ -44,7 +44,7 @@ public class AIGuideWalk : MonoBehaviour
         Agent.isStopped = false;
         Debug.DrawRay(target, Vector3.up, Color.cyan);
         Agent.SetDestination(target);
-        SendToAnimator.SendTriggerForce(gameObject, "Walk");
+        SendToAnimator.SendTriggerForceContinues(gameObject, "Walk");
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ public class AIGuideWalk : MonoBehaviour
     {
         Agent.isStopped = true;
         SendToAnimator.ResetTrigger(gameObject, "Walk");
-        SendToAnimator.SendTrigger(gameObject, "Idle");
+        SendToAnimator.SendTriggerForceContinues(gameObject, "Idle");
     }
 
     /// <summary>

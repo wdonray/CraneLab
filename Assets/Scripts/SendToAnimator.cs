@@ -39,7 +39,7 @@ public class SendToAnimator
         m_oldValue = value;
         m_animator.SetTrigger(m_oldValue);
         m_aiGuide.AnimationPlaying = value;
-        Debug.Log(m_oldValue);
+        //Debug.Log(m_oldValue);
     }
 
     public static void SendTriggerForce(GameObject sender, string value)
@@ -56,7 +56,16 @@ public class SendToAnimator
         m_oldValueForce = value;
         m_animator.SetTrigger(m_oldValueForce);
         m_aiGuide.AnimationPlaying = value;
-        Debug.Log(sender.name + " Forced: " + value);
+        //Debug.Log(sender.name + " Forced: " + value);
+    }
+
+    public static void SendTriggerForceContinues(GameObject sender, string value)
+    {
+        var m_animator = sender.GetComponent<Animator>();
+        var m_aiGuide = m_animator.gameObject.GetComponent<AIGuideBehaviour>();
+        m_animator.SetTrigger(value);
+        m_aiGuide.AnimationPlaying = value;
+        //Debug.Log(sender.name + " Test Forced: " + value);
     }
 
     public static void ResetTrigger(GameObject sender, string value)
@@ -83,7 +92,7 @@ public class SendToAnimator
             sentOnce = true;
             m_animator.SetTrigger(value);
             m_aiGuide.AnimationPlaying = value;
-            Debug.Log("Played Once:" + value);
+           // Debug.Log("Played Once:" + value);
         }
     }
 }

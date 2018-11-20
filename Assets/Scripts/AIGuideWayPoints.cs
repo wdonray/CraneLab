@@ -5,40 +5,53 @@ using UnityEngine;
 
 public class AIGuideWayPoints : MonoBehaviour
 {
-    private AIGuideBehaviour aiGuide => GetComponent<AIGuideBehaviour>();
+    private AIGuideBehaviour AiGuide => GetComponent<AIGuideBehaviour>();
+    private GuideHelper GuideHelper => FindObjectOfType<GuideHelper>();
+    private AIGuideBehaviour _otheraiGuide = null;
     public List<Transform> Points = new List<Transform>();
     public bool WayPointsActive;
 
     private void Start()
     {
         WayPointsActive = Points.Count != 0;
+        foreach (var rigger in GuideHelper.Riggers)
+        {
+            if (rigger != AiGuide)
+            {
+                _otheraiGuide = rigger;
+            }
+        }
     }
 
     public void MoveToNextPoint()
     {
-        if (aiGuide._complete == false)
+        if (AiGuide._complete == false)
         {
-            if (Vector3.Distance(transform.position, Points[GuideHelper.Index].transform.position) > 1)
+            if (Vector3.Distance(transform.position, Points[GuideHelper.Index].transform.position) > .5f)
             {
-                if (aiGuide.m_tieOnly)
+                if (AiGuide.m_tieOnly)
                 {
-                    aiGuide.GuideStartPos = Points[GuideHelper.Index].transform.position;
+                    AiGuide.GuideStartPos = Points[GuideHelper.Index].transform.position;
                 }
                 SendToAnimator.ResetAllTriggers(gameObject);
                 SendToAnimator.stop = false;
-                aiGuide._guideWalk.RotateTowards(Points[GuideHelper.Index].transform.position, 2);
-                aiGuide._guideWalk.WalkTowards(Points[GuideHelper.Index].transform.position, 1);
+                AiGuide._guideWalk.RotateTowards(Points[GuideHelper.Index].transform.position, 2);
+                AiGuide._guideWalk.WalkTowards(Points[GuideHelper.Index].transform.position, .5f);
             }
             else
             {
-                if (aiGuide.m_tieOnly == false)
+
+                AiGuide._guideWalk.RotateTowards(AiGuide.LookAtCrane, 2);
+                AiGuide._guideWalk.StopWalking();
+                if (AiGuide.m_tieOnly == false)
                 {
-                    aiGuide.CheckHoistCalled = false;
-                    aiGuide.StartCheckHoist();
+                    AiGuide.StartCheckHoist();
                 }
-                aiGuide._guideWalk.RotateTowards(aiGuide.LookAtCrane, 2);
-                aiGuide._guideWalk.StopWalking();
-                aiGuide.MovingToWayPoint = false;
+
+                if (_otheraiGuide.Agent.isStopped)
+                {
+                    AiGuide.MovingToWayPoint = false;
+                }
             }
         }
     }

@@ -117,8 +117,8 @@ public class GuideHelper : MonoBehaviour
                 {
                     CurrentTaskText.text = "Good Job";
                     var sum = Index - 1;
-                    var particle = Instantiate(CompleteParticleSystem, Loads[sum].transform);
-                    particle.transform.localPosition = new Vector3(particle.transform.localPosition.x,  particle.transform.localPosition.x + 1);
+                    var particle = Instantiate(CompleteParticleSystem, Loads[sum].transform.parent.GetChild(2).transform);
+                    particle.transform.localPosition = new Vector3(particle.transform.localPosition.x,  particle.transform.localPosition.y + 1);
                     particle.gameObject.SetActive(true);
                     yield return new WaitForSeconds(2);
                     Destroy(particle);
@@ -135,6 +135,11 @@ public class GuideHelper : MonoBehaviour
             else
             {
                 CurrentTaskText.text = "Job Complete";
+                var particle = Instantiate(CompleteParticleSystem, Loads[Loads.Count].transform.parent.GetChild(2).transform);
+                particle.transform.localPosition = new Vector3(particle.transform.localPosition.x, particle.transform.localPosition.x + 1);
+                particle.gameObject.SetActive(true);
+                yield return new WaitForSeconds(2);
+                Destroy(particle);
             }
         }
     }
@@ -225,7 +230,7 @@ public class GuideHelper : MonoBehaviour
             if (LoadToZone[Index].Load.transform.parent.GetComponentInChildren<TearTest>()._passed)
             {
                 CurrentTaskText.text = "You Passed!";
-                var particle = Instantiate(CompleteParticleSystem, Loads[Index].transform);
+                var particle = Instantiate(CompleteParticleSystem, Loads[Index].transform.parent.GetChild(2).transform);
                 particle.gameObject.SetActive(true);
                 Mediator.instance.NotifySubscribers(PassedMessage, new Packet());
                 StartCoroutine(DestroyAfter(2, particle));
