@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 public class GuideHelper : MonoBehaviour
 {
+    public TestType TestType;
     public GameObject CompleteParticleSystem;
     public static int Index;
     public Text CurrentTaskText;
@@ -34,6 +35,11 @@ public class GuideHelper : MonoBehaviour
         {
             Riggers.Add(rigger);
             _subscriptions.Subscribe(rigger.gameObject.GetInstanceID().ToString(), _taskCallback);
+        }
+
+        foreach (var rigger in Riggers)
+        {
+            rigger.TestType = TestType;
         }
 
         for (int i = 0; i < Loads.Count; i++)
@@ -226,7 +232,7 @@ public class GuideHelper : MonoBehaviour
     public void UpdateEmergancyText(Packet emptyPacket)
     {
         CurrentTaskText.gameObject.SetActive(true);
-        if (tearEnabled)
+        if (TestType == TestType.Break)
         {
             if (LoadToZone[Index].Load.transform.parent.GetComponentInChildren<TearTest>()._passed)
             {
