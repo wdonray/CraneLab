@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -79,11 +80,21 @@ public class AIGuideWalk : MonoBehaviour
                 }
                 else
                 {
-                    guideWalkPos.position = guideStartPos;
                     Agent.isStopped = true;
                     SendToAnimator.ResetAllTriggers(gameObject);
-                    aiGuide.CheckHoistCalled = false;
-                    aiGuide.StartCheckHoist();
+                    if (guideWalkPos.position != guideStartPos)
+                    {
+                        guideWalkPos.position = guideStartPos;
+                        aiGuide.CheckHoistCalled = false;
+                        aiGuide.StartCheckHoist();      
+                    }
+                    else
+                    {
+                        StopWalking();
+                        SendToAnimator.m_oldValue = String.Empty;
+                        aiGuide.CheckHoistCalled = false;
+                        SendToAnimator.stop = false;
+                    }
                     AIGuideBehaviour.GuideWalkToLocation = false;
                 }
             }

@@ -8,8 +8,16 @@ using Mouledoux.Components;
 using UnityEngine;
 using UnityEngine.AI;
 
+public enum TestType
+{
+    Default,
+    DefaultWayPoints,
+    Break,
+    Personnel
+}
 public class AIGuideBehaviour : MonoBehaviour
 {
+    public TestType TestType;
     public string Target, AnimationPlaying;
     public Transform m_dropZone;
     public Transform m_load;
@@ -58,29 +66,45 @@ public class AIGuideBehaviour : MonoBehaviour
 
     void LateUpdate()
     {
-        if (!_complete)
+        if (_complete) return;
+        if (m_dead) return;
+
+        switch (TestType)
         {
-            if (!m_dead)
+            case TestType.Default:
+            {
+                GuideCraneDefault();
+                break;
+            }
+            case TestType.DefaultWayPoints:
             {
                 if (WayPoints != null && WayPoints.WayPointsActive)
                 {
-                    
                     if (MovingToWayPoint)
                     {
                         WayPoints.MoveToNextPoint();
                     }
                     else
                     {
-                        GuideCrane(4, 1, 1);
+                        GuideCraneDefault();
                     }
                 }
-                else
-                {
-                    GuideCrane(4, 1, 1);
-                }
-                print("LoadCollected: <color=red>" + LoadCollected + "</color>");
+                break;
             }
+            case TestType.Break:
+            {
+                GuideCraneBreak();
+                break;
+            }
+            case TestType.Personnel:
+            {
+                GuideCraneDefault();
+                break;
+            }
+            default:
+                throw new ArgumentOutOfRangeException();
         }
+        print("LoadCollected: <color=red>" + LoadCollected + "</color>");
     }
 
     public void ResetStaticVariables()
@@ -271,13 +295,13 @@ public class AIGuideBehaviour : MonoBehaviour
     }
 
     /// <summary>
-    ///     If the crane is in range of the target walk over and start the tying animation
+    ///     Almost like the Tie logic with logic passed in for tearing test
     /// </summary>
     /// <param name="target"></param>
     /// <param name="tearTriggered"></param>
     /// <param name="passed"></param>
     /// <param name="failed"></param>
-    private void Tie(Vector3 target, bool tearTriggered, bool passed, bool failed)
+    private void TieBreak(Vector3 target, bool tearTriggered, bool passed, bool failed)
     {
         var dir = transform.position - target;
         if (m_dead)
@@ -307,6 +331,23 @@ public class AIGuideBehaviour : MonoBehaviour
                 WalkingToTarget = false; WalkingtoStartPos = false;
                 _guideWalk.StopWalking();
             }
+        }
+        else
+        {
+            TieDefault(target);
+        }
+    }
+
+    /// <summary>
+    ///     If the crane is in range of the target walk over and start the tying animation
+    /// </summary>
+    /// <param name="target"></param>
+    private void TieDefault(Vector3 target)
+    {
+        var dir = transform.position - target;
+        if (m_dead)
+        {
+            Death();
         }
         else
         {
@@ -418,47 +459,34 @@ public class AIGuideBehaviour : MonoBehaviour
     public void GuideWalkBool()
     {
         GuideWalkToLocation = true;
+        CheckHoistCalled = false;
     }
 
     /// <summary>
-    ///      Guide and or tie the crane using the functions created above
+    ///     Guide the crane and active break logic when needed
     /// </summary>
-    /// <param name="swingAngle"></param>
-    /// <param name="hoistInOutDist"></param>
-    /// <param name="hoistLowerDist"></param>
-    private void GuideCrane(float swingAngle, float hoistInOutDist, float hoistLowerDist)
+    private void GuideCraneBreak()
     {
-        var toCrane = (LoadCollected) ? DropZonePos - CranePos : LoadPos - CranePos;
-        var sourceToCrane = (LoadCollected) ? LoadPos - CranePos : HookPos - CranePos;
-
         var targetPos = (LoadCollected) ? DropZonePos : LoadPos;
-        Target = targetPos == DropZonePos ? m_dropZone.name : m_load.transform.parent.name;
-        var source = (LoadCollected) ? LoadPos : HookPos;
-
-        if (_guideHelper.tearEnabled)
+        if (GuideHelper.Index < _guideHelper.LoadToZone.Count)
         {
-            if (GuideHelper.Index < _guideHelper.LoadToZone.Count)
-            {
-                _tearTriggered = _guideHelper.Loads[GuideHelper.Index].transform.parent
-                    .GetComponentInChildren<TearTest>()._distanceReached;
-                _tearFailed = _guideHelper.Loads[GuideHelper.Index].transform.parent.GetComponentInChildren<TearTest>()
-                    ._failed;
-                _tearPassed = _guideHelper.Loads[GuideHelper.Index].transform.parent.GetComponentInChildren<TearTest>()
-                    ._passed;
-            }
+            _tearTriggered = _guideHelper.Loads[GuideHelper.Index].transform.parent
+                .GetComponentInChildren<TearTest>()._distanceReached;
+            _tearFailed = _guideHelper.Loads[GuideHelper.Index].transform.parent.GetComponentInChildren<TearTest>()
+                ._failed;
+            _tearPassed = _guideHelper.Loads[GuideHelper.Index].transform.parent.GetComponentInChildren<TearTest>()
+                ._passed;
         }
-
 
         if (m_tieOnly)
         {
             if (m_startedTying == false)
             {
-                Tie(targetPos, _tearTriggered, _tearPassed, _tearFailed);
+                TieBreak(targetPos, _tearTriggered, _tearPassed, _tearFailed);
             }
         }
         else
         {
-            //If the other AI is walking AI holds up stop
             if (WalkingToTarget || WalkingtoStartPos)
             {
                 if (Emergancy)
@@ -492,34 +520,86 @@ public class AIGuideBehaviour : MonoBehaviour
                     }
                 }
             }
+            else
+            {
+                GuideCraneLogic(targetPos, 4, 1, 1);
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Guide and or tie the crane using the functions created above
+    /// </summary>
+    private void GuideCraneDefault()
+    {
+        var targetPos = (LoadCollected) ? DropZonePos : LoadPos;
+        if (m_tieOnly)
+        {
+            if (m_startedTying == false)
+            {
+                TieDefault(targetPos);
+            }
+        }
+        else
+        {
+            //If the other AI is walking AI holds up stop
+            if (WalkingToTarget || WalkingtoStartPos)
+            {
+                if (Emergancy)
+                {
+                    WalkingToTarget = false;
+                    WalkingToTarget = false;
+                }
+                else
+                {
+                    Stop();
+                }
+            }
             else if (_liftFailed)
             {
                 Failed();
             }
             else
             {
-                if (GuideWalkPos != null)
-                {
-                    // If there is a pos to walk to walk there when needed
-                    _guideWalk.RiggerGuideWalk(this, GuideStartPos, GuideWalkPos, RotationSpeed);
-                }
+                GuideCraneLogic(targetPos, 4, 1, 1);
+            }
+        }
+    }
 
-                if (CheckHoistCalled == false)
+    /// <summary>
+    ///     Logic and flow for guiding the crane
+    /// </summary>
+    /// <param name="targetPos"></param>
+    /// <param name="swingAngle"></param>
+    /// <param name="hoistInOutDist"></param>
+    /// <param name="hoistLowerDist"></param>
+    private void GuideCraneLogic(Vector3 targetPos, float swingAngle, float hoistInOutDist, float hoistLowerDist)
+    {
+        var toCrane = (LoadCollected) ? DropZonePos - CranePos : LoadPos - CranePos;
+        var sourceToCrane = (LoadCollected) ? LoadPos - CranePos : HookPos - CranePos;
+        Target = targetPos == DropZonePos ? m_dropZone.name : m_load.transform.parent.name;
+        var source = (LoadCollected) ? LoadPos : HookPos;
+
+        if (GuideWalkPos != null)
+        {
+            // If there is a pos to walk to walk there when needed
+            _guideWalk.RiggerGuideWalk(this, GuideStartPos, GuideWalkPos, RotationSpeed);
+        }
+
+        if (CheckHoistCalled == false)
+        {
+            if (Agent.isStopped)
+            {
+                //Guide the crane
+                SendToAnimator.ResetAllTriggers(gameObject);
+                if (!Swing(sourceToCrane.normalized, toCrane.normalized, (int)swingAngle))
                 {
-                    if (Agent.isStopped)
+                    if (!RaiseLowerBoom(source, targetPos))
                     {
-                        //Guide the crane
-                        SendToAnimator.ResetAllTriggers(gameObject);
-                        if (!Swing(sourceToCrane.normalized, toCrane.normalized, (int)swingAngle))
+                        if (!HoistInOut(source, targetPos, hoistInOutDist))
                         {
-                            if (!RaiseLowerBoom(source, targetPos))
+                            if (!HoistOrLower(source, targetPos, hoistLowerDist))
                             {
-                                if (!HoistInOut(source, targetPos, hoistInOutDist))
-                                {
-                                    if (!HoistOrLower(source, targetPos, hoistLowerDist))
-                                    {
-                                    }
-                                }
                             }
                         }
                     }

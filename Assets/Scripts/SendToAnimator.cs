@@ -83,6 +83,11 @@ public class SendToAnimator
         }
     }
 
+    public static void StopPlayack(GameObject sender)
+    {
+        sender.GetComponent<Animator>().StopPlayback();
+    }
+
     public static void SendTriggerOnce(GameObject sender, string value)
     {
         var m_animator = sender.GetComponent<Animator>();
