@@ -24,9 +24,8 @@ public class HookLoop : MonoBehaviour
     private void OnEnable()
     {
         onDrop += Drop;
-        //onPickUp += AIGuideBehaviour.GuideWalkBool;
         subscription.Subscribe("drop", onDrop);
-        subscription.Subscribe(transform.GetInstanceID().ToString(), onPickUp);
+        //subscription.Subscribe(transform.GetInstanceID().ToString(), onPickUp);
     }
 
     void Update()
