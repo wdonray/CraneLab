@@ -127,7 +127,7 @@ public class GuideHelper : MonoBehaviour
                     var particle = Instantiate(CompleteParticleSystem, Loads[sum].transform.parent.GetChild(2).transform);
                     particle.transform.localPosition = new Vector3(particle.transform.localPosition.x,  particle.transform.localPosition.y + 1);
                     particle.gameObject.SetActive(true);
-                    yield return new WaitForSeconds(2);
+                    yield return new WaitForSeconds(3);
                     Destroy(particle);
                     CurrentTaskText.text = "Move " + LoadToZone[Index].Load.transform.parent.name + " to " +
                                            LoadToZone[Index].Zone.transform.tag;
@@ -145,7 +145,7 @@ public class GuideHelper : MonoBehaviour
                 var particle = Instantiate(CompleteParticleSystem, Loads[sum].transform.parent.GetChild(2).transform);
                 particle.transform.localPosition = new Vector3(particle.transform.localPosition.x, particle.transform.localPosition.x + 1);
                 particle.gameObject.SetActive(true);
-                yield return new WaitForSeconds(2);
+                yield return new WaitForSeconds(3);
                 Destroy(particle);
             }
         }
@@ -169,7 +169,7 @@ public class GuideHelper : MonoBehaviour
     /// <returns></returns>
     private IEnumerator TaskOff()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(3);
         CurrentTaskText.gameObject.SetActive(false);
         StopAllCoroutines();
     }
@@ -240,7 +240,7 @@ public class GuideHelper : MonoBehaviour
                 var particle = Instantiate(CompleteParticleSystem, Loads[Index].transform.parent.GetChild(2).transform);
                 particle.gameObject.SetActive(true);
                 Mediator.instance.NotifySubscribers(PassedMessage, new Packet());
-                StartCoroutine(DestroyAfter(2, particle));
+                StartCoroutine(DestroyAfter(3, particle));
             }
             else if (LoadToZone[Index].Load.transform.parent.GetComponentInChildren<TearTest>()._failed)
             {
