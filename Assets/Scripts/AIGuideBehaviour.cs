@@ -34,7 +34,7 @@ public class AIGuideBehaviour : MonoBehaviour
     private GuideHelper _guideHelper;
     [HideInInspector] public AIGuideWalk _guideWalk;
     [HideInInspector] public AIGuideWayPoints WayPoints => GetComponent<AIGuideWayPoints>();
-    private float _height;
+    public float Height;
     public Vector3 CranePos => m_crane.transform.position;
     public Vector3 HookPos => m_hook.position;
     public Vector3 LoadPos => m_load.position;
@@ -47,7 +47,6 @@ public class AIGuideBehaviour : MonoBehaviour
     void Start()
     {
         ResetStaticVariables();
-        _height = 2;
         GuideStartPos = transform.position;
         Agent = GetComponent<NavMeshAgent>();
         transform.LookAt(LookAtCrane);
@@ -58,7 +57,7 @@ public class AIGuideBehaviour : MonoBehaviour
         Agent.isStopped = true;
         if (!m_tieOnly)
         {
-            StartCheckHoist();
+            //StartCheckHoist();
             var id = gameObject.GetInstanceID();
             Mediator.instance.NotifySubscribers(id.ToString(), new Packet());
         }
@@ -651,7 +650,7 @@ public class AIGuideBehaviour : MonoBehaviour
         SendToAnimator.ResetAllTriggers(gameObject);
         SendToAnimator.stop = false;
         SendToAnimator.SendTriggerForceContinues(gameObject, "Hoist");
-        yield return new WaitUntil(() => Check(_height) || _liftFailed);
+        yield return new WaitUntil(() => Check(Height) || _liftFailed);
         CheckHoistCalled = false;
     }
 
