@@ -461,6 +461,11 @@ public class AIGuideBehaviour : MonoBehaviour
         CheckHoistCalled = false;
     }
 
+    public void ChangeHeight(int value)
+    {
+        Height = value;
+    }
+
     /// <summary>
     ///     Guide the crane and active break logic when needed
     /// </summary>
@@ -579,6 +584,8 @@ public class AIGuideBehaviour : MonoBehaviour
         Target = targetPos == DropZonePos ? m_dropZone.name : m_load.transform.parent.name;
         var source = (LoadCollected) ? LoadPos : HookPos;
 
+        targetPos.y += Vector3.Distance(targetPos, source) > 3f ? 3f : 0f;
+        
         if (GuideWalkPos != null)
         {
             // If there is a pos to walk to walk there when needed
@@ -606,6 +613,15 @@ public class AIGuideBehaviour : MonoBehaviour
             }
         }
     }
+
+    //void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.magenta;
+    //    var targetPos = (LoadCollected) ? DropZonePos : LoadPos;
+    //    var source = (LoadCollected) ? LoadPos : HookPos;
+    //    targetPos.y += Vector3.Distance(targetPos, source) > 5f ? 3f : 0f;
+    //    Gizmos.DrawCube(targetPos, Vector3.one);
+    //}
 
     /// <summary>
     ///     If you are not facing the crane, rotate and look at the crane

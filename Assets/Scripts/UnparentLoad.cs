@@ -8,6 +8,7 @@ public class UnparentLoad : MonoBehaviour
     public GameObject NewParent;
     public HookLoop CurrentHookLoop => GetComponent<HookLoop>();
 
+    public bool CheckBase;
     // Update is called once per frame
     void Update()
     {
@@ -36,6 +37,11 @@ public class UnparentLoad : MonoBehaviour
         {
             if (CurrentParent?.transform != NewParent.transform)
             {
+                if (CheckBase)
+                {
+                    CurrentHookLoop.transform.parent.GetChild(2).GetComponent<Rigidbody>().constraints =
+                        RigidbodyConstraints.None;
+                }
                 transform.parent.SetParent(NewParent.transform);
                 CurrentHookLoop.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
                 CurrentHookLoop.GetComponent<Rigidbody>().constraints =
