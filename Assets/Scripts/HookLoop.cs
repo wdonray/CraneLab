@@ -24,9 +24,8 @@ public class HookLoop : MonoBehaviour
     private void OnEnable()
     {
         onDrop += Drop;
-        //onPickUp += AIGuideBehaviour.GuideWalkBool;
         subscription.Subscribe("drop", onDrop);
-        subscription.Subscribe(transform.GetInstanceID().ToString(), onPickUp);
+        //subscription.Subscribe(transform.GetInstanceID().ToString(), onPickUp);
     }
 
     void Update()
@@ -37,7 +36,7 @@ public class HookLoop : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Hook") || !CanAutoHook) return;
-        HookUp(other);
+        HookUpZTest(other);
     }
 
 
@@ -65,6 +64,29 @@ public class HookLoop : MonoBehaviour
             m_connectionJoint.enableCollision = false;
             rb.isKinematic = false;
         }
+    }
+
+    public void HookUpZTest(Collider other)
+    {
+        if (m_hook != null || grabTimer > 0) return;
+
+        Rigidbody rb = GetComponent<Rigidbody>();
+        rb.isKinematic = true;
+        Hooked = true;
+        m_hook = other.GetComponent<Rigidbody>();
+        m_connectionJoint = gameObject.AddComponent<HingeJoint>();
+        m_connectionJoint.connectedBody = m_hook;
+        m_connectionJoint.autoConfigureConnectedAnchor = false;
+        m_connectionJoint.anchor = new Vector3(0, 0, 0);
+        m_connectionJoint.connectedAnchor = new Vector3(0, 0, -0.5f);
+
+        JointLimits newLimits = new JointLimits();
+        newLimits.min = -60f;
+        newLimits.max = 60f;
+        m_connectionJoint.useLimits = true;
+        m_connectionJoint.limits = newLimits;
+        m_connectionJoint.enableCollision = false;
+        rb.isKinematic = false;
     }
 
 
