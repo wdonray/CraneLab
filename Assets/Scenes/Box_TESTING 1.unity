@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -718,7 +718,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &75154719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -731,6 +731,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Tag: Hook
+  Helmet: {fileID: 0}
+  ThrowHand: {fileID: 0}
   minToTrigger: 0
   OnEnter:
     m_PersistentCalls:
@@ -798,19 +800,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 123cee9bffbf8b54bb1e39356600e8eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TestType: 0
+  Target: 
+  AnimationPlaying: 
   m_dropZone: {fileID: 1163041112}
   m_load: {fileID: 103704576}
   m_hook: {fileID: 1148851332}
   m_crane: {fileID: 2005309629}
+  GuideWalkPos: {fileID: 0}
   RotationSpeed: 2
-  m_startPos: {x: 0, y: 0, z: 0}
-  m_agent: {fileID: 0}
   TargetDistance: 2
+  GuideStartPos: {x: 0, y: 0, z: 0}
+  StoreHookPos: {x: 0, y: 0, z: 0}
+  Agent: {fileID: 0}
   m_startedTying: 0
   m_tyingComplete: 0
   m_walking: 0
+  CheckHoistCalled: 0
+  Emergancy: 0
+  MovingToWayPoint: 0
   m_tieOnly: 0
   m_dead: 0
+  _complete: 0
+  _guideWalk: {fileID: 0}
 --- !u!95 &75154723
 Animator:
   serializedVersion: 3
@@ -1381,7 +1393,7 @@ GameObject:
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &103704572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8287,7 +8299,7 @@ GameObject:
   m_Icon: {fileID: 419385456094870383, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!54 &1148851326
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -8433,7 +8445,7 @@ GameObject:
   m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &1163041109
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -11364,6 +11376,26 @@ Prefab:
       propertyPath: m_crane
       value: 
       objectReference: {fileID: 2005309629}
+    - target: {fileID: 114919462850771554, guid: 393791cf7a1b7d242a79efb6a99bedf0,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 195021129212691222, guid: 393791cf7a1b7d242a79efb6a99bedf0,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114709199222451846, guid: 393791cf7a1b7d242a79efb6a99bedf0,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 135728126681404096, guid: 393791cf7a1b7d242a79efb6a99bedf0,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 393791cf7a1b7d242a79efb6a99bedf0, type: 2}
   m_IsPrefabParent: 0
