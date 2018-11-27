@@ -34,7 +34,7 @@ public class TyingUpStateMachine : StateMachineBehaviour
             {
                 GuideHelper.Index++;
                 guideHelper.reached = true;
-                if (guideHelper.tearEnabled == false)
+                if (guideHelper.TestType == TestType.Break)
                 {
                     Mediator.instance.NotifySubscribers(AI.gameObject.GetInstanceID().ToString(), new Packet());
                 }

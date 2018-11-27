@@ -66,7 +66,12 @@ public class AIGuideBehaviour : MonoBehaviour
     void LateUpdate()
     {
         if (_complete) return;
-        if (m_dead) return;
+
+        if (m_dead)
+        {
+            Death();
+            return;
+        }
 
         switch (TestType)
         {
@@ -690,7 +695,8 @@ public class AIGuideBehaviour : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.transform.parent.GetChild(0).CompareTag("Link"))
+        var otherMag = other.transform?.GetComponent<Rigidbody>().velocity.magnitude;
+        if (otherMag >= 2)
         {
             Death();
         }
