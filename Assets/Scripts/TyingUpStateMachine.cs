@@ -35,6 +35,7 @@ public class TyingUpStateMachine : StateMachineBehaviour
     {
         AI.m_startedTying = false;
         AI.m_tyingComplete = true;
+
         if (AIGuideBehaviour.LoadCollected)
         {
             hookLoop.Drop();
@@ -47,31 +48,22 @@ public class TyingUpStateMachine : StateMachineBehaviour
                 {
                     Mediator.instance.NotifySubscribers(AI.gameObject.GetInstanceID().ToString(), new Packet());
                 }
-
-                if (guideHelper.TestType == TestType.Personnel)
-                {
-                    _aiGrabLift.LetGo();
-                }
             }
+
             AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
             AIGuideBehaviour.WalkingtoStartPos = true;
         }
         else
         {
-            //Mediator.instance.NotifySubscribers(guideHelper.Loads[GuideHelper.Index].transform.GetInstanceID().ToString(), new Packet());
             AIGuideBehaviour other = null;
             hookLoop.HookUp(AI.m_hook.GetComponent<Collider>());
+
             if (GuideHelper.Index < guideHelper.LoadToZone.Count)
             {
                 if (guideHelper.Loads[GuideHelper.Index].GetComponent<HingeJoint>() == true)
                 {
                     AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
                     AIGuideBehaviour.WalkingtoStartPos = true;
-
-                    if (guideHelper.TestType == TestType.Personnel)
-                    {
-                        _aiGrabLift.WalkStepUp(guideHelper.Loads[GuideHelper.Index]);
-                    }
 
                     foreach (var rigger in guideHelper.Riggers)
                     {
@@ -93,14 +85,4 @@ public class TyingUpStateMachine : StateMachineBehaviour
             }
         }
     }
-
-    // OnStateMove is called right after Animator.OnAnimatorMove(). Code that processes and affects root motion should be implemented here
-    //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-    //
-    //}
-
-    // OnStateIK is called right after Animator.OnAnimatorIK(). Code that sets up animation IK (inverse kinematics) should be implemented here.
-    //override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-    //
-    //}
 }

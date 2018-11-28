@@ -21,14 +21,14 @@ public class UnparentLoad : MonoBehaviour
                 if (hit.transform.gameObject.layer == 8)
                 {
                     //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * hit.distance, Color.yellow);
-                    Debug.Log("Did Hit");
+                    //Debug.Log("Did Hit");
                     CurrentParent = hit.transform.gameObject;
                     transform.parent.SetParent(CurrentParent.transform);
                 }
                 else
                 {
                     //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * 1000, Color.white);
-                    Debug.Log("Did not Hit");
+                    //Debug.Log("Did not Hit");
                 }
             }
             else if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out hit,
@@ -37,14 +37,14 @@ public class UnparentLoad : MonoBehaviour
                 if (hit.transform.gameObject.layer == 9)
                 {
                     //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * hit.distance, Color.yellow);
-                    Debug.Log("Did Hit");
+                    //Debug.Log("Did Hit");
                     CurrentParent = hit.transform.gameObject;
                     transform.parent.SetParent(CurrentParent.transform);
                 }
                 else
                 {
                     //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * 1000, Color.white);
-                    Debug.Log("Did not Hit");
+                    //Debug.Log("Did not Hit");
                 }
             }
         }

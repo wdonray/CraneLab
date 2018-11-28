@@ -12,12 +12,14 @@ public class WalkStateMachine : StateMachineBehaviour
     {
         guideHelper = FindObjectOfType<GuideHelper>();
         AI = animator.gameObject.GetComponent<AIGuideBehaviour>();
-        AI.m_walking = true;
+        if (AI != null)
+            AI.m_walking = true;
     }
 
     //OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (AI == null) return;
         if (AI._complete == false)
         {
             var load = guideHelper.Loads[GuideHelper.Index];
@@ -36,6 +38,7 @@ public class WalkStateMachine : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (AI == null) return;
         AIGuideBehaviour other = null;
         if (AI.m_tieOnly)
         {

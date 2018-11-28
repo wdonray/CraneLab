@@ -39,13 +39,22 @@ public class AIGuideWalk : MonoBehaviour
     /// </summary>
     /// <param name="target"></param>
     /// <param name="stoppingDistance"></param>
-    public void WalkTowards(Vector3 target, float stoppingDistance)
+    /// <param name="continues"></param>
+    public void WalkTowards(Vector3 target, float stoppingDistance, bool continues)
     {
         Agent.stoppingDistance = stoppingDistance;
         Agent.isStopped = false;
-        Debug.DrawRay(target, Vector3.up, Color.cyan);
         Agent.SetDestination(target);
-        SendToAnimator.SendTriggerForceContinues(gameObject, "Walk");
+        Debug.DrawRay(target, Vector3.up, Color.cyan);
+
+        if (continues)
+        {
+            SendToAnimator.SendTriggerForceContinues(gameObject, "Walk");
+        }
+        else
+        {
+            SendToAnimator.SendTriggerForce(gameObject, "Walk");
+        }
     }
 
     /// <summary>
@@ -76,7 +85,7 @@ public class AIGuideWalk : MonoBehaviour
                 {
                     SendToAnimator.ResetAllTriggers(gameObject);
                     RotateTowards(guideWalkPos.position, rotationSpeed);
-                    WalkTowards(guideWalkPos.position, 1f);
+                    WalkTowards(guideWalkPos.position, 1f, true);
                 }
                 else
                 {
@@ -86,7 +95,7 @@ public class AIGuideWalk : MonoBehaviour
                     {
                         guideWalkPos.position = guideStartPos;
                         aiGuide.CheckHoistCalled = false;
-                        aiGuide.StartCheckHoist();      
+                        aiGuide.StartCheckHoist();
                     }
                     else
                     {
