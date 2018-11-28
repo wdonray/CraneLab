@@ -34,6 +34,7 @@ public class AIGuideBehaviour : MonoBehaviour
     private GuideHelper _guideHelper;
     [HideInInspector] public AIGuideWalk _guideWalk;
     [HideInInspector] public AIGuideWayPoints WayPoints => GetComponent<AIGuideWayPoints>();
+    private AIGrabLift AiGrabLift => FindObjectOfType<AIGrabLift>();
     public float Height;
     public Vector3 CranePos => m_crane.transform.position;
     public Vector3 HookPos => m_hook.position;
@@ -102,7 +103,7 @@ public class AIGuideBehaviour : MonoBehaviour
             }
             case TestType.Personnel:
             {
-                GuideCraneDefault();
+                GuideCranePersonal();
                 break;
             }
             default:
@@ -395,7 +396,7 @@ public class AIGuideBehaviour : MonoBehaviour
                     {
                         //Rotate towards start pos and walk there
                         _guideWalk.RotateTowards(GuideStartPos, RotationSpeed);
-                        _guideWalk.WalkTowards(GuideStartPos, 1f);
+                        _guideWalk.WalkTowards(GuideStartPos, 1f, false);
                     }
                 }
                 else
@@ -528,6 +529,52 @@ public class AIGuideBehaviour : MonoBehaviour
                         SendToAnimator.SendTrigger(gameObject, "EmergancyStop");
                     }
                 }
+            }
+            else
+            {
+                GuideCraneLogic(targetPos, 4, 1, 1);
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Guide and or tie the crane using the functions created above
+    /// </summary>
+    private void GuideCranePersonal()
+    {
+        var targetPos = (LoadCollected) ? DropZonePos : LoadPos;
+        if (m_tieOnly)
+        {
+            if (m_startedTying == false)
+            {
+                if (AiGrabLift.OnLift == false)
+                {
+                    TieDefault(targetPos);
+                }
+                else if (AiGrabLift.PickUpZoneReached)
+                {
+                    TieDefault(targetPos);
+                }
+            }
+        }
+        else
+        {
+            //If the other AI is walking AI holds up stop
+            if (WalkingToTarget || WalkingtoStartPos)
+            {
+                if (Emergancy)
+                {
+                    WalkingToTarget = false;
+                    WalkingToTarget = false;
+                }
+                else
+                {
+                    Stop();
+                }
+            }
+            else if (_liftFailed)
+            {
+                Failed();
             }
             else
             {

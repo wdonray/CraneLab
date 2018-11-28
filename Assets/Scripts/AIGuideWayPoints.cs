@@ -36,11 +36,10 @@ public class AIGuideWayPoints : MonoBehaviour
                 SendToAnimator.ResetAllTriggers(gameObject);
                 SendToAnimator.stop = false;
                 AiGuide._guideWalk.RotateTowards(Points[GuideHelper.Index].transform.position, 2);
-                AiGuide._guideWalk.WalkTowards(Points[GuideHelper.Index].transform.position, .5f);
+                AiGuide._guideWalk.WalkTowards(Points[GuideHelper.Index].transform.position, .5f , true);
             }
             else
             {
-
                 AiGuide._guideWalk.RotateTowards(AiGuide.LookAtCrane, 2);
                 AiGuide._guideWalk.StopWalking();
                 if (AiGuide.m_tieOnly == false)

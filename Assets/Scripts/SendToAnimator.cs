@@ -49,14 +49,20 @@ public class SendToAnimator
 
         if ((value + sender.name) == (m_oldValueForce + sender.name))
         {
+            //Debug.Log("<color=red>" + sender.name + " Could Not Force: " + value + "</color>");
             return;
         }
 
         m_animator.StopPlayback();
         m_oldValueForce = value;
         m_animator.SetTrigger(m_oldValueForce);
-        m_aiGuide.AnimationPlaying = value;
-        //Debug.Log(sender.name + " Forced: " + value);
+
+        if (m_aiGuide != null)
+        {
+            m_aiGuide.AnimationPlaying = value;
+        }
+
+        //Debug.Log("<color=red>" + sender.name + " Forced: " + value + "</color>");
     }
 
     public static void SendTriggerForceContinues(GameObject sender, string value)
@@ -64,7 +70,12 @@ public class SendToAnimator
         var m_animator = sender.GetComponent<Animator>();
         var m_aiGuide = m_animator.gameObject.GetComponent<AIGuideBehaviour>();
         m_animator.SetTrigger(value);
-        m_aiGuide.AnimationPlaying = value;
+
+        if (m_aiGuide != null)
+        {
+            m_aiGuide.AnimationPlaying = value;
+        }
+
         //Debug.Log(sender.name + " Test Forced: " + value);
     }
 
@@ -92,12 +103,17 @@ public class SendToAnimator
     {
         var m_animator = sender.GetComponent<Animator>();
         var m_aiGuide = m_animator.gameObject.GetComponent<AIGuideBehaviour>();
+
         if (sentOnce == false)
         {
             sentOnce = true;
             m_animator.SetTrigger(value);
-            m_aiGuide.AnimationPlaying = value;
-           // Debug.Log("Played Once:" + value);
+
+            if (m_aiGuide != null)
+            {
+                m_aiGuide.AnimationPlaying = value;
+            }
+            //Debug.Log("<color=red> Played Once:" + value + "</color>");
         }
     }
 }

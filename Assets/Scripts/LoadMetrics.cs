@@ -142,7 +142,7 @@ public class LoadMetrics : MonoBehaviour
                 return;
             }
 
-            if (other.transform == transform.parent.GetComponentInChildren<UnparentLoad>().CurrentParent.transform)
+            if (other.transform == transform.parent.parent.GetComponentInChildren<UnparentLoad>().CurrentParent.transform)
             {
                 return;
             }
