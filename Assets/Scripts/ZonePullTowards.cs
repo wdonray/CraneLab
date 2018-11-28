@@ -15,6 +15,13 @@ public class ZonePullTowards : MonoBehaviour
 
     public void Update()
     {
+        foreach (var rigger in _guideHelper.Riggers)
+        {
+            if (rigger._complete)
+            {
+                return;
+            }
+        }
         Active = _guideHelper.LoadToZone[GuideHelper.Index].Zone == transform.parent.gameObject;
     }
 

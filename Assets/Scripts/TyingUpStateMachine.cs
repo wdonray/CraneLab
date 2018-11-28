@@ -10,10 +10,18 @@ public class TyingUpStateMachine : StateMachineBehaviour
     private AIGuideBehaviour AI;
     private GuideHelper guideHelper => FindObjectOfType<GuideHelper>();
     private HookLoop hookLoop => guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>();
+    private AIGrabLift _aiGrabLift;
+
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         AI = animator.gameObject.GetComponent<AIGuideBehaviour>();
+
+        if (guideHelper.TestType == TestType.Personnel)
+        {
+            _aiGrabLift = FindObjectOfType<AIGrabLift>();
+        }
+
         //AI.m_startedTying = true;
     }
 
@@ -34,9 +42,15 @@ public class TyingUpStateMachine : StateMachineBehaviour
             {
                 GuideHelper.Index++;
                 guideHelper.reached = true;
+
                 if (guideHelper.TestType == TestType.Break)
                 {
                     Mediator.instance.NotifySubscribers(AI.gameObject.GetInstanceID().ToString(), new Packet());
+                }
+
+                if (guideHelper.TestType == TestType.Personnel)
+                {
+                    _aiGrabLift.LetGo();
                 }
             }
             AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
@@ -53,6 +67,11 @@ public class TyingUpStateMachine : StateMachineBehaviour
                 {
                     AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
                     AIGuideBehaviour.WalkingtoStartPos = true;
+
+                    if (guideHelper.TestType == TestType.Personnel)
+                    {
+                        _aiGrabLift.WalkStepUp(guideHelper.Loads[GuideHelper.Index]);
+                    }
 
                     foreach (var rigger in guideHelper.Riggers)
                     {
