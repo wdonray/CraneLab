@@ -31,6 +31,22 @@ public class UnparentLoad : MonoBehaviour
                     Debug.Log("Did not Hit");
                 }
             }
+            else if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out hit,
+                Mathf.Infinity, 1 << 9))
+            {
+                if (hit.transform.gameObject.layer == 9)
+                {
+                    //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * hit.distance, Color.yellow);
+                    Debug.Log("Did Hit");
+                    CurrentParent = hit.transform.gameObject;
+                    transform.parent.SetParent(CurrentParent.transform);
+                }
+                else
+                {
+                    //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * 1000, Color.white);
+                    Debug.Log("Did not Hit");
+                }
+            }
         }
 
         if (CurrentHookLoop.Hooked)

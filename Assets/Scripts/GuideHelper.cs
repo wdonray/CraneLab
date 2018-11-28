@@ -31,6 +31,7 @@ public class GuideHelper : MonoBehaviour
         _subscriptions = new Mediator.Subscriptions();
         _taskCallback += UpdateTaskText;
         Index = 0;
+
         foreach (var rigger in FindObjectsOfType<AIGuideBehaviour>())
         {
             Riggers.Add(rigger);

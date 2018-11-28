@@ -15,7 +15,6 @@ public class LoadMetrics : MonoBehaviour
     private Vector3 _storeStartLift;
     [SerializeField] private Rigidbody LiftRigidBody => FindParentRigidBody<Rigidbody>(gameObject);
     private GuideHelper _guideHelper => FindObjectOfType<GuideHelper>();
-    public Transform GroundTransform;
 
     // Use this for initialization
     private void Awake()
@@ -143,7 +142,7 @@ public class LoadMetrics : MonoBehaviour
                 return;
             }
 
-            if (other.transform == GroundTransform)
+            if (other.transform == transform.parent.GetComponentInChildren<UnparentLoad>().CurrentParent.transform)
             {
                 return;
             }
