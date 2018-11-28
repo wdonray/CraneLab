@@ -45,7 +45,7 @@ public class AIGuideWalk : MonoBehaviour
         Agent.stoppingDistance = stoppingDistance;
         Agent.isStopped = false;
         Agent.SetDestination(target);
-        Debug.DrawRay(target, Vector3.up, Color.cyan);
+        Debug.DrawRay(Agent.destination, Vector3.up, Color.magenta);
 
         if (continues)
         {

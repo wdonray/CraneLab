@@ -11,7 +11,7 @@ public class LoadMetrics : MonoBehaviour
     public bool RanIntoSomething;
     private Vector3 _storeLastFrame;
     public List<BoolChecks> FailChecks;
-    public float SpeedLimit = 10, VelocityLimit = 10;
+    public float SpeedLimit = 10, VelocityLimit = 10, LeaningLimit = 45;
     private Vector3 _storeStartLift;
     [SerializeField] private Rigidbody LiftRigidBody => FindParentRigidBody<Rigidbody>(gameObject);
     private GuideHelper _guideHelper => FindObjectOfType<GuideHelper>();
@@ -66,7 +66,7 @@ public class LoadMetrics : MonoBehaviour
     /// <returns></returns>
     private bool LeaningTooMuch()
     {
-        return Vector3.Angle(transform.up, Vector3.up) > 45;
+        return Vector3.Angle(transform.up, Vector3.up) > LeaningLimit;
     }
 
     /// <summary>

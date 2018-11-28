@@ -547,11 +547,7 @@ public class AIGuideBehaviour : MonoBehaviour
         {
             if (m_startedTying == false)
             {
-                if (AiGrabLift.OnLift == false)
-                {
-                    TieDefault(targetPos);
-                }
-                else if (AiGrabLift.PickUpZoneReached)
+                if (AiGrabLift.TyerOn)
                 {
                     TieDefault(targetPos);
                 }
