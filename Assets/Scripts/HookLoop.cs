@@ -97,7 +97,9 @@ public class HookLoop : MonoBehaviour
         if (m_connectionJoint != null)
         {
             Destroy(m_connectionJoint);
-            StartCoroutine(LockLink());
+            GetComponent<LinkPullTowards>().enabled = false;
+            gameObject.SetActive(false);
+            //StartCoroutine(LockLink());
         }
 
         grabTimer = 3f;
@@ -108,6 +110,7 @@ public class HookLoop : MonoBehaviour
         yield return new WaitForSeconds(2);
         Rigidbody rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
+        rb.velocity = Vector3.zero;
     }
 
     public void Drop(Mouledoux.Callback.Packet packet)

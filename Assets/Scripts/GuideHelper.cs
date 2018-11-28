@@ -21,7 +21,7 @@ public class GuideHelper : MonoBehaviour
     private Mediator.Subscriptions _subscriptions;
     [HideInInspector] public Callback _taskCallback, _emergancyCallback;
 
-    public bool reached, tearEnabled;
+    public bool reached;
 
     [SerializeField] private string PassedMessage, FailedMessage;
     // Use this for initialization
