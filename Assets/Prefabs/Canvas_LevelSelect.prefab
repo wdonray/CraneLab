@@ -1604,7 +1604,7 @@ MonoBehaviour:
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 114800353191404422}
   m_OnClick:
     m_PersistentCalls:
@@ -1629,6 +1629,17 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: uioff
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 114948474692196210}
+        m_MethodName: SetSceneLoadMessage
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: personnel
           m_BoolArgument: 1
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
@@ -2695,7 +2706,7 @@ MonoBehaviour:
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 114149560744400538}
   m_OnClick:
     m_PersistentCalls:
@@ -2708,7 +2719,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 2
           m_FloatArgument: 0
-          m_StringArgument: ExamRig2.0
+          m_StringArgument: PracticeSandbox2.1
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 114948474692196210}
@@ -2720,6 +2731,17 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: uioff
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 114948474692196210}
+        m_MethodName: SetSceneLoadMessage
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: personnel
           m_BoolArgument: 1
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
@@ -3008,7 +3030,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Hydraulic Failure
+  m_Text: 'Personnel
+
+    Sandbox'
 --- !u!114 &114794742560448104
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3133,7 +3157,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Load Shift
+  m_Text: 'Personnel
+
+    Exam'
 --- !u!114 &114821734480906426
 MonoBehaviour:
   m_ObjectHideFlags: 1

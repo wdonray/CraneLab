@@ -562,7 +562,10 @@ public class AIGuideBehaviour : MonoBehaviour
             }
             else if (AiGrabLift.CurrentState == AIGrabLift.AIGrabLiftState.Walk)
             {
-                Stop();
+                if (AiGrabLift.OnLift == false)
+                {
+                    Stop();
+                }
             }
             else if (_liftFailed)
             {
@@ -699,6 +702,7 @@ public class AIGuideBehaviour : MonoBehaviour
         SendToAnimator.stop = false;
         SendToAnimator.SendTriggerForceContinues(gameObject, "Hoist");
         yield return new WaitUntil(() => Check(Height) || _liftFailed);
+        SendToAnimator.m_oldValue = String.Empty;
         CheckHoistCalled = false;
     }
 

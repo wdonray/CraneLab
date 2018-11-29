@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mouledoux.Callback;
+using Mouledoux.Components;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -30,6 +32,8 @@ public class AIGrabLift : MonoBehaviour
     private bool _falling;
     private NavMeshAgent _agent;
     private bool running = true;
+    private bool _completed;
+    private bool ready;
 
     private void Start()
     {
@@ -45,7 +49,7 @@ public class AIGrabLift : MonoBehaviour
     private void Update()
     {
         if (Target == null) return;
-
+        if (_completed) return;
         //Grab target direction math
         var pos = Target.transform.position;
         var dir = transform.position - pos;
@@ -166,10 +170,18 @@ public class AIGrabLift : MonoBehaviour
     {
         while (running)
         {
+            foreach (var rigger in FindObjectsOfType<AIGuideBehaviour>())
+            {
+                if (rigger.m_tieOnly == false)
+                {
+                    rigger.StoreHookPos = rigger.HookPos;
+                    rigger.StartCheckHoist();
+                }
+            }
             PersonalLift.enabled = true;
             transform.SetParent(Target.transform);
-            transform.localEulerAngles = new Vector3(0, -175, 0);
-            transform.localPosition = new Vector3(0, -1.2f, 0.7f);
+            transform.localPosition = new Vector3(0.7f, -1.2f, 0.2f);
+            transform.localEulerAngles = new Vector3(0, -100, 0);
             transform.GetComponent<Collider>().isTrigger = true;
             _agent.enabled = false;
             yield return new WaitForEndOfFrame();
@@ -194,21 +206,20 @@ public class AIGrabLift : MonoBehaviour
         else
         {
             SetState(AIGrabLiftState.Idle);
+            _completed = true;
         }
     }
 
     /// <summary>
-    /// 
+    ///     If the Ai is falling and has hit something trigger dead state
     /// </summary>
     /// <param name="other"></param>
     void OnCollisionEnter(Collision other)
     {
         if (_falling)
         {
-            if (other.gameObject.layer == 8)
-            {
-                SetState(AIGrabLiftState.Dead);
-            }
+            if (other.transform.CompareTag("DropZone") || other.transform.CompareTag("Hook")) return;
+            SetState(AIGrabLiftState.Dead);
         }
     }
 
@@ -221,10 +232,30 @@ public class AIGrabLift : MonoBehaviour
         if (TyerOn)
         {
             TyerOn = false;
-            GuideHelper.Index++;
             Target = target.gameObject;
-            SetState(AIGrabLiftState.Walk);
+            StartCoroutine(CheckForMovement(() => PickUpAction(target)));
         }
+    }
+
+    /// <summary>
+    ///     Action for picking up
+    /// </summary>
+    /// <param name="target"></param>
+    private void PickUpAction(Transform target)
+    {
+        GuideHelper.Index++;
+        SetState(AIGrabLiftState.Walk);
+    }
+
+    /// <summary>
+    ///     Action for dropping off
+    /// </summary>
+    private void DropOffAction()
+    {
+        GuideHelper.Index++;
+        Mediator.instance.NotifySubscribers(gameObject.GetInstanceID().ToString(), new Packet());
+        PersonalLift.enabled = false;
+        SetState(AIGrabLiftState.StepDown);
     }
 
     /// <summary>
@@ -234,9 +265,45 @@ public class AIGrabLift : MonoBehaviour
     {
         if (TyerOn == false)
         {
-            GuideHelper.Index++;
             TyerOn = true;
-            SetState(AIGrabLiftState.StepDown);
+            StartCoroutine(CheckForMovement(DropOffAction));
         }
+    }
+
+    /// <summary>
+    ///     Wait for target to come to a stop for a few seconds
+    /// </summary>
+    /// <param name="func"></param>
+    /// <returns></returns>
+    private IEnumerator CheckForMovement(Action func)
+    {
+        var timer = 0f;
+
+        while (timer < 3f)
+        {
+            if (TargetStoppedMoving(Target, .2f))
+            {
+                timer += Time.deltaTime;
+            }
+            else
+            {
+                timer = 0f;
+            }
+            yield return null;
+            if (_completed) yield break;
+        }
+
+        func.Invoke();
+    }
+
+    /// <summary>
+    ///     Check if the target has slowed down to less than or equal to the value 
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    private bool TargetStoppedMoving(GameObject target, float value)
+    {
+        return target.transform.GetComponent<Rigidbody>().velocity.magnitude <= value;
     }
 }
