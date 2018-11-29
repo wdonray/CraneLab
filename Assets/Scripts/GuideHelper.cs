@@ -64,35 +64,73 @@ public class GuideHelper : MonoBehaviour
     /// <param name="index"></param>
     void ActiveLoadToZone(int index)
     {
-        if (index < Loads.Count)
+        if (TestType == TestType.Personnel)
         {
-            foreach (var rigger in Riggers)
+            switch (index)
             {
-                rigger.SetDropZone(LoadToZone[index].Zone.transform);
-                rigger.SetLoad(LoadToZone[index].Load.transform);
+                case 0:
+                    {
+                        foreach (var rigger in Riggers)
+                        {
+                            rigger.SetDropZone(LoadToZone[0].Zone.transform);
+                            rigger.SetLoad(LoadToZone[0].Load.transform);
+                        }
+                        break;
+                    }
+                case 1:
+                    {
+                        foreach (var rigger in Riggers)
+                        {
+                            rigger.SetDropZone(LoadToZone[1].Zone.transform);
+                            rigger.SetLoad(LoadToZone[0].Load.transform);
+                        }
+                        break;
+                    }
+
+                default:
+                    {
+                        Completed();
+                    }
+                    break;
             }
         }
         else
         {
-            foreach (var rigger in Riggers)
+            if (index < Loads.Count)
             {
-                rigger._complete = true;
-                if (rigger.m_tieOnly == false)
+                foreach (var rigger in Riggers)
                 {
-                    if (rigger.m_dead == false)
-                    {
-                        SendToAnimator.stop = false;
-                        SendToAnimator.ResetAllTriggers(rigger.gameObject);
-                        SendToAnimator.SendTrigger(rigger.gameObject, "JobComplete");
-                    }
+                    rigger.SetDropZone(LoadToZone[index].Zone.transform);
+                    rigger.SetLoad(LoadToZone[index].Load.transform);
                 }
-                else
+            }
+            else
+            {
+                Completed();
+            }
+        }
+    }
+
+    private void Completed()
+    {
+        foreach (var rigger in Riggers)
+        {
+            rigger._complete = true;
+            if (rigger.m_tieOnly == false)
+            {
+                if (rigger.m_dead == false)
                 {
-                    if (rigger.m_dead == false)
-                    {
-                        rigger.Agent.isStopped = true;
-                        SendToAnimator.SendTrigger(rigger.gameObject, "Idle");
-                    }
+                    SendToAnimator.stop = false;
+                    SendToAnimator.ResetAllTriggers(rigger.gameObject);
+                    SendToAnimator.SendTrigger(rigger.gameObject, "JobComplete");
+                }
+            }
+            else
+            {
+                if (rigger.m_dead == false)
+                {
+                    rigger.Agent.isStopped = true;
+                    SendToAnimator.SendTrigger(rigger.gameObject, "Idle");
                 }
             }
         }
@@ -121,12 +159,11 @@ public class GuideHelper : MonoBehaviour
             var sum = Index - 1;
             if (Index < Loads.Count)
             {
-
                 if (reached)
                 {
                     CurrentTaskText.text = "Good Job";
                     var particle = Instantiate(CompleteParticleSystem, Loads[sum].transform.parent.GetChild(2).transform);
-                    particle.transform.localPosition = new Vector3(particle.transform.localPosition.x,  particle.transform.localPosition.y + 1);
+                    particle.transform.localPosition = new Vector3(particle.transform.localPosition.x, particle.transform.localPosition.y + 1);
                     particle.gameObject.SetActive(true);
                     yield return new WaitForSeconds(3);
                     Destroy(particle);

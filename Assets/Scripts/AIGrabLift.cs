@@ -16,18 +16,20 @@ public class AIGrabLift : MonoBehaviour
         Dead,
     }
 
+    public PersonalLiftTest PersonalLift;
     public Transform m_crane;
     public Vector3 CranePos => m_crane.transform.position;
     public Vector3 LookAtCrane => new Vector3(CranePos.x, transform.position.y, CranePos.z);
-    public float StoppingDistance;
+    public float StoppingDistance, TargetDistance;
     public GameObject Target;
-    public bool PickUpZoneReached, OnLift;
+    public bool OnLift, TyerOn;
 
     public AIGrabLiftState CurrentState;
     private AIGuideWalk _guideWalk;
-    private Transform _oldParent;
+    [SerializeField] private Transform _oldParent;
     private bool _falling;
     private NavMeshAgent _agent;
+    private bool running = true;
 
     private void Start()
     {
@@ -37,17 +39,19 @@ public class AIGrabLift : MonoBehaviour
         _agent = GetComponent<NavMeshAgent>();
         _guideWalk.Agent = _agent;
         _oldParent = transform.parent;
+        TyerOn = true;
     }
 
     private void Update()
     {
         if (Target == null) return;
 
-        //
+        //Grab target direction math
         var pos = Target.transform.position;
-        var dist = Vector3.Distance(transform.position, pos);
+        var dir = transform.position - pos;
+        var dist = Vector3.Distance(transform.position, pos + (dir.normalized * TargetDistance));
 
-        //
+        //Change States of AI
         switch (CurrentState)
         {
             case AIGrabLiftState.Idle:
@@ -57,7 +61,7 @@ public class AIGrabLift : MonoBehaviour
                 }
             case AIGrabLiftState.Walk:
                 {
-                    WalkUp(dist, pos);
+                    WalkUp(dist, dir, pos);
                     break;
                 }
             case AIGrabLiftState.StepUp:
@@ -77,7 +81,7 @@ public class AIGrabLift : MonoBehaviour
                 }
             case AIGrabLiftState.Dead:
                 {
-                    SendToAnimator.SendTriggerForce(gameObject, "Death");
+                    Dead();
                     break;
                 }
             default:
@@ -86,7 +90,7 @@ public class AIGrabLift : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    ///     Set current state
     /// </summary>
     /// <param name="state"></param>
     public void SetState(AIGrabLiftState state)
@@ -95,53 +99,87 @@ public class AIGrabLift : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    ///     Kill the AI
+    /// </summary>
+    public void Dead()
+    {
+        transform.rotation = Quaternion.identity;
+        gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
+        SendToAnimator.SendTriggerForce(gameObject, "Death");
+    }
+
+    /// <summary>
+    ///     Fall off the lift
     /// </summary>
     public void FallOff()
     {
         OnLift = false;
+        transform.SetParent(_oldParent);
+        transform.GetComponent<Collider>().isTrigger = false;
+        _agent.enabled = true;
+        gameObject.AddComponent<Rigidbody>();
         SendToAnimator.SendTriggerForce(gameObject, "FallOff");
         _falling = true;
     }
 
     /// <summary>
-    /// 
+    ///     Walk up and grab the lift
     /// </summary>
     /// <param name="dist"></param>
+    /// <param name="dir"></param>
     /// <param name="pos"></param>
-    public void WalkUp(float dist, Vector3 pos)
+    public void WalkUp(float dist, Vector3 dir, Vector3 pos)
     {
-        if (dist > StoppingDistance)
+        if (dist >= StoppingDistance)
         {
-            _guideWalk.WalkTowards(pos, StoppingDistance, false);
+            _guideWalk.WalkTowardsDistance(pos, dir, StoppingDistance, TargetDistance);
         }
         else
         {
-            SendToAnimator.StopPlayack(gameObject);
             SetState(AIGrabLiftState.StepUp);
         }
-
     }
 
     /// <summary>
-    /// 
+    ///     Grab the lift
     /// </summary>
     /// <param name="pos"></param>
     public void StepUp(Vector3 pos)
     {
         OnLift = true;
-        if (OnLift)
+        if (!_falling)
         {
-            SendToAnimator.SendTriggerForce(gameObject, "StepUp");
-            transform.LookAt(new Vector3(pos.x, transform.position.y, pos.z));
-            transform.SetParent(Target.transform);
-            transform.GetComponent<Collider>().isTrigger = true;
-            _agent.enabled = false;
+            if (OnLift)
+            {
+                SendToAnimator.ResetTrigger(gameObject, "Walk");
+                SendToAnimator.SendTriggerForce(gameObject, "StepUp");
+                StartCoroutine(ParentToTarget());
+            }
         }
     }
 
     /// <summary>
-    /// 
+    ///     Only parent object once in update
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ParentToTarget()
+    {
+        while (running)
+        {
+            PersonalLift.enabled = true;
+            transform.SetParent(Target.transform);
+            transform.localEulerAngles = new Vector3(0, -175, 0);
+            transform.localPosition = new Vector3(0, -1.2f, 0.7f);
+            transform.GetComponent<Collider>().isTrigger = true;
+            _agent.enabled = false;
+            yield return new WaitForEndOfFrame();
+            running = false;
+        }
+    }
+
+
+    /// <summary>
+    ///     Step down off the lift
     /// </summary>
     public void StepDown()
     {
@@ -169,31 +207,36 @@ public class AIGrabLift : MonoBehaviour
         {
             if (other.gameObject.layer == 8)
             {
-                transform.SetParent(other.transform);
-                transform.GetComponent<Collider>().isTrigger = false;
-                _agent.enabled = true;
                 SetState(AIGrabLiftState.Dead);
             }
         }
     }
 
     /// <summary>
-    /// 
+    ///     Triggered once in pick up zone
     /// </summary>
     /// <param name="target"></param>
     public void PickUpZone(Transform target)
     {
-        GuideHelper.Index++;
-        PickUpZoneReached = true;
-        Target = target.gameObject;
-        SetState(AIGrabLiftState.Walk);
+        if (TyerOn)
+        {
+            TyerOn = false;
+            GuideHelper.Index++;
+            Target = target.gameObject;
+            SetState(AIGrabLiftState.Walk);
+        }
     }
 
     /// <summary>
-    /// 
+    ///     Triggered in drop off zone
     /// </summary>
     public void DropOffZone()
     {
-        SetState(AIGrabLiftState.StepDown);
+        if (TyerOn == false)
+        {
+            GuideHelper.Index++;
+            TyerOn = true;
+            SetState(AIGrabLiftState.StepDown);
+        }
     }
 }

@@ -77,35 +77,35 @@ public class AIGuideBehaviour : MonoBehaviour
         switch (TestType)
         {
             case TestType.Default:
-            {
-                GuideCraneDefault();
-                break;
-            }
-            case TestType.DefaultWayPoints:
-            {
-                if (WayPoints != null && WayPoints.WayPointsActive)
                 {
-                    if (MovingToWayPoint)
-                    {
-                        WayPoints.MoveToNextPoint();
-                    }
-                    else
-                    {
-                        GuideCraneDefault();
-                    }
+                    GuideCraneDefault();
+                    break;
                 }
-                break;
-            }
+            case TestType.DefaultWayPoints:
+                {
+                    if (WayPoints != null && WayPoints.WayPointsActive)
+                    {
+                        if (MovingToWayPoint)
+                        {
+                            WayPoints.MoveToNextPoint();
+                        }
+                        else
+                        {
+                            GuideCraneDefault();
+                        }
+                    }
+                    break;
+                }
             case TestType.Break:
-            {
-                GuideCraneBreak();
-                break;
-            }
+                {
+                    GuideCraneBreak();
+                    break;
+                }
             case TestType.Personnel:
-            {
-                GuideCranePersonal();
-                break;
-            }
+                {
+                    GuideCranePersonal();
+                    break;
+                }
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -547,11 +547,7 @@ public class AIGuideBehaviour : MonoBehaviour
         {
             if (m_startedTying == false)
             {
-                if (AiGrabLift.OnLift == false)
-                {
-                    TieDefault(targetPos);
-                }
-                else if (AiGrabLift.PickUpZoneReached)
+                if (AiGrabLift.TyerOn)
                 {
                     TieDefault(targetPos);
                 }
@@ -562,15 +558,11 @@ public class AIGuideBehaviour : MonoBehaviour
             //If the other AI is walking AI holds up stop
             if (WalkingToTarget || WalkingtoStartPos)
             {
-                if (Emergancy)
-                {
-                    WalkingToTarget = false;
-                    WalkingToTarget = false;
-                }
-                else
-                {
-                    Stop();
-                }
+                Stop();
+            }
+            else if (AiGrabLift.CurrentState == AIGrabLift.AIGrabLiftState.Walk)
+            {
+                Stop();
             }
             else if (_liftFailed)
             {
@@ -601,19 +593,7 @@ public class AIGuideBehaviour : MonoBehaviour
             //If the other AI is walking AI holds up stop
             if (WalkingToTarget || WalkingtoStartPos)
             {
-                if (Emergancy)
-                {
-                    WalkingToTarget = false;
-                    WalkingToTarget = false;
-                }
-                else
-                {
-                    Stop();
-                }
-            }
-            else if (_liftFailed)
-            {
-                Failed();
+                Stop();
             }
             else
             {
@@ -637,7 +617,7 @@ public class AIGuideBehaviour : MonoBehaviour
         var source = (LoadCollected) ? LoadPos : HookPos;
 
         targetPos.y += Vector3.Distance(targetPos, source) > 3f ? 3f : 0f;
-        
+
         if (GuideWalkPos != null)
         {
             // If there is a pos to walk to walk there when needed

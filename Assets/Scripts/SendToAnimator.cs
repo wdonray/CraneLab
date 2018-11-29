@@ -117,10 +117,3 @@ public class SendToAnimator
         }
     }
 }
-
-//var m_aiGuide = m_animator.gameObject.GetComponent<AIGuideBehaviour>();
-
-//if (m_aiGuide.m_dead)
-//{
-//    m_animator.SetTrigger("Death");
-//}
