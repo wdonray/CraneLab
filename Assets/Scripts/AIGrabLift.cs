@@ -29,7 +29,7 @@ public class AIGrabLift : MonoBehaviour
     [SerializeField] private Transform _oldParent;
     private bool _falling;
     private NavMeshAgent _agent;
-
+    private bool running = true;
 
     private void Start()
     {
@@ -46,12 +46,12 @@ public class AIGrabLift : MonoBehaviour
     {
         if (Target == null) return;
 
-        //
+        //Grab target direction math
         var pos = Target.transform.position;
         var dir = transform.position - pos;
         var dist = Vector3.Distance(transform.position, pos + (dir.normalized * TargetDistance));
 
-        //
+        //Change States of AI
         switch (CurrentState)
         {
             case AIGrabLiftState.Idle:
@@ -90,7 +90,7 @@ public class AIGrabLift : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    ///     Set current state
     /// </summary>
     /// <param name="state"></param>
     public void SetState(AIGrabLiftState state)
@@ -98,6 +98,9 @@ public class AIGrabLift : MonoBehaviour
         CurrentState = state;
     }
 
+    /// <summary>
+    ///     Kill the AI
+    /// </summary>
     public void Dead()
     {
         transform.rotation = Quaternion.identity;
@@ -106,7 +109,7 @@ public class AIGrabLift : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    ///     Fall off the lift
     /// </summary>
     public void FallOff()
     {
@@ -120,9 +123,10 @@ public class AIGrabLift : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    ///     Walk up and grab the lift
     /// </summary>
     /// <param name="dist"></param>
+    /// <param name="dir"></param>
     /// <param name="pos"></param>
     public void WalkUp(float dist, Vector3 dir, Vector3 pos)
     {
@@ -132,13 +136,12 @@ public class AIGrabLift : MonoBehaviour
         }
         else
         {
-            SendToAnimator.StopPlayack(gameObject);
             SetState(AIGrabLiftState.StepUp);
         }
     }
 
     /// <summary>
-    /// 
+    ///     Grab the lift
     /// </summary>
     /// <param name="pos"></param>
     public void StepUp(Vector3 pos)
@@ -148,21 +151,24 @@ public class AIGrabLift : MonoBehaviour
         {
             if (OnLift)
             {
+                SendToAnimator.ResetTrigger(gameObject, "Walk");
                 SendToAnimator.SendTriggerForce(gameObject, "StepUp");
-                Debug.DrawLine(transform.position, pos);
-                PersonalLift.enabled = true;
-                StartCoroutine(ParentToTarget(pos));
+                StartCoroutine(ParentToTarget());
             }
         }
     }
 
-    private bool running = true;
-    private IEnumerator ParentToTarget(Vector3 pos)
+    /// <summary>
+    ///     Only parent object once in update
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ParentToTarget()
     {
         while (running)
         {
+            PersonalLift.enabled = true;
             transform.SetParent(Target.transform);
-            transform.LookAt(new Vector3(pos.x, transform.position.y, pos.z));
+            transform.localEulerAngles = new Vector3(0, -175, 0);
             transform.localPosition = new Vector3(0, -1.2f, 0.7f);
             transform.GetComponent<Collider>().isTrigger = true;
             _agent.enabled = false;
@@ -171,8 +177,9 @@ public class AIGrabLift : MonoBehaviour
         }
     }
 
+
     /// <summary>
-    /// 
+    ///     Step down off the lift
     /// </summary>
     public void StepDown()
     {
@@ -206,7 +213,7 @@ public class AIGrabLift : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    ///     Triggered once in pick up zone
     /// </summary>
     /// <param name="target"></param>
     public void PickUpZone(Transform target)
@@ -221,7 +228,7 @@ public class AIGrabLift : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    ///     Triggered in drop off zone
     /// </summary>
     public void DropOffZone()
     {
