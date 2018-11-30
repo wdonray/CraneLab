@@ -55,7 +55,7 @@ public class AIGuideBehaviour : MonoBehaviour
         _guideHelper = FindObjectOfType<GuideHelper>();
         _guideWalk = gameObject.AddComponent<AIGuideWalk>();
         _guideWalk.Agent = Agent;
-        Agent.isStopped = true;
+        //Agent.isStopped = true;
         if (!m_tieOnly)
         {
             //StartCheckHoist();
@@ -161,7 +161,7 @@ public class AIGuideBehaviour : MonoBehaviour
     /// <summary>
     ///     Begin stop animation
     /// </summary>
-    private void Stop()
+    public void Stop()
     {
         SendToAnimator.SendTriggerForce(gameObject, "Stop");
         StartCoroutine(PauseAnimator(1));
@@ -461,12 +461,19 @@ public class AIGuideBehaviour : MonoBehaviour
         _liftFailed = true;
     }
 
+    /// <summary>
+    ///     Force walk guide
+    /// </summary>
     public void GuideWalkBool()
     {
         GuideWalkToLocation = true;
         CheckHoistCalled = false;
     }
 
+    /// <summary>
+    ///     Change height
+    /// </summary>
+    /// <param name="value"></param>
     public void ChangeHeight(int value)
     {
         Height = value;
@@ -542,7 +549,7 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     private void GuideCranePersonal()
     {
-        var targetPos = (LoadCollected) ? DropZonePos : LoadPos;
+        var targetPos = (LoadCollected) ? DropZonePos : _guideHelper.LoadToZone[GuideHelper.Index].Load.transform.parent.GetChild(2).position;
         if (m_tieOnly)
         {
             if (m_startedTying == false)
@@ -557,10 +564,6 @@ public class AIGuideBehaviour : MonoBehaviour
         {
             //If the other AI is walking AI holds up stop
             if (WalkingToTarget || WalkingtoStartPos)
-            {
-                Stop();
-            }
-            else if (AiGrabLift.CurrentState == AIGrabLift.AIGrabLiftState.Walk)
             {
                 Stop();
             }
@@ -626,7 +629,7 @@ public class AIGuideBehaviour : MonoBehaviour
 
         if (CheckHoistCalled == false)
         {
-            if (Agent.isStopped)
+            if (Agent.enabled == false || Agent.isStopped)
             {
                 //Guide the crane
                 SendToAnimator.ResetAllTriggers(gameObject);
@@ -699,6 +702,7 @@ public class AIGuideBehaviour : MonoBehaviour
         SendToAnimator.stop = false;
         SendToAnimator.SendTriggerForceContinues(gameObject, "Hoist");
         yield return new WaitUntil(() => Check(Height) || _liftFailed);
+        SendToAnimator.m_oldValue = String.Empty;
         CheckHoistCalled = false;
     }
 

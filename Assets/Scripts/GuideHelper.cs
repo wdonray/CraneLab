@@ -38,6 +38,11 @@ public class GuideHelper : MonoBehaviour
             _subscriptions.Subscribe(rigger.gameObject.GetInstanceID().ToString(), _taskCallback);
         }
 
+        if (TestType == TestType.Personnel)
+        {
+            _subscriptions.Subscribe(FindObjectOfType<AIGrabLift>().gameObject.GetInstanceID().ToString(), _taskCallback);
+        }
+
         foreach (var rigger in Riggers)
         {
             rigger.TestType = TestType;

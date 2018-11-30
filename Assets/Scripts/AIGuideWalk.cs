@@ -27,6 +27,11 @@ public class AIGuideWalk : MonoBehaviour
     /// <param name="targetDistance"></param>
     public void WalkTowardsDistance(Vector3 target, Vector3 dir, float stoppingDistance, float targetDistance)
     {
+        if (Agent.enabled == false)
+        {
+            Agent.enabled = true;
+        }
+
         Agent.stoppingDistance = stoppingDistance;
         Agent.isStopped = false;
         Agent.SetDestination(target + (dir.normalized * targetDistance));
@@ -42,6 +47,11 @@ public class AIGuideWalk : MonoBehaviour
     /// <param name="continues"></param>
     public void WalkTowards(Vector3 target, float stoppingDistance, bool continues)
     {
+        if (Agent.enabled == false)
+        {
+            Agent.enabled = true;
+        }
+
         Agent.stoppingDistance = stoppingDistance;
         Agent.isStopped = false;
         Agent.SetDestination(target);
@@ -79,6 +89,11 @@ public class AIGuideWalk : MonoBehaviour
         if (aiGuide.m_tieOnly) return;
         if (AIGuideBehaviour.GuideWalkToLocation)
         {
+            if (Agent.enabled == false)
+            {
+                Agent.enabled = true;
+            }
+
             if (AIGuideBehaviour.LoadCollected)
             {
                 if (Vector3.Distance(transform.position, guideWalkPos.position) > 1)
