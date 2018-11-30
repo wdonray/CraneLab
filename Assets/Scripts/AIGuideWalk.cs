@@ -72,7 +72,8 @@ public class AIGuideWalk : MonoBehaviour
     /// </summary>
     public void StopWalking()
     {
-        Agent.isStopped = true;
+        if (Agent.enabled)
+            Agent.isStopped = true;
         SendToAnimator.ResetTrigger(gameObject, "Walk");
         SendToAnimator.SendTriggerForceContinues(gameObject, "Idle");
     }

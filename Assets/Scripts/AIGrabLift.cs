@@ -18,22 +18,24 @@ public class AIGrabLift : MonoBehaviour
         Dead,
     }
 
+    public int TimesToTrigger;
     public PersonalLiftTest PersonalLift;
     public Transform m_crane;
     public Vector3 CranePos => m_crane.transform.position;
     public Vector3 LookAtCrane => new Vector3(CranePos.x, transform.position.y, CranePos.z);
     public float StoppingDistance, TargetDistance;
-    public GameObject Target;
-    public bool OnLift, TyerOn;
-
+    [HideInInspector] public GameObject Target;
+    [HideInInspector] public bool OnLift, TyerOn;
+    public Vector3 TargetPos, TargetRot;
     public AIGrabLiftState CurrentState;
     private AIGuideWalk _guideWalk;
-    [SerializeField] private Transform _oldParent;
+    private Transform _oldParent;
     private bool _falling;
     private NavMeshAgent _agent;
     private bool running = true;
     public bool _completed;
     private bool ready;
+    private GuideHelper _guideHelper => FindObjectOfType<GuideHelper>();
 
     private void Start()
     {
@@ -175,7 +177,19 @@ public class AIGrabLift : MonoBehaviour
     {
         while (running)
         {
-            foreach (var rigger in FindObjectsOfType<AIGuideBehaviour>())
+            transform.SetParent(Target.transform);
+
+            transform.GetComponent<Collider>().isTrigger = true;
+            while (Vector3.Distance(transform.localPosition, TargetPos) > 0.1f)
+            {
+                transform.localPosition = Vector3.Lerp(transform.localPosition, TargetPos, Time.deltaTime / 2);
+                //transform.localEulerAngles = Vector3.Lerp(transform.localEulerAngles, TargetRot, Time.deltaTime);
+                yield return null;
+            }
+            transform.localPosition = TargetPos;
+            transform.localEulerAngles = TargetRot;
+
+            foreach (var rigger in _guideHelper.Riggers)
             {
                 if (rigger.m_tieOnly == false)
                 {
@@ -183,11 +197,8 @@ public class AIGrabLift : MonoBehaviour
                     rigger.StartCheckHoist();
                 }
             }
+
             PersonalLift.enabled = true;
-            transform.SetParent(Target.transform);
-            transform.localPosition = new Vector3(0.7f, -1.2f, 0.2f);
-            transform.localEulerAngles = new Vector3(0, -100, 0);
-            transform.GetComponent<Collider>().isTrigger = true;
             _agent.enabled = false;
             yield return new WaitForEndOfFrame();
             running = false;
@@ -238,7 +249,7 @@ public class AIGrabLift : MonoBehaviour
         if (TyerOn)
         {
             TyerOn = false;
-            foreach (var rigger in FindObjectsOfType<AIGuideBehaviour>())
+            foreach (var rigger in _guideHelper.Riggers)
             {
                 if (rigger.m_tieOnly == false)
                 {
@@ -257,7 +268,12 @@ public class AIGrabLift : MonoBehaviour
     /// <param name="target"></param>
     private void PickUpAction(Transform target)
     {
-        GuideHelper.Index++;
+        if (TimesToTrigger > 0)
+        {
+            TimesToTrigger--;
+            GuideHelper.Index++;
+        }
+
         SetState(AIGrabLiftState.Walk);
     }
 
@@ -266,8 +282,12 @@ public class AIGrabLift : MonoBehaviour
     /// </summary>
     private void DropOffAction()
     {
-        GuideHelper.Index++;
-        Mediator.instance.NotifySubscribers(gameObject.GetInstanceID().ToString(), new Packet());
+        if (TimesToTrigger > 0)
+        {
+            GuideHelper.Index++;
+            Mediator.instance.NotifySubscribers(gameObject.GetInstanceID().ToString(), new Packet());
+        }
+
         PersonalLift.enabled = false;
         SetState(AIGrabLiftState.StepDown);
     }
@@ -303,7 +323,7 @@ public class AIGrabLift : MonoBehaviour
 
         while (timer < 3f)
         {
-            if (TargetStoppedMoving(Target, .2f))
+            if (TargetStoppedMoving(Target, .5f))
             {
                 timer += Time.deltaTime;
             }
@@ -326,6 +346,10 @@ public class AIGrabLift : MonoBehaviour
     /// <returns></returns>
     private bool TargetStoppedMoving(GameObject target, float value)
     {
-        return target.transform.GetComponent<Rigidbody>().velocity.magnitude <= value;
+        if (_guideHelper.LoadToZone[GuideHelper.Index].Zone.GetComponentInChildren<ZoneOnTrigger>().InZone)
+        {
+            return target.transform.GetComponent<Rigidbody>().velocity.magnitude <= value;
+        }
+        return false;
     }
 }
