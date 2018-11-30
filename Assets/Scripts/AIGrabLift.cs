@@ -32,7 +32,7 @@ public class AIGrabLift : MonoBehaviour
     private bool _falling;
     private NavMeshAgent _agent;
     private bool running = true;
-    private bool _completed;
+    public bool _completed;
     private bool ready;
 
     private void Start()
@@ -49,7 +49,11 @@ public class AIGrabLift : MonoBehaviour
     private void Update()
     {
         if (Target == null) return;
-        if (_completed) return;
+        if (_completed)
+        {
+            _guideWalk.StopWalking();
+            return;
+        }
         //Grab target direction math
         var pos = Target.transform.position;
         var dir = transform.position - pos;
@@ -136,6 +140,7 @@ public class AIGrabLift : MonoBehaviour
     {
         if (dist >= StoppingDistance)
         {
+            SendToAnimator.m_oldValueForce = string.Empty;
             _guideWalk.WalkTowardsDistance(pos, dir, StoppingDistance, TargetDistance);
         }
         else
@@ -201,6 +206,7 @@ public class AIGrabLift : MonoBehaviour
             transform.SetParent(_oldParent);
             transform.GetComponent<Collider>().isTrigger = false;
             _agent.enabled = true;
+            PersonalLift.enabled = false;
             OnLift = false;
         }
         else
@@ -232,6 +238,14 @@ public class AIGrabLift : MonoBehaviour
         if (TyerOn)
         {
             TyerOn = false;
+            foreach (var rigger in FindObjectsOfType<AIGuideBehaviour>())
+            {
+                if (rigger.m_tieOnly == false)
+                {
+                    SendToAnimator.m_oldValueForce = string.Empty;
+                    rigger.Stop();
+                }
+            }
             Target = target.gameObject;
             StartCoroutine(CheckForMovement(() => PickUpAction(target)));
         }
@@ -265,7 +279,15 @@ public class AIGrabLift : MonoBehaviour
     {
         if (TyerOn == false)
         {
-            TyerOn = true;
+            //TyerOn = true;
+            foreach (var rigger in FindObjectsOfType<AIGuideBehaviour>())
+            {
+                if (rigger.m_tieOnly == false)
+                {
+                    SendToAnimator.m_oldValueForce = string.Empty;
+                    rigger.Stop();
+                }
+            }
             StartCoroutine(CheckForMovement(DropOffAction));
         }
     }
