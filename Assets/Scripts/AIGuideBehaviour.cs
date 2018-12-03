@@ -55,7 +55,8 @@ public class AIGuideBehaviour : MonoBehaviour
         _guideHelper = FindObjectOfType<GuideHelper>();
         _guideWalk = gameObject.AddComponent<AIGuideWalk>();
         _guideWalk.Agent = Agent;
-        //Agent.isStopped = true;
+        if (Agent.enabled)
+            Agent.isStopped = true;
         if (!m_tieOnly)
         {
             //StartCheckHoist();
