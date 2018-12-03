@@ -13,6 +13,6 @@ public class LookAtTransform : MonoBehaviour
 
     public void LateUpdate()
     {
-        transform.LookAt(m_target);
+        //transform.LookAt(m_target);
     }
 }

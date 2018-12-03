@@ -4304,7 +4304,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1621554714086530
 GameObject:
   m_ObjectHideFlags: 1
@@ -6448,6 +6448,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4975324020482598}
   - component: {fileID: 114081693203441172}
+  - component: {fileID: 114716313064326414}
   m_Layer: 0
   m_Name: '----- Tutorial -----'
   m_TagString: Untagged
@@ -6486,7 +6487,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1988722698973252
 GameObject:
   m_ObjectHideFlags: 1
@@ -15411,11 +15412,11 @@ Rigidbody:
   m_GameObject: {fileID: 1940083972550184}
   serializedVersion: 2
   m_Mass: 50
-  m_Drag: 0.1
+  m_Drag: 1
   m_AngularDrag: 5
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 64
   m_CollisionDetection: 0
 --- !u!54 &54911263295775020
@@ -15486,7 +15487,7 @@ Rigidbody:
   m_GameObject: {fileID: 1476694910208822}
   serializedVersion: 2
   m_Mass: 100
-  m_Drag: 0.5
+  m_Drag: 1
   m_AngularDrag: 1
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -18985,11 +18986,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_toggleObjects:
-  - {fileID: 1986697554571282}
+  - {fileID: 1621387324431426}
   - {fileID: 1939993748344764}
   - {fileID: 1453017222350982}
   - {fileID: 1145017999720300}
-  - {fileID: 1621387324431426}
+  - {fileID: 1986697554571282}
 --- !u!114 &114147911789413386
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -21192,18 +21193,18 @@ MonoBehaviour:
     mode: 0
     interpolation: 0
     gravity: {x: 0, y: -9.81, z: 0}
-    damping: 0
+    damping: 0.4
     maxAnisotropy: 3
     advectionRadius: 0.5
     sleepThreshold: 0.001
   distanceConstraintParameters:
-    evaluationOrder: 0
-    iterations: 64
-    SORFactor: 1
+    evaluationOrder: 1
+    iterations: 16
+    SORFactor: 2
     enabled: 1
   bendingConstraintParameters:
     evaluationOrder: 1
-    iterations: 32
+    iterations: 3
     SORFactor: 1
     enabled: 1
   particleCollisionConstraintParameters:
@@ -21212,10 +21213,10 @@ MonoBehaviour:
     SORFactor: 1
     enabled: 0
   collisionConstraintParameters:
-    evaluationOrder: 1
+    evaluationOrder: 0
     iterations: 4
     SORFactor: 1
-    enabled: 0
+    enabled: 1
   skinConstraintParameters:
     evaluationOrder: 0
     iterations: 3
@@ -21228,12 +21229,12 @@ MonoBehaviour:
     enabled: 0
   tetherConstraintParameters:
     evaluationOrder: 1
-    iterations: 8
+    iterations: 4
     SORFactor: 1
     enabled: 0
   pinConstraintParameters:
     evaluationOrder: 1
-    iterations: 4
+    iterations: 20
     SORFactor: 1
     enabled: 1
   stitchConstraintParameters:
@@ -30202,6 +30203,19 @@ MonoBehaviour:
   deformPosition: 1
   modelFingerPointing: {x: 1, y: 0, z: 0}
   modelPalmFacing: {x: 0, y: -1, z: 0}
+--- !u!114 &114716313064326414
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1977956153963598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 313967a25e356b240a0bd0d070a4a984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Head: {fileID: 4405136456760562}
+  Transforms: []
 --- !u!114 &114722511902828122
 MonoBehaviour:
   m_ObjectHideFlags: 1

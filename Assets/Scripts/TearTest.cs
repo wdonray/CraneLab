@@ -17,6 +17,8 @@ public class TearTest : MonoBehaviour
     public float DistanceToTrigger;
     private Vector3 _startPos;
     private Vector3 _currentPos => transform.position;
+    private Vector3 dropPoint = Vector3.one * float.MaxValue;
+    private UnparentLoad _unparentLoad;
 
     [SerializeField] private List<ObiRope> _ropes = new List<ObiRope>();
     public ObiRope Rope;
@@ -50,6 +52,7 @@ public class TearTest : MonoBehaviour
     private IEnumerator Start()
     {
         yield return new WaitUntil(CheckDistanceAway);
+        _unparentLoad = transform.parent.GetComponentInChildren<UnparentLoad>();
         _distanceReached = true;
         StartBreakCoroutine();
     }
@@ -122,7 +125,8 @@ public class TearTest : MonoBehaviour
 
     private bool CheckIfStopped()
     {
-        return transform.GetComponent<Rigidbody>().velocity.magnitude <= 0.1f;
+        return (Vector3.Distance(transform.localPosition, dropPoint) < 0.2f);
+        //return transform.GetComponent<Rigidbody>().velocity.magnitude <= 0.1f;
     }
 
     private IEnumerator PlacedDown()
@@ -134,10 +138,17 @@ public class TearTest : MonoBehaviour
         while (timer < 1.5f)
         {
             if (CheckIfStopped()) timer += Time.deltaTime;
-            else timer = 0f;
-            yield return null;
+            //else timer = 0f;
+
+            else
+            {
+                _running = false;
+                yield break;
+            }
 
             if (_failed) yield break;
+
+            yield return null;
         }
 
         if (_failed == false)
@@ -156,7 +167,27 @@ public class TearTest : MonoBehaviour
         {
             if (!_failed && _running == false)
             {
+                transform.parent.SetParent(_unparentLoad.CurrentParent.transform);
+
+                if(!CheckIfStopped())
+                    dropPoint = transform.localPosition;
+
+
                 StartCoroutine(PlacedDown());
+            }
+        }
+    }
+
+    void OnCollisionExit(Collision other)
+    {
+        if (other.transform.CompareTag("Link") || other.transform.CompareTag("Hook")) return;
+
+        if (_distanceReached)
+        {
+            if (!_failed)
+            {
+                if (other.transform == _unparentLoad.CurrentParent.transform)
+                    transform.parent.SetParent(_unparentLoad.NewParent.transform);
             }
         }
     }

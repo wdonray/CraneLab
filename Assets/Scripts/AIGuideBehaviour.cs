@@ -534,7 +534,8 @@ public class AIGuideBehaviour : MonoBehaviour
                         SendToAnimator.ResetAllTriggers(gameObject);
                         SendToAnimator.stop = false;
                         Emergancy = true;
-                        SendToAnimator.SendTrigger(gameObject, "EmergancyStop");
+                        SendToAnimator.m_oldValueForce = string.Empty;
+                        SendToAnimator.SendTriggerForce(gameObject, "EmergancyStop");
                     }
                 }
             }

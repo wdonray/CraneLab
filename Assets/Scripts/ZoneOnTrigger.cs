@@ -27,14 +27,4 @@ public class ZoneOnTrigger : MonoBehaviour
             InZone = false;
         }
     }
-
-    public void LockObject(GameObject target)
-    {
-        //target.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
-    }
-
-    public void UnlockObject(GameObject target)
-    {
-        //target.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-    }
 }

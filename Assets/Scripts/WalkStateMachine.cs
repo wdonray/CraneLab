@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -40,6 +41,7 @@ public class WalkStateMachine : StateMachineBehaviour
     {
         if (AI == null) return;
         AIGuideBehaviour other = null;
+        SendToAnimator.m_oldValue = string.Empty;
         if (AI.m_tieOnly)
         {
             foreach (var rigger in guideHelper.Riggers)
@@ -50,17 +52,20 @@ public class WalkStateMachine : StateMachineBehaviour
 
             if (other != null)
             {
-                other.StoreHookPos = other.HookPos;
-                if (other.WayPoints !=null)
+                if (AIGuideBehaviour.LoadCollected)
                 {
-                    if (other.WayPoints.WayPointsActive == false)
+                    other.StoreHookPos = other.HookPos;
+                    if (other.WayPoints != null)
+                    {
+                        if (other.WayPoints.WayPointsActive == false)
+                        {
+                            other.StartCheckHoist();
+                        }
+                    }
+                    else
                     {
                         other.StartCheckHoist();
                     }
-                }
-                else
-                {
-                    other.StartCheckHoist();
                 }
             }
 
