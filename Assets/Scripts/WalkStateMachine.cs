@@ -23,7 +23,7 @@ public class WalkStateMachine : StateMachineBehaviour
         if (AI == null) return;
         if (AI._complete == false)
         {
-            var load = guideHelper.Loads[GuideHelper.Index];
+            var load = guideHelper.Loads[guideHelper.TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index];
             if (!AIGuideBehaviour.LoadCollected)
             {
                 if (!Physics.OverlapSphere(load.transform.GetChild(0).transform.position, 1.3f / 2)

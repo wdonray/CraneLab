@@ -374,7 +374,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 if (LoadCollected)
                 {
                     var zone = _guideHelper.Zones[GuideHelper.Index];
-                    var load = _guideHelper.Loads[GuideHelper.Index];
+                    var load = _guideHelper.Loads[TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index];
                     var size = new Vector3(zone.transform.localScale.x, .1f, zone.transform.localScale.z);
                     if (Physics.OverlapBox(target, size, zone.transform.rotation).Contains(load.transform.parent.GetChild(2).GetComponent<Collider>()))
                     {
@@ -385,7 +385,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 }
                 else
                 {
-                    var load = _guideHelper.Loads[GuideHelper.Index];
+                    var load = _guideHelper.Loads[TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index];
                     if (Physics.OverlapSphere(load.transform.GetChild(0).transform.position, 1.3f / 2).Contains(m_hook.GetComponent<Collider>()))
                     {
                         //Crane in range of target, walk to target

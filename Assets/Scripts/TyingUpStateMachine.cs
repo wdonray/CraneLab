@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Mouledoux.Callback;
 using Mouledoux.Components;
+using UnityEditor;
 using UnityEngine;
 
 public class TyingUpStateMachine : StateMachineBehaviour
 {
     private AIGuideBehaviour AI;
     private GuideHelper guideHelper => FindObjectOfType<GuideHelper>();
-    private HookLoop hookLoop => guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>();
+    private HookLoop hookLoop => (guideHelper.TestType == TestType.Infinite) ? guideHelper.Loads[GuideHelper.RandomIndexLoad].GetComponent<HookLoop>() : guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>();
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -22,6 +24,16 @@ public class TyingUpStateMachine : StateMachineBehaviour
     //override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
     //
     //}
+    private void RandomIndexSelection()
+    {
+        if (guideHelper.Zones[GuideHelper.Index].GetComponentInChildren<ZoneOnTrigger>().InZone)
+        {
+            do
+            {
+                GuideHelper.Index = UnityEngine.Random.Range(0, guideHelper.Zones.Count);
+            } while (guideHelper.Zones[GuideHelper.Index].GetComponentInChildren<ZoneOnTrigger>().InZone);
+        }
+    }
 
     //OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -30,23 +42,20 @@ public class TyingUpStateMachine : StateMachineBehaviour
         AI.m_startedTying = false;
         AI.m_tyingComplete = true;
 
+        //Drop
         if (AIGuideBehaviour.LoadCollected)
         {
             hookLoop.Drop();
             #region TestType.Infinite 
             if (guideHelper.TestType == TestType.Infinite)
             {
-                if (guideHelper.ResetInfinite() == false)
-                {
-                    while (guideHelper.Zones[GuideHelper.Index].GetComponentInChildren<ZoneOnTrigger>().InZone == false)
-                    {
-                        GuideHelper.Index = UnityEngine.Random.Range(0, guideHelper.Zones.Count - 1);
-                    }
-                    GuideHelper.RandomIndexLoad = UnityEngine.Random.Range(0, guideHelper.Loads.Count - 1);
-                }
-                else
-                {
+                RandomIndexSelection();
+                GuideHelper.RandomIndexLoad = UnityEngine.Random.Range(0, guideHelper.Loads.Count);
 
+                if (!hookLoop.gameObject.activeInHierarchy)
+                {
+                    hookLoop.gameObject.SetActive(true);
+                    hookLoop.GetComponent<LinkPullTowards>().enabled = true;
                 }
             }
             #endregion
@@ -63,6 +72,7 @@ public class TyingUpStateMachine : StateMachineBehaviour
             AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
             AIGuideBehaviour.WalkingtoStartPos = true;
         }
+        //Pick Up
         else
         {
             AIGuideBehaviour other = null;
@@ -70,7 +80,7 @@ public class TyingUpStateMachine : StateMachineBehaviour
 
             if (GuideHelper.Index < guideHelper.Zones.Count)
             {
-                if (guideHelper.Loads[GuideHelper.Index].GetComponent<HingeJoint>() == true)
+                if (guideHelper.Loads[guideHelper.TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index].GetComponent<HingeJoint>() == true)
                 {
                     AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
                     AIGuideBehaviour.WalkingtoStartPos = true;

@@ -49,8 +49,8 @@ public class GuideHelper : MonoBehaviour
                 _subscriptions.Subscribe(FindObjectOfType<AIGrabLift>().gameObject.GetInstanceID().ToString(), _taskCallback);
                 break;
             case TestType.Infinite:
-                Index = Random.Range(0, Zones.Count - 1);
-                RandomIndexLoad = Random.Range(0, Loads.Count - 1);
+                Index = Random.Range(0, Zones.Count);
+                RandomIndexLoad = Random.Range(0, Loads.Count);
                 break;
         }
 
@@ -61,20 +61,21 @@ public class GuideHelper : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ActiveLoadToZone(Index);
+        ActiveLoadToZone();
     }
 
     /// <summary>
     ///     Each riggers zone and load will be set unless the game is over and complete 
     /// </summary>
-    /// <param name="index"></param>
-    void ActiveLoadToZone(int index)
+    void ActiveLoadToZone()
     {
-        if (TestType == TestType.Personnel)
+        switch (TestType)
         {
-            switch (index)
+            case TestType.Personnel:
             {
-                case 0:
+                switch (Index)
+                {
+                    case 0:
                     {
                         foreach (var rigger in Riggers)
                         {
@@ -83,7 +84,7 @@ public class GuideHelper : MonoBehaviour
                         }
                         break;
                     }
-                case 1:
+                    case 1:
                     {
                         foreach (var rigger in Riggers)
                         {
@@ -93,34 +94,40 @@ public class GuideHelper : MonoBehaviour
                         break;
                     }
 
-                default:
+                    default:
                     {
                         Completed();
                     }
-                    break;
+                        break;
+                }
+                break;
             }
-        }
-        else if (TestType == TestType.Infinite)
-        {
-            foreach (var rigger in Riggers)
-            {
-                rigger.SetDropZone(Zones[Index].transform);
-                rigger.SetLoad(Loads[RandomIndexLoad].transform);
-            }
-        }
-        else
-        {
-            if (index < Loads.Count)
+            case TestType.Infinite:
             {
                 foreach (var rigger in Riggers)
                 {
-                    rigger.SetDropZone(Zones[index].transform);
-                    rigger.SetLoad(Loads[index].transform);
+                    rigger.SetDropZone(Zones[Index].transform);
+                    rigger.SetLoad(Loads[RandomIndexLoad].transform);
                 }
+
+                break;
             }
-            else
+            default:
             {
-                Completed();
+                if (Index < Loads.Count)
+                {
+                    foreach (var rigger in Riggers)
+                    {
+                        rigger.SetDropZone(Zones[Index].transform);
+                        rigger.SetLoad(Loads[Index].transform);
+                    }
+                }
+                else
+                {
+                    Completed();
+                }
+
+                break;
             }
         }
     }
@@ -150,19 +157,6 @@ public class GuideHelper : MonoBehaviour
         }
     }
 
-    public bool ResetInfinite()
-    {
-        foreach (var zone in Zones)
-        {
-            if (zone.GetComponentInChildren<ZoneOnTrigger>().InZone == false)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     /// <summary>
     ///     Start the change text event and wait for movement
     /// </summary>
@@ -183,27 +177,41 @@ public class GuideHelper : MonoBehaviour
     {
         if (CurrentTaskText.gameObject.activeInHierarchy)
         {
-            var sum = Index - 1;
-            if (Index < Loads.Count)
+            if (TestType == TestType.Infinite)
             {
                 if (reached)
                 {
                     CurrentTaskText.text = "Good Job";
-                    var particle = Instantiate(CompleteParticleSystem, Loads[sum].transform.parent.GetChild(2).transform);
-                    particle.transform.localPosition = new Vector3(particle.transform.localPosition.x, particle.transform.localPosition.y + 1);
-                    particle.gameObject.SetActive(true);
                     yield return new WaitForSeconds(3);
-                    Destroy(particle);
-                    CurrentTaskText.text = "Move " + Loads[Index].transform.parent.name + " to " +
+                    CurrentTaskText.text = "Move " + Loads[RandomIndexLoad].transform.parent.name + " to " +
                                            Zones[Index].transform.tag;
                     reached = false;
                 }
                 else
                 {
-                    if (TestType == TestType.Infinite)
+                    CurrentTaskText.text = "Move " + Loads[RandomIndexLoad].transform.parent.name + " to " +
+                                           Zones[Index].transform.tag;
+                }
+
+            }
+            else
+            {
+                var sum = Index - 1;
+                if (Index < Loads.Count)
+                {
+                    if (reached)
                     {
-                        CurrentTaskText.text = "Move " + Loads[RandomIndexLoad].transform.parent.name + " to " +
+                        CurrentTaskText.text = "Good Job";
+                        var particle = Instantiate(CompleteParticleSystem,
+                            Loads[sum].transform.parent.GetChild(2).transform);
+                        particle.transform.localPosition = new Vector3(particle.transform.localPosition.x,
+                            particle.transform.localPosition.y + 1);
+                        particle.gameObject.SetActive(true);
+                        yield return new WaitForSeconds(3);
+                        Destroy(particle);
+                        CurrentTaskText.text = "Move " + Loads[Index].transform.parent.name + " to " +
                                                Zones[Index].transform.tag;
+                        reached = false;
                     }
                     else
                     {
@@ -211,15 +219,17 @@ public class GuideHelper : MonoBehaviour
                                                Zones[Index].transform.tag;
                     }
                 }
-            }
-            else
-            {
-                CurrentTaskText.text = "Job Complete";
-                var particle = Instantiate(CompleteParticleSystem, Loads[sum].transform.parent.GetChild(2).transform);
-                particle.transform.localPosition = new Vector3(particle.transform.localPosition.x, particle.transform.localPosition.x + 1);
-                particle.gameObject.SetActive(true);
-                yield return new WaitForSeconds(3);
-                Destroy(particle);
+                else
+                {
+                    CurrentTaskText.text = "Job Complete";
+                    var particle = Instantiate(CompleteParticleSystem,
+                        Loads[sum].transform.parent.GetChild(2).transform);
+                    particle.transform.localPosition = new Vector3(particle.transform.localPosition.x,
+                        particle.transform.localPosition.x + 1);
+                    particle.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(3);
+                    Destroy(particle);
+                }
             }
         }
     }
