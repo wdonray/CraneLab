@@ -32,8 +32,6 @@ public class OnTriggerEvent : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        print(other.name);
-
         if (!canTrigger) return;
 
         if (m_Tag != "")
