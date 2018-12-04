@@ -19,7 +19,7 @@ public class GuideHelper : MonoBehaviour
     public List<GameObject> Zones = new List<GameObject>();
 
     private Mediator.Subscriptions _subscriptions;
-    [HideInInspector] public Callback _taskCallback, _emergancyCallback;
+    [HideInInspector] public Callback _taskCallback, _emergancyCallback, _teleportCallback;
 
     public bool reached;
 
@@ -30,6 +30,7 @@ public class GuideHelper : MonoBehaviour
         CompleteParticleSystem.gameObject.SetActive(false);
         _subscriptions = new Mediator.Subscriptions();
         _taskCallback += UpdateTaskText;
+
         Index = 0; RandomIndexLoad = 0;
 
         foreach (var rigger in FindObjectsOfType<AIGuideBehaviour>())
@@ -56,6 +57,8 @@ public class GuideHelper : MonoBehaviour
 
         _emergancyCallback += UpdateEmergancyText;
         _subscriptions.Subscribe("EmergancyCallback", _emergancyCallback);
+        _teleportCallback += TeleportAi;
+        _subscriptions.Subscribe("InfiniteTeleport", _teleportCallback);
     }
 
     // Update is called once per frame
@@ -184,13 +187,13 @@ public class GuideHelper : MonoBehaviour
                     CurrentTaskText.text = "Good Job";
                     yield return new WaitForSeconds(3);
                     CurrentTaskText.text = "Move " + Loads[RandomIndexLoad].transform.parent.name + " to " +
-                                           Zones[Index].transform.tag;
+                                           Zones[Index].transform.name;
                     reached = false;
                 }
                 else
                 {
                     CurrentTaskText.text = "Move " + Loads[RandomIndexLoad].transform.parent.name + " to " +
-                                           Zones[Index].transform.tag;
+                                           Zones[Index].transform.name;
                 }
 
             }
@@ -326,5 +329,41 @@ public class GuideHelper : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         Destroy(obj);
+    }
+
+    private void TeleportAi(Packet emptyPacket)
+    {
+        foreach (var rigger in Riggers)
+        {
+            //rigger.transform.LookAt(rigger.LookAtCrane);
+            StartCoroutine(RotateTowardsCrane(rigger.transform, rigger.CranePos, 0.97f));
+            if (rigger.m_tieOnly)
+            {
+                rigger.GuideStartPos = Zones[Index].transform.GetChild(4).GetChild(1).transform.position;
+                rigger.transform.position = Zones[Index].transform.GetChild(4).GetChild(1).transform.position;
+            }
+            else
+            {
+                rigger.transform.position = Zones[Index].transform.GetChild(4).GetChild(0).transform.position;
+                rigger.StoreHookPos = rigger.HookPos;
+                rigger.StartCheckHoist();
+            }
+        }
+    }
+
+
+    private IEnumerator RotateTowardsCrane(Transform ai, Vector3 cranePos, float dist)
+    {
+        Vector3 dir = (cranePos - ai.position).normalized;
+        float dotProd = Vector3.Dot(dir, ai.forward);
+        while (dotProd < dist)
+        {
+            dir = (cranePos - ai.position).normalized;
+            dotProd = Vector3.Dot(dir, ai.forward);
+
+            var targetRotation = Quaternion.LookRotation(cranePos - ai.position);
+            transform.rotation = Quaternion.Lerp(ai.rotation, targetRotation, (ai.GetComponent<AIGuideBehaviour>().RotationSpeed + 2) * Time.deltaTime);
+            yield return null;
+        }
     }
 }

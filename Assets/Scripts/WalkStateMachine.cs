@@ -67,12 +67,12 @@ public class WalkStateMachine : StateMachineBehaviour
                         other.StartCheckHoist();
                     }
                 }
+                else
+                {
+                    other.StoreHookPos = other.HookPos;
+                    other.StartCheckHoist();
+                }
             }
-
-            //if (AI.m_tyingComplete)
-            //{
-            //    AIGuideBehaviour.LoadCollected = true;
-            //}
         }
         AI.m_walking = false;
     }

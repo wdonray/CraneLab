@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Mouledoux.Callback;
 using Mouledoux.Components;
-using UnityEditor;
 using UnityEngine;
 
 public class TyingUpStateMachine : StateMachineBehaviour
@@ -57,6 +56,9 @@ public class TyingUpStateMachine : StateMachineBehaviour
                     hookLoop.gameObject.SetActive(true);
                     hookLoop.GetComponent<LinkPullTowards>().enabled = true;
                 }
+                guideHelper.reached = true;
+                Mediator.instance.NotifySubscribers(AI.gameObject.GetInstanceID().ToString(), new Packet());
+                Mediator.instance.NotifySubscribers("InfiniteTeleport", new Packet());
             }
             #endregion
             else
@@ -67,7 +69,6 @@ public class TyingUpStateMachine : StateMachineBehaviour
                     guideHelper.reached = true;
                     Mediator.instance.NotifySubscribers(AI.gameObject.GetInstanceID().ToString(), new Packet());
                 }
-
             }
             AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
             AIGuideBehaviour.WalkingtoStartPos = true;
@@ -95,6 +96,11 @@ public class TyingUpStateMachine : StateMachineBehaviour
                     {
                         AI.MovingToWayPoint = true;
                         other.MovingToWayPoint = true;
+                    }
+
+                    if (guideHelper.TestType == TestType.Infinite)
+                    {
+                        Mediator.instance.NotifySubscribers("InfiniteTeleport", new Packet());
                     }
                 }
                 else
