@@ -13,7 +13,8 @@ public enum TestType
     Default,
     DefaultWayPoints,
     Break,
-    Personnel
+    Personnel,
+    Infinite
 }
 public class AIGuideBehaviour : MonoBehaviour
 {
@@ -105,6 +106,11 @@ public class AIGuideBehaviour : MonoBehaviour
             case TestType.Personnel:
                 {
                     GuideCranePersonal();
+                    break;
+                }
+            case TestType.Infinite:
+                {
+                    GuideCraneDefault();
                     break;
                 }
             default:
@@ -486,7 +492,7 @@ public class AIGuideBehaviour : MonoBehaviour
     private void GuideCraneBreak()
     {
         var targetPos = (LoadCollected) ? DropZonePos : LoadPos;
-        if (GuideHelper.Index < _guideHelper.LoadToZone.Count)
+        if (GuideHelper.Index < _guideHelper.Zones.Count)
         {
             _tearTriggered = _guideHelper.Loads[GuideHelper.Index].transform.parent
                 .GetComponentInChildren<TearTest>()._distanceReached;
@@ -525,7 +531,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 }
                 else if (_tearPassed)
                 {
-                    GuideHelper.Index = _guideHelper.LoadToZone.Count;
+                    GuideHelper.Index = _guideHelper.Zones.Count;
                 }
                 else
                 {
@@ -551,7 +557,7 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     private void GuideCranePersonal()
     {
-        var targetPos = (LoadCollected) ? DropZonePos : _guideHelper.LoadToZone[GuideHelper.Index].Load.transform.parent.GetChild(2).position;
+        var targetPos = (LoadCollected) ? DropZonePos : _guideHelper.Loads[GuideHelper.Index].transform.parent.GetChild(2).position;
         if (m_tieOnly)
         {
             if (m_startedTying == false)

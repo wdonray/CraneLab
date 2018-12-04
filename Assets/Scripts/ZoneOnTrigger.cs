@@ -14,7 +14,8 @@ public class ZoneOnTrigger : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject == _guideHelper.LoadToZone[GuideHelper.Index].Load.transform.parent.GetChild(2).gameObject)
+        var i = _guideHelper.TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index;
+        if (other.gameObject == _guideHelper.Loads[i].transform.parent.GetChild(2).gameObject)
         {
             InZone = true;
         }
@@ -22,7 +23,8 @@ public class ZoneOnTrigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject == _guideHelper.LoadToZone[GuideHelper.Index].Load.transform.parent.GetChild(2).gameObject)
+        var i = _guideHelper.TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index;
+        if (other.gameObject == _guideHelper.Loads[i].transform.parent.GetChild(2).gameObject)
         {
             InZone = false;
         }

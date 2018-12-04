@@ -6,17 +6,17 @@ using Mouledoux.Callback;
 using Mouledoux.Components;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class GuideHelper : MonoBehaviour
 {
     public TestType TestType;
     public GameObject CompleteParticleSystem;
-    public static int Index;
+    public static int Index, RandomIndexLoad;
     public Text CurrentTaskText;
     [HideInInspector] public List<AIGuideBehaviour> Riggers = new List<AIGuideBehaviour>();
     public List<GameObject> Loads = new List<GameObject>();
     public List<GameObject> Zones = new List<GameObject>();
-    public Dictionary<int, LoadAndZone> LoadToZone = new Dictionary<int, LoadAndZone>();
 
     private Mediator.Subscriptions _subscriptions;
     [HideInInspector] public Callback _taskCallback, _emergancyCallback;
@@ -30,7 +30,7 @@ public class GuideHelper : MonoBehaviour
         CompleteParticleSystem.gameObject.SetActive(false);
         _subscriptions = new Mediator.Subscriptions();
         _taskCallback += UpdateTaskText;
-        Index = 0;
+        Index = 0; RandomIndexLoad = 0;
 
         foreach (var rigger in FindObjectsOfType<AIGuideBehaviour>())
         {
@@ -38,19 +38,20 @@ public class GuideHelper : MonoBehaviour
             _subscriptions.Subscribe(rigger.gameObject.GetInstanceID().ToString(), _taskCallback);
         }
 
-        if (TestType == TestType.Personnel)
-        {
-            _subscriptions.Subscribe(FindObjectOfType<AIGrabLift>().gameObject.GetInstanceID().ToString(), _taskCallback);
-        }
-
         foreach (var rigger in Riggers)
         {
             rigger.TestType = TestType;
         }
 
-        for (int i = 0; i < Loads.Count; i++)
+        switch (TestType)
         {
-            LoadToZone.Add(i, new LoadAndZone(Loads[i], Zones[i]));
+            case TestType.Personnel:
+                _subscriptions.Subscribe(FindObjectOfType<AIGrabLift>().gameObject.GetInstanceID().ToString(), _taskCallback);
+                break;
+            case TestType.Infinite:
+                Index = Random.Range(0, Zones.Count - 1);
+                RandomIndexLoad = Random.Range(0, Loads.Count - 1);
+                break;
         }
 
         _emergancyCallback += UpdateEmergancyText;
@@ -77,8 +78,8 @@ public class GuideHelper : MonoBehaviour
                     {
                         foreach (var rigger in Riggers)
                         {
-                            rigger.SetDropZone(LoadToZone[0].Zone.transform);
-                            rigger.SetLoad(LoadToZone[0].Load.transform);
+                            rigger.SetDropZone(Zones[0].transform);
+                            rigger.SetLoad(Loads[0].transform);
                         }
                         break;
                     }
@@ -86,8 +87,8 @@ public class GuideHelper : MonoBehaviour
                     {
                         foreach (var rigger in Riggers)
                         {
-                            rigger.SetDropZone(LoadToZone[1].Zone.transform);
-                            rigger.SetLoad(LoadToZone[0].Load.transform);
+                            rigger.SetDropZone(Zones[1].transform);
+                            rigger.SetLoad(Loads[0].transform);
                         }
                         break;
                     }
@@ -99,14 +100,22 @@ public class GuideHelper : MonoBehaviour
                     break;
             }
         }
+        else if (TestType == TestType.Infinite)
+        {
+            foreach (var rigger in Riggers)
+            {
+                rigger.SetDropZone(Zones[Index].transform);
+                rigger.SetLoad(Loads[RandomIndexLoad].transform);
+            }
+        }
         else
         {
             if (index < Loads.Count)
             {
                 foreach (var rigger in Riggers)
                 {
-                    rigger.SetDropZone(LoadToZone[index].Zone.transform);
-                    rigger.SetLoad(LoadToZone[index].Load.transform);
+                    rigger.SetDropZone(Zones[index].transform);
+                    rigger.SetLoad(Loads[index].transform);
                 }
             }
             else
@@ -141,6 +150,19 @@ public class GuideHelper : MonoBehaviour
         }
     }
 
+    public bool ResetInfinite()
+    {
+        foreach (var zone in Zones)
+        {
+            if (zone.GetComponentInChildren<ZoneOnTrigger>().InZone == false)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /// <summary>
     ///     Start the change text event and wait for movement
     /// </summary>
@@ -172,14 +194,22 @@ public class GuideHelper : MonoBehaviour
                     particle.gameObject.SetActive(true);
                     yield return new WaitForSeconds(3);
                     Destroy(particle);
-                    CurrentTaskText.text = "Move " + LoadToZone[Index].Load.transform.parent.name + " to " +
-                                           LoadToZone[Index].Zone.transform.tag;
+                    CurrentTaskText.text = "Move " + Loads[Index].transform.parent.name + " to " +
+                                           Zones[Index].transform.tag;
                     reached = false;
                 }
                 else
                 {
-                    CurrentTaskText.text = "Move " + LoadToZone[Index].Load.transform.parent.name + " to " +
-                                           LoadToZone[Index].Zone.transform.tag;
+                    if (TestType == TestType.Infinite)
+                    {
+                        CurrentTaskText.text = "Move " + Loads[RandomIndexLoad].transform.parent.name + " to " +
+                                               Zones[Index].transform.tag;
+                    }
+                    else
+                    {
+                        CurrentTaskText.text = "Move " + Loads[Index].transform.parent.name + " to " +
+                                               Zones[Index].transform.tag;
+                    }
                 }
             }
             else
@@ -254,21 +284,6 @@ public class GuideHelper : MonoBehaviour
     }
 
     /// <summary>
-    ///     Store the current load and zone
-    /// </summary>
-    public struct LoadAndZone
-    {
-        public GameObject Load, Zone;
-
-        public LoadAndZone(GameObject load, GameObject zone) : this()
-        {
-            Load = load;
-            Zone = zone;
-        }
-    }
-
-
-    /// <summary>
     ///     If you passed or failed the tear test update this text
     /// </summary>
     /// <param name="emptyPacket"></param>
@@ -277,7 +292,7 @@ public class GuideHelper : MonoBehaviour
         CurrentTaskText.gameObject.SetActive(true);
         if (TestType == TestType.Break)
         {
-            if (LoadToZone[Index].Load.transform.parent.GetComponentInChildren<TearTest>()._passed)
+            if (Loads[Index].transform.parent.GetComponentInChildren<TearTest>()._passed)
             {
                 CurrentTaskText.text = "You Passed!";
                 var particle = Instantiate(CompleteParticleSystem, Loads[Index].transform.parent.GetChild(2).transform);
@@ -285,7 +300,7 @@ public class GuideHelper : MonoBehaviour
                 Mediator.instance.NotifySubscribers(PassedMessage, new Packet());
                 StartCoroutine(DestroyAfter(3, particle));
             }
-            else if (LoadToZone[Index].Load.transform.parent.GetComponentInChildren<TearTest>()._failed)
+            else if (Loads[Index].transform.parent.GetComponentInChildren<TearTest>()._failed)
             {
                 CurrentTaskText.text = "You Failed!";
                 Mediator.instance.NotifySubscribers(FailedMessage, new Packet());

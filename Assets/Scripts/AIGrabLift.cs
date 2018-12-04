@@ -354,9 +354,9 @@ public class AIGrabLift : MonoBehaviour
     /// <returns></returns>
     private bool TargetStoppedMoving(GameObject target, float value)
     {
-        if (_guideHelper.LoadToZone[GuideHelper.Index].Zone.GetComponentInChildren<ZoneOnTrigger>().InZone)
+        if (_guideHelper.Zones[GuideHelper.Index].GetComponentInChildren<ZoneOnTrigger>().InZone)
         {
-            target.transform.parent.SetParent(_guideHelper.LoadToZone[GuideHelper.Index].Zone.transform.parent);
+            target.transform.parent.SetParent(_guideHelper.Zones[GuideHelper.Index].transform.parent);
             dropPoint = target.transform.localPosition;
             //return target.transform.GetComponent<Rigidbody>().velocity.magnitude <= value;
             return (Vector3.Distance(target.transform.localPosition, dropPoint) < value);

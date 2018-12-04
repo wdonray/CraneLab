@@ -10,18 +10,11 @@ public class TyingUpStateMachine : StateMachineBehaviour
     private AIGuideBehaviour AI;
     private GuideHelper guideHelper => FindObjectOfType<GuideHelper>();
     private HookLoop hookLoop => guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>();
-    private AIGrabLift _aiGrabLift;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         AI = animator.gameObject.GetComponent<AIGuideBehaviour>();
-
-        if (guideHelper.TestType == TestType.Personnel)
-        {
-            _aiGrabLift = FindObjectOfType<AIGrabLift>();
-        }
-
         //AI.m_startedTying = true;
     }
 
@@ -40,13 +33,33 @@ public class TyingUpStateMachine : StateMachineBehaviour
         if (AIGuideBehaviour.LoadCollected)
         {
             hookLoop.Drop();
-            if (GuideHelper.Index < guideHelper.LoadToZone.Count)
+            #region TestType.Infinite 
+            if (guideHelper.TestType == TestType.Infinite)
             {
-                GuideHelper.Index++;
-                guideHelper.reached = true;
-                Mediator.instance.NotifySubscribers(AI.gameObject.GetInstanceID().ToString(), new Packet());
-            }
+                if (guideHelper.ResetInfinite() == false)
+                {
+                    while (guideHelper.Zones[GuideHelper.Index].GetComponentInChildren<ZoneOnTrigger>().InZone == false)
+                    {
+                        GuideHelper.Index = UnityEngine.Random.Range(0, guideHelper.Zones.Count - 1);
+                    }
+                    GuideHelper.RandomIndexLoad = UnityEngine.Random.Range(0, guideHelper.Loads.Count - 1);
+                }
+                else
+                {
 
+                }
+            }
+            #endregion
+            else
+            {
+                if (GuideHelper.Index < guideHelper.Zones.Count)
+                {
+                    GuideHelper.Index++;
+                    guideHelper.reached = true;
+                    Mediator.instance.NotifySubscribers(AI.gameObject.GetInstanceID().ToString(), new Packet());
+                }
+
+            }
             AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
             AIGuideBehaviour.WalkingtoStartPos = true;
         }
@@ -55,7 +68,7 @@ public class TyingUpStateMachine : StateMachineBehaviour
             AIGuideBehaviour other = null;
             hookLoop.HookUp(AI.m_hook.GetComponent<Collider>());
 
-            if (GuideHelper.Index < guideHelper.LoadToZone.Count)
+            if (GuideHelper.Index < guideHelper.Zones.Count)
             {
                 if (guideHelper.Loads[GuideHelper.Index].GetComponent<HingeJoint>() == true)
                 {

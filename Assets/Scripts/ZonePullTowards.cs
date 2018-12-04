@@ -22,7 +22,7 @@ public class ZonePullTowards : MonoBehaviour
                 return;
             }
         }
-        Active = _guideHelper.LoadToZone[GuideHelper.Index].Zone == transform.parent.gameObject;
+        Active = _guideHelper.Zones[GuideHelper.Index] == transform.parent.gameObject;
     }
 
     public void OnTriggerStay(Collider other)
