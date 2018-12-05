@@ -155,6 +155,7 @@ public class TearTest : MonoBehaviour
         {
             _passed = true;
             Debug.Log("You Passed!");
+            transform.parent.GetChild(0).gameObject.SetActive(false);
             Mediator.instance.NotifySubscribers("EmergancyCallback", new Packet());
         }
     }
