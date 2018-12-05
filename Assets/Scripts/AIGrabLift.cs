@@ -196,7 +196,7 @@ public class AIGrabLift : MonoBehaviour
             dir.y = -1.1f;
 
             TargetPos = Target.transform.position + dir;
-
+            _agent.enabled = false;
             while (Vector3.Distance(transform.position, TargetPos) > 0.3f)
             {
                 transform.position = Vector3.Lerp(transform.position, TargetPos, Time.deltaTime / 2);
@@ -214,7 +214,6 @@ public class AIGrabLift : MonoBehaviour
             }
 
             PersonalLift.enabled = true;
-            _agent.enabled = false;
             yield return new WaitForEndOfFrame();
             running = false;
         }
