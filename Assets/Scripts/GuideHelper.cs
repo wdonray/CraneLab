@@ -13,7 +13,7 @@ public class GuideHelper : MonoBehaviour
 {
     public TestType TestType;
     public GameObject CompleteParticleSystem;
-    public static int Index, RandomIndexLoad;
+    [HideInInspector] public static int Index, RandomIndexLoad;
     public Text CurrentTaskText;
     [HideInInspector] public List<AIGuideBehaviour> Riggers = new List<AIGuideBehaviour>();
     public List<GameObject> Loads = new List<GameObject>();
@@ -22,7 +22,7 @@ public class GuideHelper : MonoBehaviour
     private Mediator.Subscriptions _subscriptions;
     [HideInInspector] public Callback _taskCallback, _emergancyCallback, _teleportCallback;
 
-    public bool reached;
+    [HideInInspector] public bool reached;
 
     [SerializeField] private string PassedMessage, FailedMessage;
     // Use this for initialization
@@ -49,9 +49,12 @@ public class GuideHelper : MonoBehaviour
         {
             case TestType.Personnel:
                 _subscriptions.Subscribe(FindObjectOfType<AIGrabLift>().gameObject.GetInstanceID().ToString(), _taskCallback);
+                FindObjectOfType<ActiveCycler>().ActivateNext();
                 break;
             case TestType.Infinite:
                 {
+                    FindObjectOfType<ActiveCycler>().m_toggleObjects.Add(GameObject.FindGameObjectWithTag("GuideCamera"));
+                    GameObject.FindGameObjectWithTag("GuideCamera").GetComponent<MeshRenderer>().enabled = true;
                     Index = Random.Range(0, Zones.Count);
                     RandomIndexLoad = Random.Range(0, Loads.Count);
 
@@ -69,9 +72,11 @@ public class GuideHelper : MonoBehaviour
                             load.GetComponent<LinkPullTowards>().enabled = false;
                         }
                     }
-
                     break;
                 }
+
+            default:
+                break;
         }
 
         _emergancyCallback += UpdateEmergancyText;
@@ -80,10 +85,49 @@ public class GuideHelper : MonoBehaviour
         _subscriptions.Subscribe("InfiniteTeleport", _teleportCallback);
     }
 
+
+
     // Update is called once per frame
     void Update()
     {
         ActiveLoadToZone();
+
+        for (var i = 0; i < Riggers.Count; i++)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(Riggers[i].transform.position + Vector3.up, Vector3.up * 999, out hit, 100))
+            {
+                if (hit.transform.CompareTag("Hook") || hit.transform.CompareTag("DropZone") || hit.transform.CompareTag("Link"))
+                {
+                    Riggers[i].AboveHead = true;
+                    Mediator.instance.NotifySubscribers("WarnUser", new Packet());
+                }
+                else
+                {
+                    Riggers[i].AboveHead = false;
+                    Mediator.instance.NotifySubscribers("DoNotWarnUser", new Packet());
+                }
+            }
+            else
+            {
+                var index = 0;
+
+                if (i == Riggers.Count - 1)
+                {
+                    index = 0;
+                }
+                else
+                {
+                    index += 1;
+                }
+
+                if (!Riggers[index].AboveHead)
+                {
+                    Riggers[i].AboveHead = false;
+                    Mediator.instance.NotifySubscribers("DoNotWarnUser", new Packet());
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -131,8 +175,6 @@ public class GuideHelper : MonoBehaviour
                         rigger.SetDropZone(Zones[Index].transform);
                         rigger.SetLoad(Loads[RandomIndexLoad].transform);
                     }
-
-
                     break;
                 }
             default:
@@ -149,14 +191,21 @@ public class GuideHelper : MonoBehaviour
                     {
                         Completed();
                     }
-
                     break;
                 }
         }
     }
 
+    private bool _sentPassedMessage;
+
     private void Completed()
     {
+        if (_sentPassedMessage == false)
+        {
+            Mediator.instance.NotifySubscribers(PassedMessage, new Packet());
+            _sentPassedMessage = true;
+        }
+
         foreach (var rigger in Riggers)
         {
             rigger._complete = true;
@@ -343,6 +392,7 @@ public class GuideHelper : MonoBehaviour
         else
         {
             CurrentTaskText.text = "You Failed!";
+            Mediator.instance.NotifySubscribers(FailedMessage, new Packet());
         }
     }
 

@@ -28,7 +28,7 @@ public class AIGuideBehaviour : MonoBehaviour
     public float RotationSpeed, TargetDistance = 2f;
     [HideInInspector] public Vector3 GuideStartPos, StoreHookPos;
     [HideInInspector] public NavMeshAgent Agent;
-    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, CheckHoistCalled, Emergancy, MovingToWayPoint;
+    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, CheckHoistCalled, Emergancy, MovingToWayPoint, AboveHead;
     public static bool WalkingToTarget, WalkingtoStartPos, LoadCollected, GuideWalkToLocation;
     public bool m_tieOnly, m_dead, _complete;
     private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist, _tearTriggered, _tearFailed, _tearPassed, _liftFailed;
