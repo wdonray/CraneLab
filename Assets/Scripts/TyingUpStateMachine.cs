@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Mouledoux.Callback;
 using Mouledoux.Components;
 using UnityEngine;
@@ -9,19 +10,12 @@ public class TyingUpStateMachine : StateMachineBehaviour
 {
     private AIGuideBehaviour AI;
     private GuideHelper guideHelper => FindObjectOfType<GuideHelper>();
-    private HookLoop hookLoop => guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>();
-    private AIGrabLift _aiGrabLift;
+    private HookLoop hookLoop => (guideHelper.TestType == TestType.Infinite) ? guideHelper.Loads[GuideHelper.RandomIndexLoad].GetComponent<HookLoop>() : guideHelper.Loads[GuideHelper.Index].GetComponent<HookLoop>();
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         AI = animator.gameObject.GetComponent<AIGuideBehaviour>();
-
-        if (guideHelper.TestType == TestType.Personnel)
-        {
-            _aiGrabLift = FindObjectOfType<AIGrabLift>();
-        }
-
         //AI.m_startedTying = true;
     }
 
@@ -29,6 +23,16 @@ public class TyingUpStateMachine : StateMachineBehaviour
     //override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
     //
     //}
+    private void RandomIndexSelection()
+    {
+        if (guideHelper.Zones[GuideHelper.Index].GetComponentInChildren<ZoneOnTrigger>().InZone)
+        {
+            do
+            {
+                GuideHelper.Index = UnityEngine.Random.Range(0, guideHelper.Zones.Count);
+            } while (guideHelper.Zones[GuideHelper.Index].GetComponentInChildren<ZoneOnTrigger>().InZone);
+        }
+    }
 
     //OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -37,27 +41,48 @@ public class TyingUpStateMachine : StateMachineBehaviour
         AI.m_startedTying = false;
         AI.m_tyingComplete = true;
 
+        //Drop
         if (AIGuideBehaviour.LoadCollected)
         {
             hookLoop.Drop();
-            if (GuideHelper.Index < guideHelper.LoadToZone.Count)
+            #region TestType.Infinite 
+            if (guideHelper.TestType == TestType.Infinite)
             {
-                GuideHelper.Index++;
+                RandomIndexSelection();
+                GuideHelper.RandomIndexLoad = UnityEngine.Random.Range(0, guideHelper.Loads.Count);
+
+                if (!hookLoop.gameObject.activeInHierarchy)
+                {
+                    hookLoop.gameObject.SetActive(true);
+                    hookLoop.GetComponent<LinkPullTowards>().enabled = true;
+                }
+
                 guideHelper.reached = true;
                 Mediator.instance.NotifySubscribers(AI.gameObject.GetInstanceID().ToString(), new Packet());
+                Mediator.instance.NotifySubscribers("InfiniteTeleport", new Packet());
             }
-
+            #endregion
+            else
+            {
+                if (GuideHelper.Index < guideHelper.Zones.Count)
+                {
+                    GuideHelper.Index++;
+                    guideHelper.reached = true;
+                    Mediator.instance.NotifySubscribers(AI.gameObject.GetInstanceID().ToString(), new Packet());
+                }
+            }
             AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
             AIGuideBehaviour.WalkingtoStartPos = true;
         }
+        //Pick Up
         else
         {
             AIGuideBehaviour other = null;
             hookLoop.HookUp(AI.m_hook.GetComponent<Collider>());
 
-            if (GuideHelper.Index < guideHelper.LoadToZone.Count)
+            if (GuideHelper.Index < guideHelper.Zones.Count)
             {
-                if (guideHelper.Loads[GuideHelper.Index].GetComponent<HingeJoint>() == true)
+                if (guideHelper.Loads[guideHelper.TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index].GetComponent<HingeJoint>() == true)
                 {
                     AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
                     AIGuideBehaviour.WalkingtoStartPos = true;
@@ -72,6 +97,11 @@ public class TyingUpStateMachine : StateMachineBehaviour
                     {
                         AI.MovingToWayPoint = true;
                         other.MovingToWayPoint = true;
+                    }
+
+                    if (guideHelper.TestType == TestType.Infinite)
+                    {
+                        Mediator.instance.NotifySubscribers("InfiniteTeleport", new Packet());
                     }
                 }
                 else

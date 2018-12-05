@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Leap.Unity.Attributes;
 using Mouledoux.Callback;
 using Mouledoux.Components;
 using UnityEngine;
@@ -18,7 +19,6 @@ public class AIGrabLift : MonoBehaviour
         Dead,
     }
 
-    public int TimesToTrigger;
     public PersonalLiftTest PersonalLift;
     public Transform m_crane;
     public Vector3 CranePos => m_crane.transform.position;
@@ -26,16 +26,16 @@ public class AIGrabLift : MonoBehaviour
     public float StoppingDistance, TargetDistance;
     [HideInInspector] public GameObject Target;
     [HideInInspector] public bool OnLift, TyerOn;
-    public Vector3 TargetPos, TargetRot;
+    public Vector3 TargetPos;
     public AIGrabLiftState CurrentState;
     private AIGuideWalk _guideWalk;
-    private Transform _oldParent;
     private bool _falling;
     private NavMeshAgent _agent;
     private bool running = true;
     public bool _completed;
     private bool ready;
     private GuideHelper _guideHelper => FindObjectOfType<GuideHelper>();
+    private UnparentLoad _unparentLoad;
 
     private void Start()
     {
@@ -44,7 +44,6 @@ public class AIGrabLift : MonoBehaviour
         _guideWalk = gameObject.AddComponent<AIGuideWalk>();
         _agent = GetComponent<NavMeshAgent>();
         _guideWalk.Agent = _agent;
-        _oldParent = transform.parent;
         TyerOn = true;
     }
 
@@ -124,7 +123,7 @@ public class AIGrabLift : MonoBehaviour
     public void FallOff()
     {
         OnLift = false;
-        transform.SetParent(_oldParent);
+        transform.SetParent(null);
         transform.GetComponent<Collider>().isTrigger = false;
         _agent.enabled = true;
         gameObject.AddComponent<Rigidbody>();
@@ -144,6 +143,15 @@ public class AIGrabLift : MonoBehaviour
         {
             SendToAnimator.m_oldValueForce = string.Empty;
             _guideWalk.WalkTowardsDistance(pos, dir, StoppingDistance, TargetDistance);
+
+            foreach (var rigger in _guideHelper.Riggers)
+            {
+                if (rigger.m_tieOnly == false)
+                {
+                    rigger.StoreHookPos = rigger.HookPos;
+                    rigger.Stop();
+                }
+            }
         }
         else
         {
@@ -178,16 +186,23 @@ public class AIGrabLift : MonoBehaviour
         while (running)
         {
             transform.SetParent(Target.transform);
-
+            Target.transform.parent.SetParent(null);
             transform.GetComponent<Collider>().isTrigger = true;
-            while (Vector3.Distance(transform.localPosition, TargetPos) > 0.1f)
+
+            var dir = (transform.position - Target.transform.position);
+            dir.y = 0;
+            dir.Normalize();
+            dir *= .5f;
+            dir.y = -1.1f;
+
+            TargetPos = Target.transform.position + dir;
+            _agent.enabled = false;
+            while (Vector3.Distance(transform.position, TargetPos) > 0.3f)
             {
-                transform.localPosition = Vector3.Lerp(transform.localPosition, TargetPos, Time.deltaTime / 2);
-                //transform.localEulerAngles = Vector3.Lerp(transform.localEulerAngles, TargetRot, Time.deltaTime);
+                transform.position = Vector3.Lerp(transform.position, TargetPos, Time.deltaTime / 2);
+                transform.LookAt(new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z));
                 yield return null;
             }
-            transform.localPosition = TargetPos;
-            transform.localEulerAngles = TargetRot;
 
             foreach (var rigger in _guideHelper.Riggers)
             {
@@ -199,7 +214,6 @@ public class AIGrabLift : MonoBehaviour
             }
 
             PersonalLift.enabled = true;
-            _agent.enabled = false;
             yield return new WaitForEndOfFrame();
             running = false;
         }
@@ -214,7 +228,7 @@ public class AIGrabLift : MonoBehaviour
         if (OnLift)
         {
             SendToAnimator.SendTriggerForce(gameObject, "StepDown");
-            transform.SetParent(_oldParent);
+            transform.SetParent(_unparentLoad.NewParent.transform);
             transform.GetComponent<Collider>().isTrigger = false;
             _agent.enabled = true;
             PersonalLift.enabled = false;
@@ -258,6 +272,7 @@ public class AIGrabLift : MonoBehaviour
                 }
             }
             Target = target.gameObject;
+            _unparentLoad = target.transform.parent.GetComponentInChildren<UnparentLoad>();
             StartCoroutine(CheckForMovement(() => PickUpAction(target)));
         }
     }
@@ -268,12 +283,7 @@ public class AIGrabLift : MonoBehaviour
     /// <param name="target"></param>
     private void PickUpAction(Transform target)
     {
-        if (TimesToTrigger > 0)
-        {
-            TimesToTrigger--;
-            GuideHelper.Index++;
-        }
-
+        GuideHelper.Index++;
         SetState(AIGrabLiftState.Walk);
     }
 
@@ -282,11 +292,8 @@ public class AIGrabLift : MonoBehaviour
     /// </summary>
     private void DropOffAction()
     {
-        if (TimesToTrigger > 0)
-        {
-            GuideHelper.Index++;
-            Mediator.instance.NotifySubscribers(gameObject.GetInstanceID().ToString(), new Packet());
-        }
+        GuideHelper.Index++;
+        Mediator.instance.NotifySubscribers(gameObject.GetInstanceID().ToString(), new Packet());
 
         PersonalLift.enabled = false;
         SetState(AIGrabLiftState.StepDown);
@@ -323,7 +330,7 @@ public class AIGrabLift : MonoBehaviour
 
         while (timer < 3f)
         {
-            if (TargetStoppedMoving(Target, .5f))
+            if (TargetStoppedMoving(Target, .2f))
             {
                 timer += Time.deltaTime;
             }
@@ -346,10 +353,15 @@ public class AIGrabLift : MonoBehaviour
     /// <returns></returns>
     private bool TargetStoppedMoving(GameObject target, float value)
     {
-        if (_guideHelper.LoadToZone[GuideHelper.Index].Zone.GetComponentInChildren<ZoneOnTrigger>().InZone)
+        if (_guideHelper.Zones[GuideHelper.Index].GetComponentInChildren<ZoneOnTrigger>().InZone)
         {
-            return target.transform.GetComponent<Rigidbody>().velocity.magnitude <= value;
+            target.transform.parent.SetParent(_guideHelper.Zones[GuideHelper.Index].transform.parent);
+            dropPoint = target.transform.localPosition;
+            //return target.transform.GetComponent<Rigidbody>().velocity.magnitude <= value;
+            return (Vector3.Distance(target.transform.localPosition, dropPoint) < value);
         }
         return false;
     }
+
+    private Vector3 dropPoint = Vector3.one * float.MaxValue;
 }

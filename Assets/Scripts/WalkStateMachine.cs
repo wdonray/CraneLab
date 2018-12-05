@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -22,7 +23,7 @@ public class WalkStateMachine : StateMachineBehaviour
         if (AI == null) return;
         if (AI._complete == false)
         {
-            var load = guideHelper.Loads[GuideHelper.Index];
+            var load = guideHelper.Loads[guideHelper.TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index];
             if (!AIGuideBehaviour.LoadCollected)
             {
                 if (!Physics.OverlapSphere(load.transform.GetChild(0).transform.position, 1.3f / 2)
@@ -40,6 +41,7 @@ public class WalkStateMachine : StateMachineBehaviour
     {
         if (AI == null) return;
         AIGuideBehaviour other = null;
+        SendToAnimator.m_oldValue = string.Empty;
         if (AI.m_tieOnly)
         {
             foreach (var rigger in guideHelper.Riggers)
@@ -50,24 +52,27 @@ public class WalkStateMachine : StateMachineBehaviour
 
             if (other != null)
             {
-                other.StoreHookPos = other.HookPos;
-                if (other.WayPoints !=null)
+                if (AIGuideBehaviour.LoadCollected)
                 {
-                    if (other.WayPoints.WayPointsActive == false)
+                    other.StoreHookPos = other.HookPos;
+                    if (other.WayPoints != null)
+                    {
+                        if (other.WayPoints.WayPointsActive == false)
+                        {
+                            other.StartCheckHoist();
+                        }
+                    }
+                    else
                     {
                         other.StartCheckHoist();
                     }
                 }
                 else
                 {
+                    other.StoreHookPos = other.HookPos;
                     other.StartCheckHoist();
                 }
             }
-
-            //if (AI.m_tyingComplete)
-            //{
-            //    AIGuideBehaviour.LoadCollected = true;
-            //}
         }
         AI.m_walking = false;
     }

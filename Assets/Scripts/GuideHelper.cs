@@ -1,27 +1,28 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Mouledoux.Callback;
 using Mouledoux.Components;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class GuideHelper : MonoBehaviour
 {
     public TestType TestType;
     public GameObject CompleteParticleSystem;
-    public static int Index;
+    [HideInInspector] public static int Index, RandomIndexLoad;
     public Text CurrentTaskText;
     [HideInInspector] public List<AIGuideBehaviour> Riggers = new List<AIGuideBehaviour>();
     public List<GameObject> Loads = new List<GameObject>();
     public List<GameObject> Zones = new List<GameObject>();
-    public Dictionary<int, LoadAndZone> LoadToZone = new Dictionary<int, LoadAndZone>();
 
     private Mediator.Subscriptions _subscriptions;
-    [HideInInspector] public Callback _taskCallback, _emergancyCallback;
+    [HideInInspector] public Callback _taskCallback, _emergancyCallback, _teleportCallback;
 
-    public bool reached;
+    [HideInInspector] public bool reached;
 
     [SerializeField] private string PassedMessage, FailedMessage;
     // Use this for initialization
@@ -30,7 +31,8 @@ public class GuideHelper : MonoBehaviour
         CompleteParticleSystem.gameObject.SetActive(false);
         _subscriptions = new Mediator.Subscriptions();
         _taskCallback += UpdateTaskText;
-        Index = 0;
+
+        Index = 0; RandomIndexLoad = 0;
 
         foreach (var rigger in FindObjectsOfType<AIGuideBehaviour>())
         {
@@ -38,86 +40,172 @@ public class GuideHelper : MonoBehaviour
             _subscriptions.Subscribe(rigger.gameObject.GetInstanceID().ToString(), _taskCallback);
         }
 
-        if (TestType == TestType.Personnel)
-        {
-            _subscriptions.Subscribe(FindObjectOfType<AIGrabLift>().gameObject.GetInstanceID().ToString(), _taskCallback);
-        }
-
         foreach (var rigger in Riggers)
         {
             rigger.TestType = TestType;
         }
 
-        for (int i = 0; i < Loads.Count; i++)
+        switch (TestType)
         {
-            LoadToZone.Add(i, new LoadAndZone(Loads[i], Zones[i]));
+            case TestType.Personnel:
+                _subscriptions.Subscribe(FindObjectOfType<AIGrabLift>().gameObject.GetInstanceID().ToString(), _taskCallback);
+                FindObjectOfType<ActiveCycler>().ActivateNext();
+                break;
+            case TestType.Infinite:
+                {
+                    FindObjectOfType<ActiveCycler>().m_toggleObjects.Add(GameObject.FindGameObjectWithTag("GuideCamera"));
+                    GameObject.FindGameObjectWithTag("GuideCamera").GetComponent<MeshRenderer>().enabled = true;
+                    Index = Random.Range(0, Zones.Count);
+                    RandomIndexLoad = Random.Range(0, Loads.Count);
+
+                    foreach (var load in Loads)
+                    {
+                        var randomSelection = Random.Range(0, Zones.Count);
+                        var pos = load.transform.parent.position;
+
+                        load.transform.parent.position = Zones[randomSelection].transform.position;
+                        Zones[randomSelection].transform.position = pos;
+
+                        if (load != Loads[RandomIndexLoad])
+                        {
+                            load.gameObject.SetActive(false);
+                            load.GetComponent<LinkPullTowards>().enabled = false;
+                        }
+                    }
+                    break;
+                }
+
+            default:
+                break;
         }
 
         _emergancyCallback += UpdateEmergancyText;
         _subscriptions.Subscribe("EmergancyCallback", _emergancyCallback);
+        _teleportCallback += TeleportAi;
+        _subscriptions.Subscribe("InfiniteTeleport", _teleportCallback);
     }
+
+
 
     // Update is called once per frame
     void Update()
     {
-        ActiveLoadToZone(Index);
+        ActiveLoadToZone();
+
+        for (var i = 0; i < Riggers.Count; i++)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(Riggers[i].transform.position + Vector3.up, Vector3.up * 999, out hit, 100))
+            {
+                if (hit.transform.CompareTag("Hook") || hit.transform.CompareTag("DropZone") || hit.transform.CompareTag("Link"))
+                {
+                    Riggers[i].AboveHead = true;
+                    Mediator.instance.NotifySubscribers("WarnUser", new Packet());
+                }
+                else
+                {
+                    Riggers[i].AboveHead = false;
+                    Mediator.instance.NotifySubscribers("DoNotWarnUser", new Packet());
+                }
+            }
+            else
+            {
+                var index = 0;
+
+                if (i == Riggers.Count - 1)
+                {
+                    index = 0;
+                }
+                else
+                {
+                    index += 1;
+                }
+
+                if (!Riggers[index].AboveHead)
+                {
+                    Riggers[i].AboveHead = false;
+                    Mediator.instance.NotifySubscribers("DoNotWarnUser", new Packet());
+                }
+            }
+        }
     }
 
     /// <summary>
     ///     Each riggers zone and load will be set unless the game is over and complete 
     /// </summary>
-    /// <param name="index"></param>
-    void ActiveLoadToZone(int index)
+    void ActiveLoadToZone()
     {
-        if (TestType == TestType.Personnel)
+        switch (TestType)
         {
-            switch (index)
-            {
-                case 0:
+            case TestType.Personnel:
+                {
+                    switch (Index)
                     {
-                        foreach (var rigger in Riggers)
-                        {
-                            rigger.SetDropZone(LoadToZone[0].Zone.transform);
-                            rigger.SetLoad(LoadToZone[0].Load.transform);
-                        }
-                        break;
-                    }
-                case 1:
-                    {
-                        foreach (var rigger in Riggers)
-                        {
-                            rigger.SetDropZone(LoadToZone[1].Zone.transform);
-                            rigger.SetLoad(LoadToZone[0].Load.transform);
-                        }
-                        break;
-                    }
+                        case 0:
+                            {
+                                foreach (var rigger in Riggers)
+                                {
+                                    rigger.SetDropZone(Zones[0].transform);
+                                    rigger.SetLoad(Loads[0].transform);
+                                }
+                                break;
+                            }
+                        case 1:
+                            {
+                                foreach (var rigger in Riggers)
+                                {
+                                    rigger.SetDropZone(Zones[1].transform);
+                                    rigger.SetLoad(Loads[0].transform);
+                                }
+                                break;
+                            }
 
-                default:
+                        default:
+                            {
+                                Completed();
+                            }
+                            break;
+                    }
+                    break;
+                }
+            case TestType.Infinite:
+                {
+                    foreach (var rigger in Riggers)
+                    {
+                        rigger.SetDropZone(Zones[Index].transform);
+                        rigger.SetLoad(Loads[RandomIndexLoad].transform);
+                    }
+                    break;
+                }
+            default:
+                {
+                    if (Index < Loads.Count)
+                    {
+                        foreach (var rigger in Riggers)
+                        {
+                            rigger.SetDropZone(Zones[Index].transform);
+                            rigger.SetLoad(Loads[Index].transform);
+                        }
+                    }
+                    else
                     {
                         Completed();
                     }
                     break;
-            }
-        }
-        else
-        {
-            if (index < Loads.Count)
-            {
-                foreach (var rigger in Riggers)
-                {
-                    rigger.SetDropZone(LoadToZone[index].Zone.transform);
-                    rigger.SetLoad(LoadToZone[index].Load.transform);
                 }
-            }
-            else
-            {
-                Completed();
-            }
         }
     }
 
+    private bool _sentPassedMessage;
+
     private void Completed()
     {
+        if (_sentPassedMessage == false)
+        {
+            Mediator.instance.NotifySubscribers(PassedMessage, new Packet());
+            _sentPassedMessage = true;
+        }
+
         foreach (var rigger in Riggers)
         {
             rigger._complete = true;
@@ -161,35 +249,59 @@ public class GuideHelper : MonoBehaviour
     {
         if (CurrentTaskText.gameObject.activeInHierarchy)
         {
-            var sum = Index - 1;
-            if (Index < Loads.Count)
+            if (TestType == TestType.Infinite)
             {
                 if (reached)
                 {
                     CurrentTaskText.text = "Good Job";
-                    var particle = Instantiate(CompleteParticleSystem, Loads[sum].transform.parent.GetChild(2).transform);
-                    particle.transform.localPosition = new Vector3(particle.transform.localPosition.x, particle.transform.localPosition.y + 1);
-                    particle.gameObject.SetActive(true);
                     yield return new WaitForSeconds(3);
-                    Destroy(particle);
-                    CurrentTaskText.text = "Move " + LoadToZone[Index].Load.transform.parent.name + " to " +
-                                           LoadToZone[Index].Zone.transform.tag;
+                    CurrentTaskText.text = "Move " + Loads[RandomIndexLoad].transform.parent.name + " to " +
+                                           Zones[Index].transform.name;
                     reached = false;
                 }
                 else
                 {
-                    CurrentTaskText.text = "Move " + LoadToZone[Index].Load.transform.parent.name + " to " +
-                                           LoadToZone[Index].Zone.transform.tag;
+                    CurrentTaskText.text = "Move " + Loads[RandomIndexLoad].transform.parent.name + " to " +
+                                           Zones[Index].transform.name;
                 }
+
             }
             else
             {
-                CurrentTaskText.text = "Job Complete";
-                var particle = Instantiate(CompleteParticleSystem, Loads[sum].transform.parent.GetChild(2).transform);
-                particle.transform.localPosition = new Vector3(particle.transform.localPosition.x, particle.transform.localPosition.x + 1);
-                particle.gameObject.SetActive(true);
-                yield return new WaitForSeconds(3);
-                Destroy(particle);
+                var sum = Index - 1;
+                if (Index < Loads.Count)
+                {
+                    if (reached)
+                    {
+                        CurrentTaskText.text = "Good Job";
+                        var particle = Instantiate(CompleteParticleSystem,
+                            Loads[sum].transform.parent.GetChild(2).transform);
+                        particle.transform.localPosition = new Vector3(particle.transform.localPosition.x,
+                            particle.transform.localPosition.y + 1);
+                        particle.gameObject.SetActive(true);
+                        yield return new WaitForSeconds(3);
+                        Destroy(particle);
+                        CurrentTaskText.text = "Move " + Loads[Index].transform.parent.name + " to " +
+                                               Zones[Index].transform.tag;
+                        reached = false;
+                    }
+                    else
+                    {
+                        CurrentTaskText.text = "Move " + Loads[Index].transform.parent.name + " to " +
+                                               Zones[Index].transform.tag;
+                    }
+                }
+                else
+                {
+                    CurrentTaskText.text = "Job Complete";
+                    var particle = Instantiate(CompleteParticleSystem,
+                        Loads[sum].transform.parent.GetChild(2).transform);
+                    particle.transform.localPosition = new Vector3(particle.transform.localPosition.x,
+                        particle.transform.localPosition.x + 1);
+                    particle.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(3);
+                    Destroy(particle);
+                }
             }
         }
     }
@@ -213,7 +325,8 @@ public class GuideHelper : MonoBehaviour
     private IEnumerator TaskOff()
     {
         yield return new WaitForSeconds(3);
-        CurrentTaskText.gameObject.SetActive(false);
+        if (TestType != TestType.Infinite)
+            CurrentTaskText.gameObject.SetActive(false);
         StopAllCoroutines();
     }
 
@@ -254,21 +367,6 @@ public class GuideHelper : MonoBehaviour
     }
 
     /// <summary>
-    ///     Store the current load and zone
-    /// </summary>
-    public struct LoadAndZone
-    {
-        public GameObject Load, Zone;
-
-        public LoadAndZone(GameObject load, GameObject zone) : this()
-        {
-            Load = load;
-            Zone = zone;
-        }
-    }
-
-
-    /// <summary>
     ///     If you passed or failed the tear test update this text
     /// </summary>
     /// <param name="emptyPacket"></param>
@@ -277,7 +375,7 @@ public class GuideHelper : MonoBehaviour
         CurrentTaskText.gameObject.SetActive(true);
         if (TestType == TestType.Break)
         {
-            if (LoadToZone[Index].Load.transform.parent.GetComponentInChildren<TearTest>()._passed)
+            if (Loads[Index].transform.parent.GetComponentInChildren<TearTest>()._passed)
             {
                 CurrentTaskText.text = "You Passed!";
                 var particle = Instantiate(CompleteParticleSystem, Loads[Index].transform.parent.GetChild(2).transform);
@@ -285,7 +383,7 @@ public class GuideHelper : MonoBehaviour
                 Mediator.instance.NotifySubscribers(PassedMessage, new Packet());
                 StartCoroutine(DestroyAfter(3, particle));
             }
-            else if (LoadToZone[Index].Load.transform.parent.GetComponentInChildren<TearTest>()._failed)
+            else if (Loads[Index].transform.parent.GetComponentInChildren<TearTest>()._failed)
             {
                 CurrentTaskText.text = "You Failed!";
                 Mediator.instance.NotifySubscribers(FailedMessage, new Packet());
@@ -294,6 +392,7 @@ public class GuideHelper : MonoBehaviour
         else
         {
             CurrentTaskText.text = "You Failed!";
+            Mediator.instance.NotifySubscribers(FailedMessage, new Packet());
         }
     }
 
@@ -301,5 +400,38 @@ public class GuideHelper : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         Destroy(obj);
+    }
+
+    private void TeleportAi(Packet emptyPacket)
+    {
+        var sortedList = Riggers.OrderBy(x => x.m_tieOnly).ToList();
+        for (var i = 0; i < sortedList.Count; i++)
+        {
+            if (!sortedList[i].m_tieOnly)
+            {
+                //rigger.transform.position = Zones[Index].transform.GetChild(4).GetChild(0).transform.position;
+                sortedList[i].transform.position = sortedList[i + 1].transform.position;
+                sortedList[i].StoreHookPos = sortedList[i].HookPos;
+                sortedList[i].StartCheckHoist();
+            }
+            else
+            {
+                sortedList[i].GuideStartPos = Zones[Index].transform.GetChild(4).GetChild(1).transform.position;
+                sortedList[i].transform.position = Zones[Index].transform.GetChild(4).GetChild(1).transform.position;
+            }
+
+            StartCoroutine(RotateTowardsCrane(sortedList[i].transform, sortedList[i].CranePos, 10));
+        }
+    }
+
+
+    private IEnumerator RotateTowardsCrane(Transform ai, Vector3 cranePos, float angle)
+    {
+        while (Vector3.Angle(ai.transform.forward, cranePos - ai.transform.position) > angle)
+        {
+            ai.LookAt(cranePos);
+        }
+
+        yield return null;
     }
 }

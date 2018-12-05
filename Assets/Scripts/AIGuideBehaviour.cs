@@ -13,7 +13,8 @@ public enum TestType
     Default,
     DefaultWayPoints,
     Break,
-    Personnel
+    Personnel,
+    Infinite
 }
 public class AIGuideBehaviour : MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class AIGuideBehaviour : MonoBehaviour
     public float RotationSpeed, TargetDistance = 2f;
     [HideInInspector] public Vector3 GuideStartPos, StoreHookPos;
     [HideInInspector] public NavMeshAgent Agent;
-    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, CheckHoistCalled, Emergancy, MovingToWayPoint;
+    [HideInInspector] public bool m_startedTying, m_tyingComplete, m_walking, CheckHoistCalled, Emergancy, MovingToWayPoint, AboveHead;
     public static bool WalkingToTarget, WalkingtoStartPos, LoadCollected, GuideWalkToLocation;
     public bool m_tieOnly, m_dead, _complete;
     private bool m_swing, m_raiselower, m_hoist, m_inout, startedHoist, _tearTriggered, _tearFailed, _tearPassed, _liftFailed;
@@ -105,6 +106,11 @@ public class AIGuideBehaviour : MonoBehaviour
             case TestType.Personnel:
                 {
                     GuideCranePersonal();
+                    break;
+                }
+            case TestType.Infinite:
+                {
+                    GuideCraneDefault();
                     break;
                 }
             default:
@@ -368,7 +374,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 if (LoadCollected)
                 {
                     var zone = _guideHelper.Zones[GuideHelper.Index];
-                    var load = _guideHelper.Loads[GuideHelper.Index];
+                    var load = _guideHelper.Loads[TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index];
                     var size = new Vector3(zone.transform.localScale.x, .1f, zone.transform.localScale.z);
                     if (Physics.OverlapBox(target, size, zone.transform.rotation).Contains(load.transform.parent.GetChild(2).GetComponent<Collider>()))
                     {
@@ -379,7 +385,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 }
                 else
                 {
-                    var load = _guideHelper.Loads[GuideHelper.Index];
+                    var load = _guideHelper.Loads[TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index];
                     if (Physics.OverlapSphere(load.transform.GetChild(0).transform.position, 1.3f / 2).Contains(m_hook.GetComponent<Collider>()))
                     {
                         //Crane in range of target, walk to target
@@ -486,7 +492,7 @@ public class AIGuideBehaviour : MonoBehaviour
     private void GuideCraneBreak()
     {
         var targetPos = (LoadCollected) ? DropZonePos : LoadPos;
-        if (GuideHelper.Index < _guideHelper.LoadToZone.Count)
+        if (GuideHelper.Index < _guideHelper.Zones.Count)
         {
             _tearTriggered = _guideHelper.Loads[GuideHelper.Index].transform.parent
                 .GetComponentInChildren<TearTest>()._distanceReached;
@@ -525,7 +531,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 }
                 else if (_tearPassed)
                 {
-                    GuideHelper.Index = _guideHelper.LoadToZone.Count;
+                    GuideHelper.Index = _guideHelper.Zones.Count;
                 }
                 else
                 {
@@ -534,7 +540,8 @@ public class AIGuideBehaviour : MonoBehaviour
                         SendToAnimator.ResetAllTriggers(gameObject);
                         SendToAnimator.stop = false;
                         Emergancy = true;
-                        SendToAnimator.SendTrigger(gameObject, "EmergancyStop");
+                        SendToAnimator.m_oldValueForce = string.Empty;
+                        SendToAnimator.SendTriggerForce(gameObject, "EmergancyStop");
                     }
                 }
             }
@@ -550,7 +557,7 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     private void GuideCranePersonal()
     {
-        var targetPos = (LoadCollected) ? DropZonePos : _guideHelper.LoadToZone[GuideHelper.Index].Load.transform.parent.GetChild(2).position;
+        var targetPos = (LoadCollected) ? DropZonePos : _guideHelper.Loads[GuideHelper.Index].transform.parent.GetChild(2).position;
         if (m_tieOnly)
         {
             if (m_startedTying == false)

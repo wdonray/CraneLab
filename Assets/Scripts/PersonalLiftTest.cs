@@ -16,8 +16,11 @@ public class PersonalLiftTest : MonoBehaviour
     private readonly Callback _failedPersonalLift;
     private QuickSubscribe _quickSubscribe => GetComponent<QuickSubscribe>();
 
+    private AIGrabLift aibGrabLift;
+
     void Awake()
     {
+        aibGrabLift = FindObjectOfType<AIGrabLift>();
         _quickSubscribe.m_subMessage = FailedMessage;
         _subscriptions = new Mediator.Subscriptions();
         _subscriptions.Subscribe(FailedMessage, _failedPersonalLift);
@@ -26,7 +29,8 @@ public class PersonalLiftTest : MonoBehaviour
     private IEnumerator Start()
     {
         yield return new WaitUntil(CheckForAnyFails);
-        Mediator.instance.NotifySubscribers(FailedMessage, new Packet());
+        if (!aibGrabLift._completed)
+            Mediator.instance.NotifySubscribers(FailedMessage, new Packet());
     }
 
     /// <summary>
