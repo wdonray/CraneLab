@@ -56,6 +56,7 @@ public class TyingUpStateMachine : StateMachineBehaviour
                     hookLoop.gameObject.SetActive(true);
                     hookLoop.GetComponent<LinkPullTowards>().enabled = true;
                 }
+
                 guideHelper.reached = true;
                 Mediator.instance.NotifySubscribers(AI.gameObject.GetInstanceID().ToString(), new Packet());
                 Mediator.instance.NotifySubscribers("InfiniteTeleport", new Packet());

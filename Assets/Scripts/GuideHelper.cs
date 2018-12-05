@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Mouledoux.Callback;
 using Mouledoux.Components;
@@ -50,9 +51,27 @@ public class GuideHelper : MonoBehaviour
                 _subscriptions.Subscribe(FindObjectOfType<AIGrabLift>().gameObject.GetInstanceID().ToString(), _taskCallback);
                 break;
             case TestType.Infinite:
-                Index = Random.Range(0, Zones.Count);
-                RandomIndexLoad = Random.Range(0, Loads.Count);
-                break;
+                {
+                    Index = Random.Range(0, Zones.Count);
+                    RandomIndexLoad = Random.Range(0, Loads.Count);
+
+                    foreach (var load in Loads)
+                    {
+                        var randomSelection = Random.Range(0, Zones.Count);
+                        var pos = load.transform.parent.position;
+
+                        load.transform.parent.position = Zones[randomSelection].transform.position;
+                        Zones[randomSelection].transform.position = pos;
+
+                        if (load != Loads[RandomIndexLoad])
+                        {
+                            load.gameObject.SetActive(false);
+                            load.GetComponent<LinkPullTowards>().enabled = false;
+                        }
+                    }
+
+                    break;
+                }
         }
 
         _emergancyCallback += UpdateEmergancyText;
@@ -75,63 +94,64 @@ public class GuideHelper : MonoBehaviour
         switch (TestType)
         {
             case TestType.Personnel:
-            {
-                switch (Index)
                 {
-                    case 0:
+                    switch (Index)
                     {
-                        foreach (var rigger in Riggers)
-                        {
-                            rigger.SetDropZone(Zones[0].transform);
-                            rigger.SetLoad(Loads[0].transform);
-                        }
-                        break;
-                    }
-                    case 1:
-                    {
-                        foreach (var rigger in Riggers)
-                        {
-                            rigger.SetDropZone(Zones[1].transform);
-                            rigger.SetLoad(Loads[0].transform);
-                        }
-                        break;
-                    }
+                        case 0:
+                            {
+                                foreach (var rigger in Riggers)
+                                {
+                                    rigger.SetDropZone(Zones[0].transform);
+                                    rigger.SetLoad(Loads[0].transform);
+                                }
+                                break;
+                            }
+                        case 1:
+                            {
+                                foreach (var rigger in Riggers)
+                                {
+                                    rigger.SetDropZone(Zones[1].transform);
+                                    rigger.SetLoad(Loads[0].transform);
+                                }
+                                break;
+                            }
 
-                    default:
-                    {
-                        Completed();
+                        default:
+                            {
+                                Completed();
+                            }
+                            break;
                     }
-                        break;
+                    break;
                 }
-                break;
-            }
             case TestType.Infinite:
-            {
-                foreach (var rigger in Riggers)
-                {
-                    rigger.SetDropZone(Zones[Index].transform);
-                    rigger.SetLoad(Loads[RandomIndexLoad].transform);
-                }
-
-                break;
-            }
-            default:
-            {
-                if (Index < Loads.Count)
                 {
                     foreach (var rigger in Riggers)
                     {
                         rigger.SetDropZone(Zones[Index].transform);
-                        rigger.SetLoad(Loads[Index].transform);
+                        rigger.SetLoad(Loads[RandomIndexLoad].transform);
                     }
-                }
-                else
-                {
-                    Completed();
-                }
 
-                break;
-            }
+
+                    break;
+                }
+            default:
+                {
+                    if (Index < Loads.Count)
+                    {
+                        foreach (var rigger in Riggers)
+                        {
+                            rigger.SetDropZone(Zones[Index].transform);
+                            rigger.SetLoad(Loads[Index].transform);
+                        }
+                    }
+                    else
+                    {
+                        Completed();
+                    }
+
+                    break;
+                }
         }
     }
 
@@ -256,7 +276,8 @@ public class GuideHelper : MonoBehaviour
     private IEnumerator TaskOff()
     {
         yield return new WaitForSeconds(3);
-        CurrentTaskText.gameObject.SetActive(false);
+        if (TestType != TestType.Infinite)
+            CurrentTaskText.gameObject.SetActive(false);
         StopAllCoroutines();
     }
 
@@ -333,37 +354,34 @@ public class GuideHelper : MonoBehaviour
 
     private void TeleportAi(Packet emptyPacket)
     {
-        foreach (var rigger in Riggers)
+        var sortedList = Riggers.OrderBy(x => x.m_tieOnly).ToList();
+        for (var i = 0; i < sortedList.Count; i++)
         {
-            //rigger.transform.LookAt(rigger.LookAtCrane);
-            StartCoroutine(RotateTowardsCrane(rigger.transform, rigger.CranePos, 0.97f));
-            if (rigger.m_tieOnly)
+            if (!sortedList[i].m_tieOnly)
             {
-                rigger.GuideStartPos = Zones[Index].transform.GetChild(4).GetChild(1).transform.position;
-                rigger.transform.position = Zones[Index].transform.GetChild(4).GetChild(1).transform.position;
+                //rigger.transform.position = Zones[Index].transform.GetChild(4).GetChild(0).transform.position;
+                sortedList[i].transform.position = sortedList[i + 1].transform.position;
+                sortedList[i].StoreHookPos = sortedList[i].HookPos;
+                sortedList[i].StartCheckHoist();
             }
             else
             {
-                rigger.transform.position = Zones[Index].transform.GetChild(4).GetChild(0).transform.position;
-                rigger.StoreHookPos = rigger.HookPos;
-                rigger.StartCheckHoist();
+                sortedList[i].GuideStartPos = Zones[Index].transform.GetChild(4).GetChild(1).transform.position;
+                sortedList[i].transform.position = Zones[Index].transform.GetChild(4).GetChild(1).transform.position;
             }
+
+            StartCoroutine(RotateTowardsCrane(sortedList[i].transform, sortedList[i].CranePos, 10));
         }
     }
 
 
-    private IEnumerator RotateTowardsCrane(Transform ai, Vector3 cranePos, float dist)
+    private IEnumerator RotateTowardsCrane(Transform ai, Vector3 cranePos, float angle)
     {
-        Vector3 dir = (cranePos - ai.position).normalized;
-        float dotProd = Vector3.Dot(dir, ai.forward);
-        while (dotProd < dist)
+        while (Vector3.Angle(ai.transform.forward, cranePos - ai.transform.position) > angle)
         {
-            dir = (cranePos - ai.position).normalized;
-            dotProd = Vector3.Dot(dir, ai.forward);
-
-            var targetRotation = Quaternion.LookRotation(cranePos - ai.position);
-            transform.rotation = Quaternion.Lerp(ai.rotation, targetRotation, (ai.GetComponent<AIGuideBehaviour>().RotationSpeed + 2) * Time.deltaTime);
-            yield return null;
+            ai.LookAt(cranePos);
         }
+
+        yield return null;
     }
 }
