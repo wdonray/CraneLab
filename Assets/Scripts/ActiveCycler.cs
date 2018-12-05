@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class ActiveCycler : MonoBehaviour
 {
-    [SerializeField]
-    private List<GameObject> m_toggleObjects = new List<GameObject>();
+    public List<GameObject> m_toggleObjects = new List<GameObject>();
 
     private int _toggleIndex;
     public int toggleIndex

@@ -84,6 +84,7 @@ public class OnTriggerEvent : MonoBehaviour
     
     public void Grab()
     {
+        attached = true;
         StartCoroutine(AttachToHand());
     }
 
@@ -96,7 +97,8 @@ public class OnTriggerEvent : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         Helmet.GetComponent<Rigidbody>().isKinematic = false;
-        Helmet.GetComponent<Rigidbody>().AddForce(Vector3.forward * 2f);
+        Helmet.GetComponent<Rigidbody>().velocity = (transform.up * -2f);
+        Helmet.transform.SetParent(null);
     }
 
     public void Throw()

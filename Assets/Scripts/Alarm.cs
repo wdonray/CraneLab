@@ -9,8 +9,9 @@ public class Alarm : MonoBehaviour
 
     public Light m_warningLight;
     public float m_lightIntensity;
+    
 
-    [ContextMenu ("Alarm")]
+    [ContextMenu("Alarm")]
     public void StartAlarm()
     {
         StartCoroutine(_Alarm(true));
@@ -18,12 +19,17 @@ public class Alarm : MonoBehaviour
 
     public void StopAlarm()
     {
-        StopCoroutine("_Alarm");
+        StartCoroutine(_StopAlarm());
     }
 
     public IEnumerator _Alarm(bool loop)
     {
-        StopCoroutine("_Alarm");
+        if (m_alarmSource.isPlaying)
+        {
+            yield break;
+        }
+
+        //StopCoroutine("_Alarm");
 
         m_alarmSource.Stop();
         m_alarmSource.clip = m_alarmSound;
@@ -35,16 +41,25 @@ public class Alarm : MonoBehaviour
         {
             timeLoop = Mathf.Sin((m_alarmSource.time / m_alarmSource.clip.length) * (2f * Mathf.PI));
             m_warningLight.intensity = m_lightIntensity * timeLoop;
-
             yield return null;
 
         } while (loop || m_alarmSource.isPlaying);
 
-        m_warningLight.intensity = 0f;
-        m_alarmSource.Stop();
+        StopAlarm();
 
         yield return null;
     }
 
+    public IEnumerator _StopAlarm()
+    {
+        StopCoroutine("_Alarm");
 
+        if (m_alarmSource.isPlaying)
+        {
+            m_warningLight.intensity = 0f;
+            m_alarmSource.Stop();
+            yield return null;
+        }
+
+    }
 }

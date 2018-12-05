@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class UnparentLoad : MonoBehaviour
 {
+    public int Index = 8;
     public GameObject CurrentParent;
     public GameObject NewParent;
     public HookLoop CurrentHookLoop => GetComponent<HookLoop>();
-
+    private bool unparentDone;
     public bool CheckBase;
 
     void ParentObject(int layer)
@@ -29,23 +30,27 @@ public class UnparentLoad : MonoBehaviour
     {
         if (CurrentParent == null)
         {
-            ParentObject(8);
-            ParentObject(9);
+            ParentObject(Index);
         }
 
         if (CurrentHookLoop.Hooked)
         {
             if (CurrentParent?.transform != NewParent.transform)
             {
-                if (CheckBase)
+                if (unparentDone == false)
                 {
-                    CurrentHookLoop.transform.parent.GetChild(2).GetComponent<Rigidbody>().constraints =
-                        RigidbodyConstraints.None;
+                    if (CheckBase)
+                    {
+                        CurrentHookLoop.transform.parent.GetChild(2).GetComponent<Rigidbody>().constraints =
+                            RigidbodyConstraints.None;
+                    }
+
+                    transform.parent.SetParent(NewParent.transform);
+                    CurrentHookLoop.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+                    CurrentHookLoop.GetComponent<Rigidbody>().constraints =
+                        RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+                    unparentDone = true;
                 }
-                transform.parent.SetParent(NewParent.transform);
-                CurrentHookLoop.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-                CurrentHookLoop.GetComponent<Rigidbody>().constraints =
-                    RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             }
         }
     }

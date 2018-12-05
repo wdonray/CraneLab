@@ -23,7 +23,7 @@ public class TyingUpStartedMachine : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        var load = guideHelper.Loads[GuideHelper.Index];
+        var load = guideHelper.Loads[guideHelper.TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index];
         if (!AIGuideBehaviour.LoadCollected)
         {
             if (!Physics.OverlapSphere(load.transform.GetChild(0).transform.position, 1.3f / 2)
