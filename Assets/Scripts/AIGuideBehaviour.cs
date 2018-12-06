@@ -657,36 +657,6 @@ public class AIGuideBehaviour : MonoBehaviour
         }
     }
 
-    //void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.magenta;
-    //    var targetPos = (LoadCollected) ? DropZonePos : LoadPos;
-    //    var source = (LoadCollected) ? LoadPos : HookPos;
-    //    targetPos.y += Vector3.Distance(targetPos, source) > 5f ? 3f : 0f;
-    //    Gizmos.DrawCube(targetPos, Vector3.one);
-    //}
-
-    /// <summary>
-    ///     If you are not facing the crane, rotate and look at the crane
-    /// </summary>
-    private void FaceCrane(float dist)
-    {
-        if (!m_walking)
-        {
-            if (!Agent.hasPath)
-            {
-                var dir = (CranePos - transform.position).normalized;
-                var dotProd = Vector3.Dot(dir, transform.forward);
-                if (dotProd < dist)
-                {
-                    var targetRotation = Quaternion.LookRotation(CranePos - transform.position);
-                    transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, (RotationSpeed + 2) * Time.deltaTime);
-                }
-            }
-        }
-    }
-
-
     /// <summary>
     ///     Pause the animator for a sec amount of seconds
     /// </summary>
