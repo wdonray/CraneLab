@@ -39,7 +39,7 @@ public class HookLoop : MonoBehaviour
         HookUpZTest(other);
     }
 
-
+    private IEnumerator coroutine;
     public void HookUp(Collider other)
     {
         if (m_hook != null || grabTimer > 0) return;
@@ -52,6 +52,10 @@ public class HookLoop : MonoBehaviour
             Hooked = true;
             m_hook = other.GetComponent<Rigidbody>();
             m_hook.angularDrag = 20;
+
+            coroutine = LookUp(m_hook.transform);
+            StartCoroutine(coroutine);
+
             m_connectionJoint = gameObject.AddComponent<HingeJoint>();
             m_connectionJoint.connectedBody = m_hook;
             m_connectionJoint.autoConfigureConnectedAnchor = false;
@@ -100,6 +104,7 @@ public class HookLoop : MonoBehaviour
         if (m_connectionJoint != null)
         {
             Destroy(m_connectionJoint);
+            StopCoroutine(coroutine);
             gameObject.SetActive(false);
         }
 
@@ -114,5 +119,15 @@ public class HookLoop : MonoBehaviour
     private void OnDestroy()
     {
         subscription.UnsubscribeAll();
+    }
+
+    private IEnumerator LookUp(Transform obj)
+    {
+        while (true)
+            var pos = Vector3.forward - obj.position;
+            var newRot = Quaternion.LookRotation(pos);
+            obj.rotation = Quaternion.Lerp(obj.rotation, newRot, Time.deltaTime / 3f);
+            yield return new WaitForEndOfFrame();
+        }
     }
 }
