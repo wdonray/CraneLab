@@ -39,7 +39,7 @@ public class HookLoop : MonoBehaviour
         HookUpZTest(other);
     }
 
-
+    private IEnumerator coroutine;
     public void HookUp(Collider other)
     {
         if (m_hook != null || grabTimer > 0) return;
@@ -48,8 +48,14 @@ public class HookLoop : MonoBehaviour
         rb.isKinematic = true;
         if (magnet.Pulling)
         {
+            magnet.enabled = false;
             Hooked = true;
             m_hook = other.GetComponent<Rigidbody>();
+            m_hook.angularDrag = 20;
+
+            coroutine = LookUp(m_hook.transform);
+            StartCoroutine(coroutine);
+
             m_connectionJoint = gameObject.AddComponent<HingeJoint>();
             m_connectionJoint.connectedBody = m_hook;
             m_connectionJoint.autoConfigureConnectedAnchor = false;
@@ -92,25 +98,17 @@ public class HookLoop : MonoBehaviour
 
     public void Drop()
     {
+        m_hook.angularDrag = 1;
         m_hook = null;
         Hooked = false;
         if (m_connectionJoint != null)
         {
             Destroy(m_connectionJoint);
-            GetComponent<LinkPullTowards>().enabled = false;
+            StopCoroutine(coroutine);
             gameObject.SetActive(false);
-            //StartCoroutine(LockLink());
         }
 
         grabTimer = 3f;
-    }
-
-    IEnumerator LockLink()
-    {
-        yield return new WaitForSeconds(2);
-        Rigidbody rb = GetComponent<Rigidbody>();
-        rb.isKinematic = true;
-        rb.velocity = Vector3.zero;
     }
 
     public void Drop(Mouledoux.Callback.Packet packet)
@@ -121,5 +119,16 @@ public class HookLoop : MonoBehaviour
     private void OnDestroy()
     {
         subscription.UnsubscribeAll();
+    }
+
+    private IEnumerator LookUp(Transform obj)
+    {
+        while (true)
+        { 
+            var pos = Vector3.forward - obj.position;
+            var newRot = Quaternion.LookRotation(pos);
+            obj.rotation = Quaternion.Lerp(obj.rotation, newRot, Time.deltaTime / 3f);
+            yield return new WaitForEndOfFrame();
+        }
     }
 }

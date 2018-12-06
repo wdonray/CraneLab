@@ -94,10 +94,16 @@ public class GuideHelper : MonoBehaviour
 
         for (var i = 0; i < Riggers.Count; i++)
         {
+            if (Riggers[i].m_dead)
+            {
+                Mediator.instance.NotifySubscribers("DoNotWarnUser", new Packet());
+                break;
+            }
+
             RaycastHit hit;
             if (Physics.Raycast(Riggers[i].transform.position + Vector3.up, Vector3.up * 999, out hit, 100))
             {
-                if (hit.transform.CompareTag("Hook") || hit.transform.CompareTag("DropZone") || hit.transform.CompareTag("Link"))
+                if (hit.transform.CompareTag("Hook") || hit.transform.CompareTag("DropZone") || hit.transform.CompareTag("Link") || hit.transform.CompareTag("Arm"))
                 {
                     Riggers[i].AboveHead = true;
                     Mediator.instance.NotifySubscribers("WarnUser", new Packet());
