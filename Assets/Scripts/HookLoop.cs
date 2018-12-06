@@ -124,6 +124,7 @@ public class HookLoop : MonoBehaviour
     private IEnumerator LookUp(Transform obj)
     {
         while (true)
+        { 
             var pos = Vector3.forward - obj.position;
             var newRot = Quaternion.LookRotation(pos);
             obj.rotation = Quaternion.Lerp(obj.rotation, newRot, Time.deltaTime / 3f);
