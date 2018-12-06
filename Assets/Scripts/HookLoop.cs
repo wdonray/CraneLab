@@ -101,18 +101,9 @@ public class HookLoop : MonoBehaviour
         {
             Destroy(m_connectionJoint);
             gameObject.SetActive(false);
-            //StartCoroutine(LockLink());
         }
 
         grabTimer = 3f;
-    }
-
-    IEnumerator LockLink()
-    {
-        yield return new WaitForSeconds(2);
-        Rigidbody rb = GetComponent<Rigidbody>();
-        rb.isKinematic = true;
-        rb.velocity = Vector3.zero;
     }
 
     public void Drop(Mouledoux.Callback.Packet packet)
