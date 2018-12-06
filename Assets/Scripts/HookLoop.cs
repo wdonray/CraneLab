@@ -48,8 +48,10 @@ public class HookLoop : MonoBehaviour
         rb.isKinematic = true;
         if (magnet.Pulling)
         {
+            magnet.enabled = false;
             Hooked = true;
             m_hook = other.GetComponent<Rigidbody>();
+            m_hook.angularDrag = 20;
             m_connectionJoint = gameObject.AddComponent<HingeJoint>();
             m_connectionJoint.connectedBody = m_hook;
             m_connectionJoint.autoConfigureConnectedAnchor = false;
@@ -92,12 +94,12 @@ public class HookLoop : MonoBehaviour
 
     public void Drop()
     {
+        m_hook.angularDrag = 1;
         m_hook = null;
         Hooked = false;
         if (m_connectionJoint != null)
         {
             Destroy(m_connectionJoint);
-            GetComponent<LinkPullTowards>().enabled = false;
             gameObject.SetActive(false);
             //StartCoroutine(LockLink());
         }
