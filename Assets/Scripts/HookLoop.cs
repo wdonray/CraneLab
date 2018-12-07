@@ -59,8 +59,8 @@ public class HookLoop : MonoBehaviour
             m_connectionJoint = gameObject.AddComponent<HingeJoint>();
             m_connectionJoint.connectedBody = m_hook;
             m_connectionJoint.autoConfigureConnectedAnchor = false;
-            m_connectionJoint.anchor = new Vector3(0, 0, 0);
-            m_connectionJoint.connectedAnchor = new Vector3(0, 0, -0.5f);
+            m_connectionJoint.anchor = new Vector3(0, -0.25f, 0.1f);
+            m_connectionJoint.connectedAnchor = new Vector3(0, 0, -1);
 
             JointLimits newLimits = new JointLimits();
             newLimits.min = -60f;
@@ -98,13 +98,18 @@ public class HookLoop : MonoBehaviour
 
     public void Drop()
     {
-        m_hook.angularDrag = 1;
-        m_hook = null;
+        if (m_hook != null)
+        {
+            m_hook.angularDrag = 1;
+            m_hook = null;
+        }
+
         Hooked = false;
         if (m_connectionJoint != null)
         {
             Destroy(m_connectionJoint);
-            StopCoroutine(coroutine);
+            if (coroutine != null)
+                StopCoroutine(coroutine);
             gameObject.SetActive(false);
         }
 

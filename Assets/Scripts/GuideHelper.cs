@@ -101,7 +101,7 @@ public class GuideHelper : MonoBehaviour
             }
 
             RaycastHit hit;
-            if (Physics.Raycast(Riggers[i].transform.position + Vector3.up, Vector3.up * 999, out hit, 100))
+            if (Physics.Raycast(Riggers[i].transform.position + Vector3.up * 2, Vector3.up * 999, out hit, 100))
             {
                 if (hit.transform.CompareTag("Hook") || hit.transform.CompareTag("DropZone") || hit.transform.CompareTag("Link") || hit.transform.CompareTag("Arm"))
                 {

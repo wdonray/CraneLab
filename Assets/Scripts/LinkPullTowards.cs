@@ -9,7 +9,7 @@ public class LinkPullTowards : MonoBehaviour
 
     private void Awake()
     {
-        _pullForce = 400;
+        _pullForce = 250;
     }
 
     public void OnTriggerStay(Collider other)

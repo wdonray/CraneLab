@@ -627,7 +627,7 @@ public class AIGuideBehaviour : MonoBehaviour
         Target = targetPos == DropZonePos ? m_dropZone.name : m_load.transform.parent.name;
         var source = (LoadCollected) ? LoadPos : HookPos;
 
-        targetPos.y += Vector3.Distance(targetPos, source) > 3f ? 3f : 0f;
+        targetPos.y += Vector3.Distance(targetPos, source) > 5f ? 5f : 0f;
 
         if (GuideWalkPos != null)
         {
