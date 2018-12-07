@@ -59,8 +59,8 @@ public class HookLoop : MonoBehaviour
             m_connectionJoint = gameObject.AddComponent<HingeJoint>();
             m_connectionJoint.connectedBody = m_hook;
             m_connectionJoint.autoConfigureConnectedAnchor = false;
-            m_connectionJoint.anchor = new Vector3(0, -0.25f, 0.1f);
-            m_connectionJoint.connectedAnchor = new Vector3(0, 0, -1);
+            m_connectionJoint.anchor = new Vector3(0, 0, 0);
+            m_connectionJoint.connectedAnchor = new Vector3(0, 0, -0.75f);
 
             JointLimits newLimits = new JointLimits();
             newLimits.min = -60f;
