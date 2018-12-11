@@ -15,6 +15,8 @@ public class HookLoop : MonoBehaviour
     Mouledoux.Components.Mediator.Subscriptions subscription = new Mouledoux.Components.Mediator.Subscriptions();
     Mouledoux.Callback.Callback onDrop;
     public Mouledoux.Callback.Callback onPickUp;
+    private Transform _currentParent;
+    private GuideHelper _guideHelper => FindObjectOfType<GuideHelper>();
 
     private void Awake()
     {
@@ -44,31 +46,40 @@ public class HookLoop : MonoBehaviour
     {
         if (m_hook != null || grabTimer > 0) return;
 
-        Rigidbody rb = GetComponent<Rigidbody>();
-        rb.isKinematic = true;
         if (magnet.Pulling)
         {
             magnet.enabled = false;
             Hooked = true;
-            m_hook = other.GetComponent<Rigidbody>();
-            m_hook.angularDrag = 20;
+            m_hook = other.GetComponent<Rigidbody>();;
 
-            coroutine = LookUp(m_hook.transform);
-            StartCoroutine(coroutine);
+            GetComponent<Rigidbody>().isKinematic = true;
+            GetComponent<Collider>().isTrigger = true;
+            _currentParent = transform.parent;
 
-            m_connectionJoint = gameObject.AddComponent<HingeJoint>();
-            m_connectionJoint.connectedBody = m_hook;
-            m_connectionJoint.autoConfigureConnectedAnchor = false;
-            m_connectionJoint.anchor = new Vector3(0, 0, 0);
-            m_connectionJoint.connectedAnchor = new Vector3(0, 0, -0.75f);
+            foreach (var rigger in _guideHelper.Riggers)
+            {
+                rigger.CurrentBase = transform.parent.GetChild(2);
+            }
 
-            JointLimits newLimits = new JointLimits();
-            newLimits.min = -60f;
-            newLimits.max = 60f;
-            m_connectionJoint.useLimits = true;
-            m_connectionJoint.limits = newLimits;
-            m_connectionJoint.enableCollision = false;
-            rb.isKinematic = false;
+            transform.SetParent(m_hook.transform);
+            transform.localPosition = new Vector3(0.01f, 0, -0.64f);
+            transform.localRotation = Quaternion.Euler(90, 0, 0);
+
+            //coroutine = LookUp(m_hook.transform);
+            //StartCoroutine(coroutine);
+
+            //m_connectionJoint = gameObject.AddComponent<HingeJoint>();
+            //m_connectionJoint.connectedBody = m_hook;
+            //m_connectionJoint.autoConfigureConnectedAnchor = false;
+            //m_connectionJoint.anchor = new Vector3(0, 0, 0);
+            //m_connectionJoint.connectedAnchor = new Vector3(0, 0, -0.75f);
+
+            //JointLimits newLimits = new JointLimits();
+            //newLimits.min = -60f;
+            //newLimits.max = 60f;
+            //m_connectionJoint.useLimits = true;
+            //m_connectionJoint.limits = newLimits;
+            //m_connectionJoint.enableCollision = false;
         }
     }
 
@@ -100,18 +111,22 @@ public class HookLoop : MonoBehaviour
     {
         if (m_hook != null)
         {
-            m_hook.angularDrag = 1;
             m_hook = null;
         }
 
         Hooked = false;
-        if (m_connectionJoint != null)
-        {
-            Destroy(m_connectionJoint);
-            if (coroutine != null)
-                StopCoroutine(coroutine);
-            gameObject.SetActive(false);
-        }
+        GetComponent<Rigidbody>().isKinematic = false;
+        GetComponent<Collider>().isTrigger = false;
+        transform.SetParent(_currentParent);
+        transform.SetAsFirstSibling();
+        gameObject.SetActive(false);
+        //if (m_connectionJoint != null)
+        //{
+        //    Destroy(m_connectionJoint);
+        //    if (coroutine != null)
+        //        StopCoroutine(coroutine);
+        //    gameObject.SetActive(false);
+        //}
 
         grabTimer = 3f;
     }
@@ -129,7 +144,7 @@ public class HookLoop : MonoBehaviour
     private IEnumerator LookUp(Transform obj)
     {
         while (true)
-        { 
+        {
             var pos = Vector3.forward - obj.position;
             var newRot = Quaternion.LookRotation(pos);
             obj.rotation = Quaternion.Lerp(obj.rotation, newRot, Time.deltaTime / 3f);

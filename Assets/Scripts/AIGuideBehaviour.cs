@@ -25,6 +25,7 @@ public class AIGuideBehaviour : MonoBehaviour
     public Transform m_hook;
     public Transform m_crane;
     public Transform GuideWalkPos;
+    [HideInInspector] public Transform CurrentBase;
     public float RotationSpeed, TargetDistance = 2f;
     [HideInInspector] public Vector3 GuideStartPos, StoreHookPos;
     [HideInInspector] public NavMeshAgent Agent;
@@ -376,7 +377,7 @@ public class AIGuideBehaviour : MonoBehaviour
                     var zone = _guideHelper.Zones[GuideHelper.Index];
                     var load = _guideHelper.Loads[TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index];
                     var size = new Vector3(zone.transform.localScale.x, .1f, zone.transform.localScale.z);
-                    if (Physics.OverlapBox(target, size, zone.transform.rotation).Contains(load.transform.parent.GetChild(2).GetComponent<Collider>()))
+                    if (Physics.OverlapBox(target, size, zone.transform.rotation).Contains(CurrentBase.GetComponent<Collider>()))
                     {
                         //Crane in range of target, walk to target
                         WalkingToTarget = true;
@@ -386,7 +387,7 @@ public class AIGuideBehaviour : MonoBehaviour
                 else
                 {
                     var load = _guideHelper.Loads[TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index];
-                    if (Physics.OverlapSphere(load.transform.GetChild(0).transform.position, 1.3f / 2).Contains(m_hook.GetComponent<Collider>()))
+                    if (Physics.OverlapSphere(load.transform.transform.position, 1.3f / 2).Contains(m_hook.GetComponent<Collider>()))
                     {
                         //Crane in range of target, walk to target
                         WalkingToTarget = true;
@@ -491,15 +492,16 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     private void GuideCraneBreak()
     {
+        if (CurrentBase == null)
+        {
+            CurrentBase = m_load.parent.GetChild(2);
+        }
         var targetPos = (LoadCollected) ? DropZonePos : LoadPos;
         if (GuideHelper.Index < _guideHelper.Zones.Count)
         {
-            _tearTriggered = _guideHelper.Loads[GuideHelper.Index].transform.parent
-                .GetComponentInChildren<TearTest>()._distanceReached;
-            _tearFailed = _guideHelper.Loads[GuideHelper.Index].transform.parent.GetComponentInChildren<TearTest>()
-                ._failed;
-            _tearPassed = _guideHelper.Loads[GuideHelper.Index].transform.parent.GetComponentInChildren<TearTest>()
-                ._passed;
+            _tearTriggered = CurrentBase.parent.GetComponentInChildren<TearTest>()._distanceReached;
+            _tearFailed = CurrentBase.parent.GetComponentInChildren<TearTest>()._failed;
+            _tearPassed = CurrentBase.parent.GetComponentInChildren<TearTest>()._passed;
         }
 
         if (m_tieOnly)
@@ -557,7 +559,12 @@ public class AIGuideBehaviour : MonoBehaviour
     /// </summary>
     private void GuideCranePersonal()
     {
-        var targetPos = (LoadCollected) ? DropZonePos : _guideHelper.Loads[GuideHelper.Index].transform.parent.GetChild(2).position;
+        if (CurrentBase == null)
+        {
+            CurrentBase = m_load.parent.GetChild(2);
+        }
+
+        var targetPos = (LoadCollected) ? DropZonePos : CurrentBase.position;
         if (m_tieOnly)
         {
             if (m_startedTying == false)
@@ -581,6 +588,19 @@ public class AIGuideBehaviour : MonoBehaviour
             }
             else
             {
+                AIGuideBehaviour other = null;
+                foreach (var rigger in _guideHelper.Riggers)
+                {
+                    if (rigger != this)
+                        other = rigger;
+                }
+
+                if (other.m_startedTying)
+                {
+                    Stop();
+                    return;
+                }
+
                 GuideCraneLogic(targetPos, 4, 1, 1);
             }
         }
@@ -699,7 +719,22 @@ public class AIGuideBehaviour : MonoBehaviour
     public void StartCheckHoist()
     {
         if (!Emergancy)
+        {
+            AIGuideBehaviour other = null;
+            foreach (var rigger in _guideHelper.Riggers)
+            {
+                if (rigger != this)
+                    other = rigger;
+            }
+
+            if (other.m_startedTying)
+            {
+                Stop();
+                return;
+            }
+
             StartCoroutine(CheckHoist());
+        }
     }
 
     private void OnTriggerEnter(Collider other)

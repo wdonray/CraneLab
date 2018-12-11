@@ -280,10 +280,8 @@ public class GuideHelper : MonoBehaviour
                     if (reached)
                     {
                         CurrentTaskText.text = "Good Job";
-                        var particle = Instantiate(CompleteParticleSystem,
-                            Loads[sum].transform.parent.GetChild(2).transform);
-                        particle.transform.localPosition = new Vector3(particle.transform.localPosition.x,
-                            particle.transform.localPosition.y + 1);
+                        var particle = Instantiate(CompleteParticleSystem, FindObjectOfType<AIGuideBehaviour>().CurrentBase.transform);
+                        particle.transform.localPosition = new Vector3(particle.transform.localPosition.x, particle.transform.localPosition.y + 1);
                         particle.gameObject.SetActive(true);
                         yield return new WaitForSeconds(3);
                         Destroy(particle);
@@ -300,10 +298,8 @@ public class GuideHelper : MonoBehaviour
                 else
                 {
                     CurrentTaskText.text = "Job Complete";
-                    var particle = Instantiate(CompleteParticleSystem,
-                        Loads[sum].transform.parent.GetChild(2).transform);
-                    particle.transform.localPosition = new Vector3(particle.transform.localPosition.x,
-                        particle.transform.localPosition.x + 1);
+                    var particle = Instantiate(CompleteParticleSystem, FindObjectOfType<AIGuideBehaviour>().CurrentBase.transform);
+                    particle.transform.localPosition = new Vector3(particle.transform.localPosition.x, particle.transform.localPosition.x + 1);
                     particle.gameObject.SetActive(true);
                     yield return new WaitForSeconds(3);
                     Destroy(particle);
@@ -381,15 +377,15 @@ public class GuideHelper : MonoBehaviour
         CurrentTaskText.gameObject.SetActive(true);
         if (TestType == TestType.Break)
         {
-            if (Loads[Index].transform.parent.GetComponentInChildren<TearTest>()._passed)
+            if (FindObjectOfType<AIGuideBehaviour>().CurrentBase.GetComponent<TearTest>()._passed)
             {
                 CurrentTaskText.text = "You Passed!";
-                var particle = Instantiate(CompleteParticleSystem, Loads[Index].transform.parent.GetChild(2).transform);
+                var particle = Instantiate(CompleteParticleSystem, FindObjectOfType<AIGuideBehaviour>().CurrentBase);
                 particle.gameObject.SetActive(true);
                 Mediator.instance.NotifySubscribers(PassedMessage, new Packet());
                 StartCoroutine(DestroyAfter(3, particle));
             }
-            else if (Loads[Index].transform.parent.GetComponentInChildren<TearTest>()._failed)
+            else if (FindObjectOfType<AIGuideBehaviour>().CurrentBase.GetComponent<TearTest>()._failed)
             {
                 CurrentTaskText.text = "You Failed!";
                 Mediator.instance.NotifySubscribers(FailedMessage, new Packet());

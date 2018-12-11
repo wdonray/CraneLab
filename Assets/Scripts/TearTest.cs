@@ -51,8 +51,8 @@ public class TearTest : MonoBehaviour
 
     private IEnumerator Start()
     {
-        yield return new WaitUntil(CheckDistanceAway);
         _unparentLoad = transform.parent.GetComponentInChildren<UnparentLoad>();
+        yield return new WaitUntil(CheckDistanceAway);
         _distanceReached = true;
         StartBreakCoroutine();
     }

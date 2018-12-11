@@ -141,21 +141,32 @@ public class AIGrabLift : MonoBehaviour
     {
         if (dist >= StoppingDistance)
         {
-            SendToAnimator.m_oldValueForce = string.Empty;
-            _guideWalk.WalkTowardsDistance(pos, dir, StoppingDistance, TargetDistance);
-
-            foreach (var rigger in _guideHelper.Riggers)
+            if (_guideHelper.Zones[GuideHelper.Index].GetComponentInChildren<ZoneOnTrigger>().InZone)
             {
-                if (rigger.m_tieOnly == false)
+                SendToAnimator.m_oldValueForce = string.Empty;
+                _guideWalk.WalkTowardsDistance(pos, dir, StoppingDistance, TargetDistance);
+
+                foreach (var rigger in _guideHelper.Riggers)
                 {
-                    rigger.StoreHookPos = rigger.HookPos;
-                    rigger.Stop();
+                    if (rigger.m_tieOnly == false)
+                    {
+                        rigger.StoreHookPos = rigger.HookPos;
+                        rigger.Stop();
+                    }
                 }
+            }
+            else
+            {
+                _guideWalk.StopWalking();
             }
         }
         else
         {
-            SetState(AIGrabLiftState.StepUp);
+            if (_guideHelper.Zones[GuideHelper.Index].GetComponentInChildren<ZoneOnTrigger>().InZone)
+            {
+                GuideHelper.Index++;
+                SetState(AIGrabLiftState.StepUp);
+            }
         }
     }
 
@@ -272,7 +283,7 @@ public class AIGrabLift : MonoBehaviour
                 }
             }
             Target = target.gameObject;
-            _unparentLoad = target.transform.parent.GetComponentInChildren<UnparentLoad>();
+            _unparentLoad = _guideHelper.Loads[GuideHelper.Index].GetComponent<UnparentLoad>();
             StartCoroutine(CheckForMovement(() => PickUpAction(target)));
         }
     }
@@ -283,7 +294,6 @@ public class AIGrabLift : MonoBehaviour
     /// <param name="target"></param>
     private void PickUpAction(Transform target)
     {
-        GuideHelper.Index++;
         SetState(AIGrabLiftState.Walk);
     }
 

@@ -33,6 +33,6 @@ public class ZonePullTowards : MonoBehaviour
         dist /= (GetComponent<BoxCollider>().size.y * transform.lossyScale.y);
         dist = Mathf.Clamp01(dist);
         var adjustedStrength = _pullForce - (dist * _pullForce);
-        other.transform.parent.GetChild(2).GetComponent<Rigidbody>().AddForce(Vector3.down * adjustedStrength);
+       FindObjectOfType<AIGuideBehaviour>().CurrentBase.GetComponent<Rigidbody>().AddForce(Vector3.down * adjustedStrength);
     }
 }

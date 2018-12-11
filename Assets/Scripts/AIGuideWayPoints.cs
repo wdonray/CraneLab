@@ -25,7 +25,7 @@ public class AIGuideWayPoints : MonoBehaviour
 
     public void MoveToNextPoint()
     {
-        if (AiGuide._complete == false)
+        if (AiGuide.m_dead == false && AiGuide._complete == false)
         {
             if (Vector3.Distance(transform.position, Points[GuideHelper.Index].transform.position) > .5f)
             {
@@ -33,10 +33,11 @@ public class AIGuideWayPoints : MonoBehaviour
                 {
                     AiGuide.GuideStartPos = Points[GuideHelper.Index].transform.position;
                 }
+
                 SendToAnimator.ResetAllTriggers(gameObject);
                 SendToAnimator.stop = false;
                 AiGuide._guideWalk.RotateTowards(Points[GuideHelper.Index].transform.position, 2);
-                AiGuide._guideWalk.WalkTowards(Points[GuideHelper.Index].transform.position, .5f , true);
+                AiGuide._guideWalk.WalkTowards(Points[GuideHelper.Index].transform.position, .5f, true);
             }
             else
             {

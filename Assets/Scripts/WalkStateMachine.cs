@@ -8,6 +8,7 @@ public class WalkStateMachine : StateMachineBehaviour
 {
     private GuideHelper guideHelper;
     private AIGuideBehaviour AI;
+    private int _lastIndex => GuideHelper.Index - 1;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -24,13 +25,16 @@ public class WalkStateMachine : StateMachineBehaviour
         if (AI._complete == false)
         {
             var load = guideHelper.Loads[guideHelper.TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index];
-            if (!AIGuideBehaviour.LoadCollected)
+            if (AIGuideBehaviour.WalkingToTarget)
             {
-                if (!Physics.OverlapSphere(load.transform.GetChild(0).transform.position, 1.3f / 2)
-                    .Contains(AI.m_hook.GetComponent<Collider>()))
+                if (!AIGuideBehaviour.LoadCollected)
                 {
-                    AIGuideBehaviour.WalkingToTarget = false;
-                    AI._guideWalk.StopWalking();
+                    if (!Physics.OverlapSphere(load.transform.transform.position, 1.3f / 2)
+                        .Contains(AI.m_hook.GetComponent<Collider>()))
+                    {
+                        AIGuideBehaviour.WalkingToTarget = false;
+                        AI._guideWalk.StopWalking();
+                    }
                 }
             }
         }
