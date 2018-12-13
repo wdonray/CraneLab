@@ -35,11 +35,6 @@ public class DifficultySettings : MonoBehaviour
         }
     }
 
-    void Awake()
-    {
-        if (Instance != this) Destroy(gameObject);
-    }
-
     public float SliderValues
     {
         get
@@ -56,6 +51,11 @@ public class DifficultySettings : MonoBehaviour
                     throw new ArgumentOutOfRangeException();
             }
         }
+    }
+
+    void Awake()
+    {
+        if (Instance != this) Destroy(gameObject);
     }
 
     public void ChangeDifficulty(int difficulty) => CurrentDifficulty = (Difficulty)difficulty;
