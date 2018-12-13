@@ -9,7 +9,30 @@ public class SliderDifficulty : MonoBehaviour {
 	{
 	    foreach (var slider in GetComponentsInChildren<Slider>())
 	    {
-	        slider.value = DifficultySettings.Instance.SliderValues;
-	    }
+	        if (DifficultySettings.Instance.CurrentDifficulty == Difficulty.Beginner)
+	        {
+	            if (slider.transform.parent.name.Contains("Wind"))
+	            {
+	                slider.value = 0f;
+	            }
+	            else
+	            {
+	                StartCoroutine(LerpValue(slider, DifficultySettings.Instance.SliderValues));
+	            }
+            }
+	        else
+	        {
+	            StartCoroutine(LerpValue(slider, DifficultySettings.Instance.SliderValues));
+	        }
+        }
 	}
+
+    private IEnumerator LerpValue(Slider slider, float value)
+    {
+        while (slider.value != value)
+        {
+            slider.value = Mathf.Lerp(slider.value, value, Time.deltaTime);
+            yield return null;
+        }
+    }
 }
