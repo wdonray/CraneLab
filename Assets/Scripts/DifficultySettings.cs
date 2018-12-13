@@ -13,25 +13,27 @@ public enum Difficulty
 public class DifficultySettings : MonoBehaviour
 {
     public static Difficulty CurrentDifficulty;
-    public static float SliderValues;
+
+    public static float SliderValues
+    {
+        get
+        {
+            switch (CurrentDifficulty)
+            {
+                case Difficulty.Beginner:
+                    return .15f;
+                case Difficulty.Intermediate:
+                    return .40f;
+                case Difficulty.Expert:
+                    return 1f;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+    }
 
     public void ChangeDifficulty(int difficulty)
     {
-        CurrentDifficulty = (Difficulty) difficulty;
-
-        switch (CurrentDifficulty)
-        {
-            case Difficulty.Beginner:
-                SliderValues = .15f;
-                break;
-            case Difficulty.Intermediate:
-                SliderValues = .40f;
-                break;
-            case Difficulty.Expert:
-                SliderValues = 1f;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
+        CurrentDifficulty = (Difficulty)difficulty;
     }
 }
