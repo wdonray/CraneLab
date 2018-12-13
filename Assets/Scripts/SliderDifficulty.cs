@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,10 +30,12 @@ public class SliderDifficulty : MonoBehaviour {
 
     private IEnumerator LerpValue(Slider slider, float value)
     {
-        while (slider.value != value)
+        while (Math.Abs(slider.value - value) > 0.005f)
         {
             slider.value = Mathf.Lerp(slider.value, value, Time.deltaTime);
             yield return null;
         }
+
+        slider.value = value;
     }
 }

@@ -6,6 +6,7 @@ using Leap.Unity;
 using Mouledoux.Callback;
 using Mouledoux.Components;
 using Obi;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -39,6 +40,7 @@ public class TearTest : MonoBehaviour
         _startPos = transform.position;
     }
 
+    [ContextMenu("Start Break")]
     public void StartBreakCoroutine()
     {
         StartCoroutine(_coroutine);
@@ -70,6 +72,7 @@ public class TearTest : MonoBehaviour
         Rope.BendingConstraints.SetActiveConstraints();
 
         Rope.Solver.UpdateActiveParticles();
+        Rope.ClearTethers();
 
         _ropes.Remove(Rope);
 

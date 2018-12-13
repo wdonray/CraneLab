@@ -90,6 +90,12 @@ public class HookLoop : MonoBehaviour
         Rigidbody rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
         Hooked = true;
+        _currentParent = transform.parent;
+
+        foreach (var rigger in _guideHelper.Riggers)
+        {
+            rigger.CurrentBase = transform.parent.GetChild(2);
+        }
         m_hook = other.GetComponent<Rigidbody>();
         m_connectionJoint = gameObject.AddComponent<HingeJoint>();
         m_connectionJoint.connectedBody = m_hook;
