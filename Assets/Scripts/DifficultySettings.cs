@@ -12,9 +12,35 @@ public enum Difficulty
 
 public class DifficultySettings : MonoBehaviour
 {
-    public static Difficulty CurrentDifficulty;
+    public Difficulty CurrentDifficulty;
+    private static DifficultySettings _instance;
 
-    public static float SliderValues
+    public static DifficultySettings Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<DifficultySettings>();
+
+                if (_instance == null)
+                {
+                    var singletonObject = new GameObject();
+                    _instance = singletonObject.AddComponent<DifficultySettings>();
+                    singletonObject.name = "----- " + typeof(DifficultySettings) + " -----";
+                    DontDestroyOnLoad(singletonObject);
+                }
+            }
+            return _instance;
+        }
+    }
+
+    void Awake()
+    {
+        if (Instance != this) Destroy(gameObject);
+    }
+
+    public float SliderValues
     {
         get
         {
@@ -32,8 +58,5 @@ public class DifficultySettings : MonoBehaviour
         }
     }
 
-    public void ChangeDifficulty(int difficulty)
-    {
-        CurrentDifficulty = (Difficulty)difficulty;
-    }
+    public void ChangeDifficulty(int difficulty) => CurrentDifficulty = (Difficulty)difficulty;
 }

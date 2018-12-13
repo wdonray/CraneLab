@@ -14,7 +14,7 @@ public class DifficultyButtons : MonoBehaviour
         {
             _difficulityButtons.Add(button);
         }
-        ButtonActivated(_difficulityButtons[(int)DifficultySettings.CurrentDifficulty]);
+        ButtonActivated(_difficulityButtons[(int)DifficultySettings.Instance.CurrentDifficulty]);
     }
 
     public void ButtonActivated(DifficultyButton currentButton)
@@ -23,5 +23,10 @@ public class DifficultyButtons : MonoBehaviour
         {
             button.TheButton.interactable = button.ButtonDifficulty != currentButton.ButtonDifficulty;
         }
+    }
+
+    void OnDestroy()
+    {
+        _difficulityButtons.Clear();
     }
 }

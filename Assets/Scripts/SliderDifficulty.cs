@@ -9,7 +9,7 @@ public class SliderDifficulty : MonoBehaviour {
 	{
 	    foreach (var slider in GetComponentsInChildren<Slider>())
 	    {
-	        slider.value = DifficultySettings.SliderValues;
+	        slider.value = DifficultySettings.Instance.SliderValues;
 	    }
 	}
 }

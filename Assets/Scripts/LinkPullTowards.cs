@@ -10,7 +10,7 @@ public class LinkPullTowards : MonoBehaviour
 
     private void Awake()
     {
-        switch (DifficultySettings.CurrentDifficulty)
+        switch (DifficultySettings.Instance.CurrentDifficulty)
         {
             case Difficulty.Beginner:
                 _pullForce = 250;
