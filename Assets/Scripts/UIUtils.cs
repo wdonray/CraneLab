@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class UIUtils : MonoBehaviour
 {
@@ -28,6 +30,12 @@ public class UIUtils : MonoBehaviour
     public void GoToSceneAsync(string name)
     {
         UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(name);
+    }
+
+    public void LoadRandomScene(Transform parent)
+    {
+        var buttonList = parent.GetComponentsInChildren<Button>();
+        buttonList[Random.Range(0, buttonList.Length)].onClick.Invoke();
     }
 
     public void ReloadCurrentSceneAsync()

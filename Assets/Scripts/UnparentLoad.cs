@@ -5,13 +5,14 @@ using UnityEngine;
 public class UnparentLoad : MonoBehaviour
 {
     public int Index = 8;
+    public float DistanceTrigger = 2.5f;
     public GameObject CurrentParent;
     public GameObject NewParent;
     public HookLoop CurrentHookLoop => GetComponent<HookLoop>();
-    private bool unparentDone;
+    public bool UnparentDone;
     public bool CheckBase;
 
-    void ParentObject(int layer)
+    private void ParentObject(int layer)
     {
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out hit,
@@ -22,6 +23,21 @@ public class UnparentLoad : MonoBehaviour
                 CurrentParent = hit.transform.gameObject;
                 transform.parent.SetParent(CurrentParent.transform);
             }
+        }
+    }
+
+    private void UnParent(HookLoop hookLoop)
+    {
+        if (UnparentDone == false)
+        {
+            if (CheckBase)
+            {
+                FindObjectOfType<AIGuideBehaviour>().CurrentBase.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            }
+            FindObjectOfType<AIGuideBehaviour>().CurrentBase.parent.SetParent(NewParent.transform);
+            hookLoop.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            hookLoop.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
+            UnparentDone = true;
         }
     }
 
@@ -37,20 +53,12 @@ public class UnparentLoad : MonoBehaviour
         {
             if (CurrentParent?.transform != NewParent.transform)
             {
-                if (unparentDone == false)
+                var dist = Vector3.Distance(FindObjectOfType<AIGuideBehaviour>().CurrentBase.transform.position, CurrentHookLoop.transform.position);
+                if (dist >= DistanceTrigger)
                 {
-                    if (CheckBase)
-                    {
-                        CurrentHookLoop.transform.parent.GetChild(2).GetComponent<Rigidbody>().constraints =
-                            RigidbodyConstraints.None;
-                    }
-
-                    transform.parent.SetParent(NewParent.transform);
-                    CurrentHookLoop.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-                    CurrentHookLoop.GetComponent<Rigidbody>().constraints =
-                        RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-                    unparentDone = true;
+                    UnParent(CurrentHookLoop);
                 }
+                //UnParent(CurrentHookLoop);
             }
         }
     }

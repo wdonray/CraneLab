@@ -46,6 +46,7 @@ public class TeleportAI : MonoBehaviour
             gameObject.GetComponent<NavMeshAgent>().enabled = true;
             teleported = false;
         }
+        gameObject.transform.GetComponent<NavMeshAgent>().enabled = false;
     }
 
     public void OnDestroy()

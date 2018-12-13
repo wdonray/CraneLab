@@ -23,6 +23,7 @@ public class TyingUpStateMachine : StateMachineBehaviour
     //override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
     //
     //}
+
     private void RandomIndexSelection()
     {
         if (guideHelper.Zones[GuideHelper.Index].GetComponentInChildren<ZoneOnTrigger>().InZone)
@@ -82,7 +83,7 @@ public class TyingUpStateMachine : StateMachineBehaviour
 
             if (GuideHelper.Index < guideHelper.Zones.Count)
             {
-                if (guideHelper.Loads[guideHelper.TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index].GetComponent<HingeJoint>() == true)
+                if (guideHelper.Loads[guideHelper.TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index].GetComponent<HookLoop>().Hooked)
                 {
                     AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
                     AIGuideBehaviour.WalkingtoStartPos = true;

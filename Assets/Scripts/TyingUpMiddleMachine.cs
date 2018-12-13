@@ -24,8 +24,7 @@ public class TyingUpMiddleMachine : StateMachineBehaviour {
         var load = guideHelper.Loads[guideHelper.TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index];
         if (!AIGuideBehaviour.LoadCollected)
         {
-            if (!Physics.OverlapSphere(load.transform.GetChild(0).transform.position, 1.3f / 2)
-                .Contains(AI.m_hook.GetComponent<Collider>()))
+            if (!Physics.OverlapSphere(load.transform.transform.position, 1.3f / 2).Contains(AI.m_hook.GetComponent<Collider>()))
             {
                 SendToAnimator.m_oldValue = string.Empty;
                 AI.m_startedTying = false;
