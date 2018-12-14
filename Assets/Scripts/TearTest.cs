@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Leap;
-using Leap.Unity;
 using Mouledoux.Callback;
 using Mouledoux.Components;
-using Obi;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.Events;
 using ObiRope = Obi.ObiRope;
 using Random = UnityEngine.Random;
 
@@ -40,7 +34,6 @@ public class TearTest : MonoBehaviour
         _startPos = transform.position;
     }
 
-    [ContextMenu("Start Break")]
     public void StartBreakCoroutine()
     {
         StartCoroutine(_coroutine);
