@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DifficultyButton : MonoBehaviour {
+public class DifficultyButton : MonoBehaviour
+{
     public Difficulty ButtonDifficulty;
     [HideInInspector] public Button TheButton => GetComponent<Button>();
 
-    void Awake () {
+    void Awake()
+    {
         switch (name)
         {
             case "B":
@@ -20,5 +22,6 @@ public class DifficultyButton : MonoBehaviour {
                 ButtonDifficulty = Difficulty.Expert;
                 break;
         }
-	}
+        TheButton.onClick.AddListener(() => DifficultySettings.Instance.ChangeDifficulty((int)ButtonDifficulty));
+    }
 }

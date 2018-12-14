@@ -90,6 +90,7 @@ public class HookLoop : MonoBehaviour
         Rigidbody rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
         Hooked = true;
+        rb.constraints = RigidbodyConstraints.None;
         m_hook = other.GetComponent<Rigidbody>();
         m_connectionJoint = gameObject.AddComponent<HingeJoint>();
         m_connectionJoint.connectedBody = m_hook;
