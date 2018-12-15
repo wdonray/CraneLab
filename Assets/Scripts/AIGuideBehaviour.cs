@@ -117,7 +117,7 @@ public class AIGuideBehaviour : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        print("LoadCollected: <color=red>" + LoadCollected + "</color>");
+        //print("LoadCollected: <color=red>" + LoadCollected + "</color>");
     }
 
     public void ResetStaticVariables()

@@ -19,10 +19,13 @@ public class RigidBodyWind : MonoBehaviour
     public float m_streangth;
     public float m_noise;
 
+    private Rigidbody[] rbs;
+
 	void Start ()
     {
         GetComponent<SphereCollider>().isTrigger = true;
-	}
+        rbs = FindObjectsOfType<Rigidbody>();
+    }
 
     private void OnEnable()
     {
@@ -42,7 +45,7 @@ public class RigidBodyWind : MonoBehaviour
             Vector3 directionalForce = transform.forward * (m_streangth * m_slider.value);
             //directionalForce *= (Random.Range(-m_noise, m_noise));
 
-            foreach(Rigidbody rb in FindObjectsOfType<Rigidbody>())
+            foreach(Rigidbody rb in rbs)
             {
                 rb.AddForce(directionalForce, ForceMode.Force);
             }

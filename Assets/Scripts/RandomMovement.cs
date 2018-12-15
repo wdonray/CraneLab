@@ -1,9 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.UIElements;
 
 public class RandomMovement : MonoBehaviour
 {
+    [Range(0f, 1f)]
+    public float mod = 1f;
+
+    [Space]
+
     public UnityEngine.UI.Slider slider;
     private float sliderStrength;
 
@@ -14,6 +20,7 @@ public class RandomMovement : MonoBehaviour
     public Vector3 newPos;
 
     public float offset;
+
 
     [Space]
 
@@ -36,7 +43,7 @@ public class RandomMovement : MonoBehaviour
         sliderStrength += (slider.value - sliderStrength) * Time.deltaTime;
 
         newPos = initPosition;
-        newPos.y += Mathf.Cos(Time.time) * sliderStrength;
+        newPos.y += Mathf.Cos(Time.time) * sliderStrength * mod;
 
         Vector3 newEulers = initEulers + (eulerMovement * Mathf.Sin(Time.time + offset) * sliderStrength);
         Quaternion newRot = Quaternion.Euler(newEulers);
