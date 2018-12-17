@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Mouledoux.Callback;
+
 
 
 public class HookLoop : MonoBehaviour
@@ -17,6 +19,7 @@ public class HookLoop : MonoBehaviour
     public Mouledoux.Callback.Callback onPickUp;
     private Transform _currentParent;
     private GuideHelper _guideHelper => FindObjectOfType<GuideHelper>();
+    private bool _sleepObjects;
 
     private void Awake()
     {
@@ -25,6 +28,7 @@ public class HookLoop : MonoBehaviour
 
     private void OnEnable()
     {
+        StartCoroutine(DelaySleep());
         onDrop += Drop;
         subscription.Subscribe("drop", onDrop);
         //subscription.Subscribe(transform.GetInstanceID().ToString(), onPickUp);
@@ -33,6 +37,17 @@ public class HookLoop : MonoBehaviour
     void Update()
     {
         grabTimer -= Time.deltaTime;
+
+        if (_sleepObjects && !Hooked)
+        {
+            transform.parent.GetComponentsInChildren<Rigidbody>().ToList().ForEach(x => x.Sleep());
+        }
+    }
+
+    private IEnumerator DelaySleep()
+    {
+        yield return new WaitForSeconds(2);
+        _sleepObjects = true;
     }
 
     private void OnTriggerEnter(Collider other)
