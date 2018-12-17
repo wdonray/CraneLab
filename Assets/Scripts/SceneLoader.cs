@@ -5,8 +5,12 @@ using UnityEngine;
 public class SceneLoader : MonoBehaviour
 {
     public string onLoadMessage;
+    public float TimeInScene;
+    private RotationToMouseTracking _admin;
+
 
     public static SceneLoader _instance;
+    
     public SceneLoader instance
     {
         get
@@ -36,6 +40,26 @@ public class SceneLoader : MonoBehaviour
     {
         if (onLoadMessage == null) onLoadMessage = "";
         print(onLoadMessage);
+        _admin = null;
+        _admin = FindObjectOfType<RotationToMouseTracking>();
         Mouledoux.Components.Mediator.instance.NotifySubscribers(onLoadMessage, new Mouledoux.Callback.Packet());
+    }
+
+    public void Update()
+    {
+        if (_admin)
+        {
+            TimeInScene += Time.deltaTime;
+        }
+    }
+
+    public float GetTimeInTest()
+    {
+        return TimeInScene;
+    }
+
+    public void SetTimeInTest(float value)
+    {
+        TimeInScene = value;
     }
 }
