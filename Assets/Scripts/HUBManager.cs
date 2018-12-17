@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Combu;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,16 +11,16 @@ public class HUBManager : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-	    TotalVRTime.text = "Total VR Time: " + TimeSpan.FromSeconds(Round(SceneLoader._instance.GetTimeInTest(), 0)).ToString("");
+	    TotalVRTime.transform.GetChild(0).GetComponent<Text>().text = TimeSpan.FromSeconds(Round(SceneLoader._instance.GetTimeInTest(), 0)).ToString("");
 	    var DropGrade = AccuracyScoreManager.Instance.GetDropOffGraded();
 	    var LoadGrade = AccuracyScoreManager.Instance.GetLoadUpScoreGraded();
-        DropText.text = DropGrade + "%";
-	    PickUpText.text = LoadGrade + "%";
+        DropText.transform.GetChild(0).GetComponent<Text>().text = DropGrade + "%";
+	    PickUpText.transform.GetChild(0).GetComponent<Text>().text = LoadGrade + "%";
     }
 
     public void SetNameText(string value)
     {
-        NameText.text = "Welcome Back," + value;
+        NameText.transform.GetChild(0).GetComponent<Text>().text = "Welcome Back," + value;
     }
 
     private float Round(float value, int digits)
