@@ -21,6 +21,13 @@ public class TantrumDemoScene : TantrumDemoPanel
         {
             yield return null;
         }
+
+        // Eric's code
+
+        CompanyDatabaseManager.SetDBConnectionInfo(CombuManager.instance);
+
+        // end Eric's code
+
         if (textCombuVersion != null)
         {
             textCombuVersion.text = "Client Version " + CombuManager.COMBU_VERSION;

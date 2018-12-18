@@ -4,25 +4,31 @@ using UnityEngine;
 
 public class TESTTimeScore : MonoBehaviour
 {
+    private Mouledoux.Components.Mediator.Subscriptions m_subscriptions = new Mouledoux.Components.Mediator.Subscriptions();
 
-	// Use this for initialization
-	void Start ()
+	private void Start ()
     {
-	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-		
+        Mouledoux.Callback.Callback updateTime = null;
+        updateTime += AddTimeToToal;
+        m_subscriptions.Subscribe("update_total_time", updateTime);
+
 	}
 
-    public void AddScore(UnityEngine.UI.InputField input)
+    private void OnDestroy()
     {
-        Combu.CombuManager.platform.ReportScore(long.Parse(input.text), "total_time", (bool success) => { });
+        m_subscriptions.UnsubscribeAll();
     }
 
-    public void GetScore()
+
+    public void AddTimeToToal(Mouledoux.Callback.Packet packet)
     {
-        //Combu.CombuManager.platform
+        AddTimeToToal(packet.ints[0]);
+    }
+
+
+    public void AddTimeToToal(long time)
+    {
+        Combu.CombuManager.platform.ReportScore(time, "total_time", (bool success) =>
+        { Mouledoux.Components.Mediator.instance.NotifySubscribers("db_total_time", new Mouledoux.Callback.Packet()); });
     }
 }
