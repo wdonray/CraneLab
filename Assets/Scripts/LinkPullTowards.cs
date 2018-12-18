@@ -16,7 +16,7 @@ public class LinkPullTowards : MonoBehaviour
                 _pullForce = 250;
                 break;
             case Difficulty.Intermediate:
-                _pullForce = 100;
+                _pullForce = 0;
                 break;
             case Difficulty.Expert:
                 _pullForce = 0;
