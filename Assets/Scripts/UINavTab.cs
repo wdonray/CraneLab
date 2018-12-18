@@ -21,7 +21,7 @@ public class UINavTab : MonoBehaviour {
             bool shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
             Selectable next = shift ?
-                system.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnUp():
+                system.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnUp() :
                 system.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnDown();
 
             if (next != null)
@@ -35,6 +35,7 @@ public class UINavTab : MonoBehaviour {
         if(Input.GetKeyDown(KeyCode.Return))
         {
             Button button = system.currentSelectedGameObject.GetComponent<Button>();
+            button = button == null ? system.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnDown().GetComponent<Button>() : button;
             if (button == null) return;
             else button.onClick.Invoke();
         }
