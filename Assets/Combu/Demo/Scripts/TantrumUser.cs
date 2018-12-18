@@ -33,7 +33,7 @@ public class TantrumUser : Combu.User {
         set { _company = value; customData["company"] = _company; }
     }
 
-    public TrantrumUser()
+    public TantrumUser()
     {
         FirstName = "";
         SecondName = "";
