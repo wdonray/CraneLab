@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrantrumUser : Combu.User {
+public class TantrumUser : Combu.User {
 
     string _firstName = "";
     string _secondName = "";

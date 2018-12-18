@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine.SocialPlatforms;
 using Combu;
 
-public class TrantrumDemo : TrantrumDemoScene
+public class TantrumDemo : TantrumDemoScene
 {
     public InputField registerUsername;
     public InputField registerPassword;

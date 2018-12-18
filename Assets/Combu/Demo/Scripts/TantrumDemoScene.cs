@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Combu;
 
-public class TrantrumDemoScene : TrantrumDemoPanel
+public class TantrumDemoScene : TantrumDemoPanel
 {
     public Text textCombuVersion;
 

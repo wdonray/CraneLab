@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class TrantrumDemoPanel : MonoBehaviour
+public class TantrumDemoPanel : MonoBehaviour
 {
 
     public Animator initiallyOpen;

@@ -23,6 +23,6 @@ public class TESTTimeScore : MonoBehaviour
 
     public void GetScore()
     {
-
+        Combu.CombuManager.platform
     }
 }
