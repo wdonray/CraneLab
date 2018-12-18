@@ -31,4 +31,18 @@ public class TESTTimeScore : MonoBehaviour
         Combu.CombuManager.platform.ReportScore(time, "total_time", (bool success) =>
         { Mouledoux.Components.Mediator.instance.NotifySubscribers("db_total_time", new Mouledoux.Callback.Packet()); });
     }
+
+    public void GetCurrentUserTotalTime()
+    {
+        //Combu.Leaderboard totalTime = new Combu.Leaderboard();
+        //totalTime.code = "total_time";
+        //totalTime.LoadScoresByUser(Combu.CombuManager.localUser, Combu.eLeaderboardInterval.Total, 1, (Combu.Score score, int page, string error) => { });
+
+        //print(totalTime.localUserScore.value);
+
+        Combu.CombuManager.platform.LoadScoresByUser("total_time", Combu.CombuManager.localUser, Combu.eLeaderboardInterval.Total, 1, (Combu.Score score, int page, string error) =>
+        {
+            print(score.value);
+        });
+    }
 }

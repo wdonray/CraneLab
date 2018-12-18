@@ -11,7 +11,15 @@ public class HUBManager : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-	    TotalVRTime.transform.GetChild(0).GetComponent<Text>().text = TimeSpan.FromSeconds(Round(SceneLoader._instance.GetTimeInTest(), 0)).ToString("");
+        SetNameText(CombuManager.platform.localUser.userName);
+        Combu.CombuManager.platform.LoadScoresByUser("total_time", Combu.CombuManager.localUser, Combu.eLeaderboardInterval.Total, 1, (Combu.Score score, int page, string error) =>
+        {
+            TotalVRTime.transform.GetChild(0).GetComponent<Text>().text = TimeSpan.FromSeconds(score.value).ToString("");
+        });
+
+        //TotalVRTime.transform.GetChild(0).GetComponent<Text>().text = TimeSpan.FromSeconds(Round(SceneLoader._instance.GetTimeInTest(), 0)).ToString("");
+
+
 	    var DropGrade = AccuracyScoreManager.Instance.GetDropOffGraded();
 	    var LoadGrade = AccuracyScoreManager.Instance.GetLoadUpScoreGraded();
         DropText.transform.GetChild(0).GetComponent<Text>().text = DropGrade + "%";
@@ -20,7 +28,7 @@ public class HUBManager : MonoBehaviour
 
     public void SetNameText(string value)
     {
-        NameText.transform.GetChild(0).GetComponent<Text>().text = "Welcome Back," + value;
+        NameText.transform.GetChild(0).GetComponent<Text>().text = value.ToUpper();
     }
 
     private float Round(float value, int digits)

@@ -215,14 +215,19 @@ namespace Combu
         protected virtual void Awake ()
 		{
 			// Ensure we have one only instance
-			if (_instance != null)
+			if (_instance != null && _instance != this)
 			{
 				Destroy(this);
 			}
 			else
 			{
-				if (dontDestroyOnLoad)
-					DontDestroyOnLoad(gameObject);
+                //if (dontDestroyOnLoad)
+                {
+                    DontDestroyOnLoad(gameObject);
+
+                    print("hello world");
+                }
+
 				_instance = this;
 				downloading = false;
 				cancelling = false;
