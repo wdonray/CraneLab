@@ -41,11 +41,21 @@ public class TyingUpStateMachine : StateMachineBehaviour
         if (AI.m_startedTying == false) return;
         AI.m_startedTying = false;
         AI.m_tyingComplete = true;
-
+        var accuaracyManager = AccuracyScoreManager.Instance;
         //Drop
         if (AIGuideBehaviour.LoadCollected)
         {
             hookLoop.Drop();
+
+            if (DifficultySettings.Instance.CurrentDifficulty != Difficulty.Beginner)
+            {
+                accuaracyManager.AddToDropOff(accuaracyManager.CheckAccuaracy(
+                    new Vector2(AI.CurrentBase.position.x, AI.CurrentBase.position.z),
+                    new Vector2(guideHelper.Zones[GuideHelper.Index].transform.position.x,
+                        guideHelper.Zones[GuideHelper.Index].transform.position.z),
+                    100f), 100f);
+            }
+
             #region TestType.Infinite 
             if (guideHelper.TestType == TestType.Infinite)
             {
@@ -85,6 +95,12 @@ public class TyingUpStateMachine : StateMachineBehaviour
             {
                 if (guideHelper.Loads[guideHelper.TestType == TestType.Infinite ? GuideHelper.RandomIndexLoad : GuideHelper.Index].GetComponent<HookLoop>().Hooked)
                 {
+                    if (DifficultySettings.Instance.CurrentDifficulty != Difficulty.Beginner)
+                    {
+                        accuaracyManager.AddToLoadUp(accuaracyManager.CheckAccuaracy(new Vector2(AI.HookPos.x, AI.HookPos.z),
+                            new Vector2(hookLoop.transform.position.x, hookLoop.transform.position.z), 100f), 100f);
+                    }
+
                     AIGuideBehaviour.LoadCollected = AIGuideBehaviour.LoadCollected == false;
                     AIGuideBehaviour.WalkingtoStartPos = true;
 
