@@ -14,6 +14,7 @@ public class DifficultyButtons : MonoBehaviour
         {
             _difficulityButtons.Add(button);
         }
+
         ButtonActivated(_difficulityButtons[(int)DifficultySettings.Instance.CurrentDifficulty]);
     }
 

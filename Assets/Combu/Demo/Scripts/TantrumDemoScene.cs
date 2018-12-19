@@ -7,7 +7,7 @@ using Combu;
 public class TantrumDemoScene : TantrumDemoPanel
 {
     public Text textCombuVersion;
-
+    public Image Loading;
     public InputField loginUsername;
     public InputField loginPassword;
     public Text loginError;
@@ -50,6 +50,7 @@ public class TantrumDemoScene : TantrumDemoPanel
             {
                 oldTitle = texts[0].text;
                 texts[0].text = "Connecting to server...";
+                Loading.enabled = true;
                 texts[0].gameObject.SetActive(true);
             }
 
@@ -65,6 +66,7 @@ public class TantrumDemoScene : TantrumDemoPanel
 
             foreach (var i in disableUI)
             {
+                Loading.enabled = false;
                 i.gameObject.SetActive(true);
             }
 
@@ -85,6 +87,16 @@ public class TantrumDemoScene : TantrumDemoPanel
             loginError.text = "Enter your credentials";
             return;
         }
+
+        loginUsername.transform.parent.GetChild(loginUsername.transform.GetSiblingIndex() - 1).gameObject.SetActive(false);
+        loginUsername.gameObject.SetActive(false);
+        loginPassword.transform.parent.GetChild(loginPassword.transform.GetSiblingIndex() - 1).gameObject.SetActive(false);
+        loginPassword.gameObject.SetActive(false);
+        foreach (var child in GetComponentsInChildren<Button>())
+        {
+            child.interactable = false;
+        }
+
         Debug.Log("Trying to login with username " + loginUsername.text + " and password " + loginPassword.text);
         loginError.text = "Loading...";
         // We can specify our custom user type to Authenticate (to be able to cast CombuManager.localUser later)

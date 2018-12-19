@@ -59,7 +59,7 @@ namespace Combu
 		/// Gets the current singleton instance.
 		/// </summary>
 		/// <value>The instance.</value>
-		public static CombuManager instance { get { return _instance; } }
+		public static CombuManager instance{ get { return _instance; } }
 		/// <summary>
 		/// Gets the Combu ISocialPlatform implementation.
 		/// </summary>
@@ -215,27 +215,29 @@ namespace Combu
         protected virtual void Awake ()
 		{
 			// Ensure we have one only instance
-			if (_instance != null && _instance != this)
+			if (_instance == null)
 			{
-				Destroy(this);
-			}
-			else
-			{
-                //if (dontDestroyOnLoad)
-                {
-                    DontDestroyOnLoad(gameObject);
-
-                    print("hello world");
-                }
-
 				_instance = this;
-				downloading = false;
-				cancelling = false;
-				_defaultSocialPlatform = Social.Active;
-				_platform = new CombuPlatform();
-				if (setAsDefaultSocialPlatform)
-					Social.Active = _platform;
 			}
+
+		    if (_instance != this)
+		    {
+                Destroy((gameObject));
+		        return;
+		    }
+
+            if (dontDestroyOnLoad)
+            {
+                DontDestroyOnLoad(gameObject);
+            }
+
+			downloading = false;
+			cancelling = false;
+			_defaultSocialPlatform = Social.Active;
+			_platform = new CombuPlatform();
+			if (setAsDefaultSocialPlatform)
+				Social.Active = _platform;
+			
 		}
 
 		protected virtual void Start ()

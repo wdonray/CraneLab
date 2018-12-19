@@ -5,12 +5,12 @@ using UnityEngine;
 public class SceneLoader : MonoBehaviour
 {
     public string onLoadMessage;
-    public float TimeInScene;
+    public float TimeInScene = 0;
     private RotationToMouseTracking _admin;
 
 
     public static SceneLoader _instance;
-    
+
     public SceneLoader instance
     {
         get
@@ -40,6 +40,10 @@ public class SceneLoader : MonoBehaviour
     {
         if (onLoadMessage == null) onLoadMessage = "";
         print(onLoadMessage);
+
+        OnDestroy();
+        SetTimeInTest(0f);
+
         _admin = null;
         _admin = FindObjectOfType<RotationToMouseTracking>();
         Mouledoux.Components.Mediator.instance.NotifySubscribers(onLoadMessage, new Mouledoux.Callback.Packet());
@@ -61,5 +65,18 @@ public class SceneLoader : MonoBehaviour
     public void SetTimeInTest(float value)
     {
         TimeInScene = value;
+    }
+
+    void OnDestroy()
+    {
+        Combu.CombuManager.platform.ReportScore((long)GetTimeInTest(), "total_time", 
+            (bool success) => { Mouledoux.Components.Mediator.instance.NotifySubscribers("db_total_time", new Mouledoux.Callback.Packet()); });
+
+        AccuracyScoreManager.Instance.SimplifyLoad();
+        Combu.CombuManager.platform.ReportScore((long)(AccuracyScoreManager.Instance.GetDropOffGraded() * 100), "accuracy_dropoff",
+            (bool success) => { Mouledoux.Components.Mediator.instance.NotifySubscribers("db_accuracy_dropoff", new Mouledoux.Callback.Packet()); });
+
+        Combu.CombuManager.platform.ReportScore((long)(AccuracyScoreManager.Instance.GetLoadUpScoreGraded() * 100), "accuracy_pickup",
+            (bool success) => { Mouledoux.Components.Mediator.instance.NotifySubscribers("db_accuracy_pickup", new Mouledoux.Callback.Packet()); });
     }
 }

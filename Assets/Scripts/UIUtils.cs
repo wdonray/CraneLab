@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class UIUtils : MonoBehaviour
 {
@@ -63,5 +65,11 @@ public class UIUtils : MonoBehaviour
     {
         SceneLoader._instance.SetLoadMessage(message);
         print(message);
+    }
+
+    public void LogOut()
+    {
+        Action callback = null;
+        Combu.CombuManager.platform.Logout(callback);
     }
 }

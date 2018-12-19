@@ -34,8 +34,8 @@ public class AccuracyScoreManager : MonoBehaviour
 
     void Awake()
     {
-        _loadMaxScore = 100;
-        _dropMaxScore = 100;
+        _loadMaxScore = 0;
+        _dropMaxScore = 0;
         if (Instance != this) Destroy(gameObject);
     }
 

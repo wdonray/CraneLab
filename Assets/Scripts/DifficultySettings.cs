@@ -53,6 +53,24 @@ public class DifficultySettings : MonoBehaviour
         }
     }
 
+    public Color DifficultyColor
+    {
+        get
+        {
+            switch (CurrentDifficulty)
+            {
+                case Difficulty.Beginner:
+                    return Color.green;
+                case Difficulty.Intermediate:
+                    return Color.yellow;
+                case Difficulty.Expert:
+                    return Color.red;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+    }
+
     void Awake()
     {
         if (Instance != this) Destroy(gameObject);

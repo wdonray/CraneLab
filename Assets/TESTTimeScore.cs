@@ -26,9 +26,9 @@ public class TESTTimeScore : MonoBehaviour
     }
 
 
-    public void AddTimeToToal(long time)
+    public void AddTimeToToal(int time)
     {
-        Combu.CombuManager.platform.ReportScore(time, "total_time", (bool success) =>
+        Combu.CombuManager.platform.ReportScore(time, "accuracy_dropoff", (bool success) =>
         { Mouledoux.Components.Mediator.instance.NotifySubscribers("db_total_time", new Mouledoux.Callback.Packet()); });
     }
 
