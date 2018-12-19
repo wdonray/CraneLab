@@ -34,15 +34,16 @@ public class AccuracyScoreManager : MonoBehaviour
 
     void Awake()
     {
-        _loadMaxScore = 0;
-        _dropMaxScore = 0;
+        _loadMaxScore = 1f;
+        _dropMaxScore = 1f;
+
         if (Instance != this) Destroy(gameObject);
     }
 
     void Update()
     {
-        LoadGrade = GetLoadUpScoreGraded();
-        DropGrade = GetDropOffGraded();
+        //LoadGrade = GetLoadUpGraded();
+        //DropGrade = GetDropOffGraded();
     }
 
     public float GetLoadUpScore()
@@ -67,33 +68,35 @@ public class AccuracyScoreManager : MonoBehaviour
         _dropMaxScore += maxValue;
     }
 
-    public float GetLoadUpScoreGraded()
+    public float GetLoadUpGraded()
     {
-        return Round(GetLoadUpScore() / _loadMaxScore, 2);
+        return Round(_loadUpScore / _loadMaxScore, 2);
     }
 
     public float GetDropOffGraded()
     {
-        return Round(GetDropOffScore() / _dropMaxScore, 2);
+        return Round(_dropOffScore / _dropMaxScore, 2);
     }
 
     public void SimplifyLoad()
     {
-        SetDropOffScore(GetDropOffScore() / _dropMaxScore);
+        SetDropOffScore(_dropOffScore / _dropMaxScore);
         _dropMaxScore = 1f;
 
-        SetLoadUpScore(GetLoadUpScore() / _loadMaxScore);
+        SetLoadUpScore(_loadUpScore / _loadMaxScore);
         _loadMaxScore = 1f;
     }
 
     public void SetLoadUpScore(float value)
     {
         _loadUpScore = value;
+        _loadMaxScore = value;
     }
 
     public void SetDropOffScore(float value)
     {
         _dropOffScore = value;
+        _dropMaxScore = value;
     }
 
     public void SetThreshold(float value)

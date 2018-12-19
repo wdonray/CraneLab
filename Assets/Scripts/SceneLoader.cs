@@ -69,14 +69,32 @@ public class SceneLoader : MonoBehaviour
 
     void OnDestroy()
     {
-        Combu.CombuManager.platform.ReportScore((long)GetTimeInTest(), "total_time", 
-            (bool success) => { Mouledoux.Components.Mediator.instance.NotifySubscribers("db_total_time", new Mouledoux.Callback.Packet()); });
+        Combu.CombuManager.platform.ReportScore((long) GetTimeInTest(), "total_time",
+            (bool success) =>
+            {
+                Mouledoux.Components.Mediator.instance.NotifySubscribers("db_total_time",
+                    new Mouledoux.Callback.Packet());
+            });
 
-        AccuracyScoreManager.Instance.SimplifyLoad();
-        Combu.CombuManager.platform.ReportScore((long)(AccuracyScoreManager.Instance.GetDropOffGraded() * 100), "accuracy_dropoff",
-            (bool success) => { Mouledoux.Components.Mediator.instance.NotifySubscribers("db_accuracy_dropoff", new Mouledoux.Callback.Packet()); });
+        //if (AccuracyScoreManager.Instance.GetLoadUpScore() != 0 && AccuracyScoreManager.Instance.GetDropOffScore() != 0)
+        {
+            AccuracyScoreManager.Instance.SimplifyLoad();
 
-        Combu.CombuManager.platform.ReportScore((long)(AccuracyScoreManager.Instance.GetLoadUpScoreGraded() * 100), "accuracy_pickup",
-            (bool success) => { Mouledoux.Components.Mediator.instance.NotifySubscribers("db_accuracy_pickup", new Mouledoux.Callback.Packet()); });
+            Combu.CombuManager.platform.ReportScore((long) (AccuracyScoreManager.Instance.GetDropOffGraded() * 100),
+                "accuracy_dropoff",
+                (bool success) =>
+                {
+                    Mouledoux.Components.Mediator.instance.NotifySubscribers("db_accuracy_dropoff",
+                        new Mouledoux.Callback.Packet());
+                });
+
+            Combu.CombuManager.platform.ReportScore((long) (AccuracyScoreManager.Instance.GetLoadUpGraded() * 100),
+                "accuracy_pickup",
+                (bool success) =>
+                {
+                    Mouledoux.Components.Mediator.instance.NotifySubscribers("db_accuracy_pickup",
+                        new Mouledoux.Callback.Packet());
+                });
+        }
     }
 }

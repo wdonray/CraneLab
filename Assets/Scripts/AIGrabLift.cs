@@ -295,6 +295,12 @@ public class AIGrabLift : MonoBehaviour
     private void PickUpAction(Transform target)
     {
         SetState(AIGrabLiftState.Walk);
+        var accuaracyManager = AccuracyScoreManager.Instance;
+        accuaracyManager.AddToDropOff(accuaracyManager.CheckAccuaracy(
+            new Vector2(target.transform.localPosition.x, target.transform.localPosition.z),
+            new Vector2(_guideHelper.Zones[GuideHelper.Index].transform.position.x,
+                _guideHelper.Zones[GuideHelper.Index].transform.position.z),
+            100f), 100f);
     }
 
     /// <summary>
@@ -307,6 +313,14 @@ public class AIGrabLift : MonoBehaviour
 
         PersonalLift.enabled = false;
         SetState(AIGrabLiftState.StepDown);
+
+        var accuaracyManager = AccuracyScoreManager.Instance;
+        accuaracyManager.AddToDropOff(accuaracyManager.CheckAccuaracy(
+            new Vector2(Target.transform.localPosition.x, Target.transform.localPosition.z),
+            new Vector2(_guideHelper.Zones[GuideHelper.Index].transform.position.x,
+                _guideHelper.Zones[GuideHelper.Index].transform.position.z),
+            100f), 100f);
+
     }
 
     /// <summary>

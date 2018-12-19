@@ -88,15 +88,6 @@ public class TantrumDemoScene : TantrumDemoPanel
             return;
         }
 
-        loginUsername.transform.parent.GetChild(loginUsername.transform.GetSiblingIndex() - 1).gameObject.SetActive(false);
-        loginUsername.gameObject.SetActive(false);
-        loginPassword.transform.parent.GetChild(loginPassword.transform.GetSiblingIndex() - 1).gameObject.SetActive(false);
-        loginPassword.gameObject.SetActive(false);
-        foreach (var child in GetComponentsInChildren<Button>())
-        {
-            child.interactable = false;
-        }
-
         Debug.Log("Trying to login with username " + loginUsername.text + " and password " + loginPassword.text);
         loginError.text = "Loading...";
         // We can specify our custom user type to Authenticate (to be able to cast CombuManager.localUser later)
@@ -114,8 +105,17 @@ public class TantrumDemoScene : TantrumDemoPanel
         loginError.text = "";
         if (success)
         {
+            FindObjectOfType<UIUtils>().NotifySubscribers("uioff");
             loginUsername.text = "";
             loginPassword.text = "";
+            loginUsername.transform.parent.GetChild(loginUsername.transform.GetSiblingIndex() - 1).gameObject.SetActive(false);
+            loginUsername.gameObject.SetActive(false);
+            loginPassword.transform.parent.GetChild(loginPassword.transform.GetSiblingIndex() - 1).gameObject.SetActive(false);
+            loginPassword.gameObject.SetActive(false);
+            foreach (var child in GetComponentsInChildren<Button>())
+            {
+                child.interactable = false;
+            }
             OpenPanel(panelMenu);
         }
         else

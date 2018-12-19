@@ -101,25 +101,35 @@ public class HookLoop : MonoBehaviour
     public void HookUpZTest(Collider other)
     {
         if (m_hook != null || grabTimer > 0) return;
-
-        Rigidbody rb = GetComponent<Rigidbody>();
-        rb.isKinematic = true;
         Hooked = true;
-        rb.constraints = RigidbodyConstraints.None;
-        m_hook = other.GetComponent<Rigidbody>();
-        m_connectionJoint = gameObject.AddComponent<HingeJoint>();
-        m_connectionJoint.connectedBody = m_hook;
-        m_connectionJoint.autoConfigureConnectedAnchor = false;
-        m_connectionJoint.anchor = new Vector3(0, 0, 0);
-        m_connectionJoint.connectedAnchor = new Vector3(0, 0, -0.5f);
+        m_hook = other.GetComponent<Rigidbody>(); ;
 
-        JointLimits newLimits = new JointLimits();
-        newLimits.min = -60f;
-        newLimits.max = 60f;
-        m_connectionJoint.useLimits = true;
-        m_connectionJoint.limits = newLimits;
-        m_connectionJoint.enableCollision = false;
-        rb.isKinematic = false;
+        GetComponent<Rigidbody>().isKinematic = true;
+        GetComponent<Collider>().isTrigger = true;
+        _currentParent = transform.parent;
+
+        transform.SetParent(m_hook.transform);
+        transform.localPosition = new Vector3(0.01f, 0, -0.64f);
+        transform.localRotation = Quaternion.Euler(90, 0, 0);
+
+        //Rigidbody rb = GetComponent<Rigidbody>();
+        //rb.isKinematic = true;
+        //Hooked = true;
+        //rb.constraints = RigidbodyConstraints.None;
+        //m_hook = other.GetComponent<Rigidbody>();
+        //m_connectionJoint = gameObject.AddComponent<HingeJoint>();
+        //m_connectionJoint.connectedBody = m_hook;
+        //m_connectionJoint.autoConfigureConnectedAnchor = false;
+        //m_connectionJoint.anchor = new Vector3(0, 0, 0);
+        //m_connectionJoint.connectedAnchor = new Vector3(0, 0, -0.5f);
+
+        //JointLimits newLimits = new JointLimits();
+        //newLimits.min = -60f;
+        //newLimits.max = 60f;
+        //m_connectionJoint.useLimits = true;
+        //m_connectionJoint.limits = newLimits;
+        //m_connectionJoint.enableCollision = false;
+        //rb.isKinematic = false;
     }
 
 

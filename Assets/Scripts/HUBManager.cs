@@ -29,14 +29,15 @@ public class HUBManager : MonoBehaviour
 
         //TotalVRTime.transform.GetChild(0).GetComponent<Text>().text = TimeSpan.FromSeconds(Round(SceneLoader._instance.GetTimeInTest(), 0)).ToString("");
 
-        Combu.CombuManager.platform.LoadScoresByUser("accuracy_dropoff", Combu.CombuManager.localUser,
-            Combu.eLeaderboardInterval.Total, 1,
+        Combu.CombuManager.platform.LoadScoresByUser("accuracy_dropoff", Combu.CombuManager.localUser, Combu.eLeaderboardInterval.Total, 1,
             (Combu.Score score, int page, string error) =>
             {
                 if (score != null)
                 {
                     print("<color=blue> DropOff: " + score.value + "</color>");
-                    DropText.transform.GetChild(0).GetComponent<Text>().text = score.value + "%";
+                    AccuracyScoreManager.Instance.SetDropOffScore(score.value > 0 ? score.value : 1f);
+                    float acc = AccuracyScoreManager.Instance.GetDropOffScore();
+                    DropText.transform.GetChild(0).GetComponent<Text>().text = acc + "%";
                 }
                 allScores.Add(score);
             });
@@ -48,7 +49,9 @@ public class HUBManager : MonoBehaviour
                 if (score != null)
                 {
                     print("<color=blue> PickUp: " + score.value + "</color>");
-                    PickUpText.transform.GetChild(0).GetComponent<Text>().text = score.value + "%";
+                    AccuracyScoreManager.Instance.SetLoadUpScore(score.value > 0 ? score.value : 1f);
+                    float acc = AccuracyScoreManager.Instance.GetLoadUpScore();
+                    PickUpText.transform.GetChild(0).GetComponent<Text>().text = acc + "%";
                 }
                 allScores.Add(score);
             });

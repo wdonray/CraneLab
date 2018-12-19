@@ -436,4 +436,15 @@ public class GuideHelper : MonoBehaviour
 
         yield return null;
     }
+
+    public void SubReportScore(string dbCode)
+    {
+        var value = 0f;
+        if (dbCode.Contains("Pass"))
+        {
+            value = 1f;
+        }
+        Combu.CombuManager.platform.ReportScore((long)value, dbCode,
+            (bool success) => { Mouledoux.Components.Mediator.instance.NotifySubscribers(("db_" + dbCode), new Mouledoux.Callback.Packet()); });
+    }
 }
