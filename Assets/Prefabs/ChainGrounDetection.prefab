@@ -96,6 +96,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Tag: Ground
+  Helmet: {fileID: 0}
+  ThrowHand: {fileID: 0}
   minToTrigger: 0
   OnEnter:
     m_PersistentCalls:
@@ -111,6 +113,11 @@ MonoBehaviour:
           m_StringArgument: buzzoff
           m_BoolArgument: 0
         m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnStay:
+    m_PersistentCalls:
+      m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   maxToTrigger: 0

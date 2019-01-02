@@ -10,30 +10,9 @@ public enum Difficulty
     Expert = 2
 }
 
-public class DifficultySettings : MonoBehaviour
+public class DifficultySettings : Singleton<DifficultySettings>
 {
     public Difficulty CurrentDifficulty;
-    private static DifficultySettings _instance;
-
-    public static DifficultySettings Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = FindObjectOfType<DifficultySettings>();
-
-                if (_instance == null)
-                {
-                    var singletonObject = new GameObject();
-                    _instance = singletonObject.AddComponent<DifficultySettings>();
-                    singletonObject.name = "----- " + typeof(DifficultySettings) + " -----";
-                    DontDestroyOnLoad(singletonObject);
-                }
-            }
-            return _instance;
-        }
-    }
 
     public float SliderValues
     {

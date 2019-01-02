@@ -2,48 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AccuracyScoreManager : MonoBehaviour
+public class AccuracyScoreManager : Singleton<AccuracyScoreManager>
 {
     private float _loadMaxScore, _dropMaxScore;
 
     [SerializeField] private float _loadUpScore, _dropOffScore;
-    [Space] [SerializeField] private float LoadGrade, DropGrade;
+
     private float _threshold;
-
-    private static AccuracyScoreManager _instance;
-
-    public static AccuracyScoreManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = FindObjectOfType<AccuracyScoreManager>();
-
-                if (_instance == null)
-                {
-                    var singletonObject = new GameObject();
-                    _instance = singletonObject.AddComponent<AccuracyScoreManager>();
-                    singletonObject.name = "----- " + typeof(AccuracyScoreManager) + " -----";
-                    DontDestroyOnLoad(singletonObject);
-                }
-            }
-            return _instance;
-        }
-    }
 
     void Awake()
     {
-        _loadMaxScore = 1f;
-        _dropMaxScore = 1f;
-
         if (Instance != this) Destroy(gameObject);
-    }
 
-    void Update()
-    {
-        //LoadGrade = GetLoadUpGraded();
-        //DropGrade = GetDropOffGraded();
+        _loadUpScore =
+        _dropOffScore =
+        _loadMaxScore =
+        _dropMaxScore = 1f;
     }
 
     public float GetLoadUpScore()
@@ -70,11 +44,27 @@ public class AccuracyScoreManager : MonoBehaviour
 
     public float GetLoadUpGraded()
     {
+        while (_loadMaxScore > 1f)
+        {
+            _loadUpScore /= 10f;
+            _loadMaxScore /= 10;
+        }
+
+        _loadMaxScore = 1f;
+
         return Round(_loadUpScore / _loadMaxScore, 2);
     }
 
     public float GetDropOffGraded()
     {
+        while (_dropMaxScore > 1f)
+        {
+            _dropOffScore /= 10f;
+            _dropMaxScore /= 10f;
+        }
+
+        _dropMaxScore = 1f;
+
         return Round(_dropOffScore / _dropMaxScore, 2);
     }
 
@@ -90,13 +80,13 @@ public class AccuracyScoreManager : MonoBehaviour
     public void SetLoadUpScore(float value)
     {
         _loadUpScore = value;
-        _loadMaxScore = value;
+        _loadMaxScore = 1f;
     }
 
     public void SetDropOffScore(float value)
     {
         _dropOffScore = value;
-        _dropMaxScore = value;
+        _dropMaxScore = 1f;
     }
 
     public void SetThreshold(float value)
@@ -104,7 +94,7 @@ public class AccuracyScoreManager : MonoBehaviour
         _threshold = value;
     }
 
-    public float CheckAccuaracy(Vector2 active, Vector2 target, float weight)
+    public float CheckAccuracy(Vector2 active, Vector2 target, float weight)
     {
         return weight - (weight * Mathf.Clamp01(Vector2.Distance(active, target)));
     }

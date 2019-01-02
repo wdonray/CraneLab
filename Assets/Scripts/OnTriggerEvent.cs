@@ -15,6 +15,11 @@ public class OnTriggerEvent : MonoBehaviour
     [Space]
 
     [SerializeField]
+    public UnityEngine.Events.UnityEvent OnStay;
+
+    [Space]
+
+    [SerializeField]
     private int maxToTrigger = 0;
     public UnityEngine.Events.UnityEvent OnExit;
 
@@ -48,6 +53,14 @@ public class OnTriggerEvent : MonoBehaviour
         }
     }
 
+    private void OnTriggerStay(Collider other)
+    {
+        if (m_Tag != "")
+            if (!other.CompareTag(m_Tag))
+                return;
+
+        OnStay.Invoke();
+    }
 
     private void OnTriggerExit(Collider other)
     {
@@ -81,7 +94,7 @@ public class OnTriggerEvent : MonoBehaviour
 
         print(collisionObject.name);
     }
-    
+
     public void Grab()
     {
         attached = true;

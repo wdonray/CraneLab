@@ -1,39 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Combu;
 using UnityEngine;
 
-public class SceneLoader : MonoBehaviour
+public class SceneLoader : Singleton<SceneLoader>
 {
-    public string onLoadMessage;
-    public float TimeInScene = 0;
+    public long accUp, accDown;
+    [HideInInspector] public string onLoadMessage;
+    [HideInInspector] public float TimeInScene = 0;
     private RotationToMouseTracking _admin;
-
-
-    public static SceneLoader _instance;
-
-    public SceneLoader instance
-    {
-        get
-        {
-            if (_instance == null) _instance = FindObjectOfType<SceneLoader>();
-            return _instance;
-        }
-    }
-
 
     public void SetLoadMessage(string newMessage)
     {
-        instance.onLoadMessage = newMessage;
+        Instance.onLoadMessage = newMessage;
     }
 
     private void Awake()
     {
-        if (instance != this)
+        if (Instance != this)
         {
-            print(instance.gameObject.name);
             Destroy(gameObject);
         }
-        DontDestroyOnLoad(gameObject);
     }
 
     private void OnLevelWasLoaded()
@@ -41,7 +28,7 @@ public class SceneLoader : MonoBehaviour
         if (onLoadMessage == null) onLoadMessage = "";
         print(onLoadMessage);
 
-        OnDestroy();
+        ReportScores();
         SetTimeInTest(0f);
 
         _admin = null;
@@ -67,34 +54,41 @@ public class SceneLoader : MonoBehaviour
         TimeInScene = value;
     }
 
-    void OnDestroy()
+    void ReportScores()
     {
-        Combu.CombuManager.platform.ReportScore((long) GetTimeInTest(), "total_time",
-            (bool success) =>
-            {
-                Mouledoux.Components.Mediator.instance.NotifySubscribers("db_total_time",
-                    new Mouledoux.Callback.Packet());
-            });
+        if ((AccuracyScoreManager.Instance.GetDropOffScore() + AccuracyScoreManager.Instance.GetLoadUpScore()) == 2f)
+            return;
 
-        //if (AccuracyScoreManager.Instance.GetLoadUpScore() != 0 && AccuracyScoreManager.Instance.GetDropOffScore() != 0)
+        if (CombuManager.isInitialized)
         {
-            AccuracyScoreManager.Instance.SimplifyLoad();
-
-            Combu.CombuManager.platform.ReportScore((long) (AccuracyScoreManager.Instance.GetDropOffGraded() * 100),
-                "accuracy_dropoff",
+            Combu.CombuManager.platform.ReportScore((long) GetTimeInTest(), "total_time",
                 (bool success) =>
                 {
+                    Mouledoux.Components.Mediator.instance.NotifySubscribers("db_total_time",
+                        new Mouledoux.Callback.Packet());
+                });
+
+            AccuracyScoreManager.Instance.SimplifyLoad();
+
+            accDown = (long) (AccuracyScoreManager.Instance.GetDropOffGraded() * 100f);
+            accUp = (long) (AccuracyScoreManager.Instance.GetLoadUpGraded() * 100f);
+
+            Combu.CombuManager.platform.ReportScore((accDown), "accuracy_dropoff",
+                (bool success) =>
+                {
+                    Debug.Log("<color=yellow> [Score Reported] Drop Off: " + accDown + "</color>");
                     Mouledoux.Components.Mediator.instance.NotifySubscribers("db_accuracy_dropoff",
                         new Mouledoux.Callback.Packet());
                 });
 
-            Combu.CombuManager.platform.ReportScore((long) (AccuracyScoreManager.Instance.GetLoadUpGraded() * 100),
-                "accuracy_pickup",
+            Combu.CombuManager.platform.ReportScore((accUp), "accuracy_pickup",
                 (bool success) =>
                 {
+                    Debug.Log("<color=yellow> [Score Reported] Pick Up: " + accUp + "</color>");
                     Mouledoux.Components.Mediator.instance.NotifySubscribers("db_accuracy_pickup",
                         new Mouledoux.Callback.Packet());
                 });
+            
         }
     }
 }

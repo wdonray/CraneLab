@@ -206,12 +206,6 @@ public class GuideHelper : MonoBehaviour
 
     private void Completed()
     {
-        if (_sentPassedMessage == false)
-        {
-            Mediator.instance.NotifySubscribers(PassedMessage, new Packet());
-            _sentPassedMessage = true;
-        }
-
         foreach (var rigger in Riggers)
         {
             rigger._complete = true;
@@ -232,6 +226,12 @@ public class GuideHelper : MonoBehaviour
                     SendToAnimator.SendTrigger(rigger.gameObject, "Idle");
                 }
             }
+        }
+
+        if (_sentPassedMessage == false)
+        {
+            _sentPassedMessage = true;
+            Mediator.instance.NotifySubscribers(PassedMessage, new Packet());
         }
     }
 
@@ -437,13 +437,31 @@ public class GuideHelper : MonoBehaviour
         yield return null;
     }
 
+    public void ZTestIncrementIndex()
+    {
+        Index++;
+    }
+
     public void SubReportScore(string dbCode)
     {
         var value = 0f;
-        if (dbCode.Contains("Pass"))
+
+        foreach (var rigger in Riggers)
         {
-            value = 1f;
+            if (rigger._complete)
+            {
+                value = 100;
+            }
+
+            if (rigger.m_dead)
+            {
+                value -= 75;
+                break;
+            }
         }
+
+        value = Mathf.Clamp(0, 100, value);
+
         Combu.CombuManager.platform.ReportScore((long)value, dbCode,
             (bool success) => { Mouledoux.Components.Mediator.instance.NotifySubscribers(("db_" + dbCode), new Mouledoux.Callback.Packet()); });
     }

@@ -34,10 +34,10 @@ public class HUBManager : MonoBehaviour
             {
                 if (score != null)
                 {
-                    print("<color=blue> DropOff: " + score.value + "</color>");
+                    print("<color=yellow> [Score Loaded] Drop Off: " + score.value + "</color>");
                     AccuracyScoreManager.Instance.SetDropOffScore(score.value > 0 ? score.value : 1f);
-                    float acc = AccuracyScoreManager.Instance.GetDropOffScore();
-                    DropText.transform.GetChild(0).GetComponent<Text>().text = acc + "%";
+                    float acc = AccuracyScoreManager.Instance.GetDropOffGraded();
+                    DropText.transform.GetChild(0).GetComponent<Text>().text = acc.ToString("") + "%";
                 }
                 allScores.Add(score);
             });
@@ -48,10 +48,10 @@ public class HUBManager : MonoBehaviour
             {
                 if (score != null)
                 {
-                    print("<color=blue> PickUp: " + score.value + "</color>");
+                    print("<color=yellow> [Score Loaded] Pick Up: " + score.value + "</color>");
                     AccuracyScoreManager.Instance.SetLoadUpScore(score.value > 0 ? score.value : 1f);
-                    float acc = AccuracyScoreManager.Instance.GetLoadUpScore();
-                    PickUpText.transform.GetChild(0).GetComponent<Text>().text = acc + "%";
+                    float acc = AccuracyScoreManager.Instance.GetLoadUpGraded();
+                    PickUpText.transform.GetChild(0).GetComponent<Text>().text = acc.ToString("") + "%";
                 }
                 allScores.Add(score);
             });

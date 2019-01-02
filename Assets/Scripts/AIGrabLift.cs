@@ -296,7 +296,7 @@ public class AIGrabLift : MonoBehaviour
     {
         SetState(AIGrabLiftState.Walk);
         var accuaracyManager = AccuracyScoreManager.Instance;
-        accuaracyManager.AddToDropOff(accuaracyManager.CheckAccuaracy(
+        accuaracyManager.AddToDropOff(accuaracyManager.CheckAccuracy(
             new Vector2(target.transform.localPosition.x, target.transform.localPosition.z),
             new Vector2(_guideHelper.Zones[GuideHelper.Index].transform.position.x,
                 _guideHelper.Zones[GuideHelper.Index].transform.position.z),
@@ -315,7 +315,7 @@ public class AIGrabLift : MonoBehaviour
         SetState(AIGrabLiftState.StepDown);
 
         var accuaracyManager = AccuracyScoreManager.Instance;
-        accuaracyManager.AddToDropOff(accuaracyManager.CheckAccuaracy(
+        accuaracyManager.AddToDropOff(accuaracyManager.CheckAccuracy(
             new Vector2(Target.transform.localPosition.x, Target.transform.localPosition.z),
             new Vector2(_guideHelper.Zones[GuideHelper.Index].transform.position.x,
                 _guideHelper.Zones[GuideHelper.Index].transform.position.z),

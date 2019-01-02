@@ -49,7 +49,7 @@ public class TyingUpStateMachine : StateMachineBehaviour
 
             if (DifficultySettings.Instance.CurrentDifficulty != Difficulty.Beginner)
             {
-                accuaracyManager.AddToDropOff(accuaracyManager.CheckAccuaracy(
+                accuaracyManager.AddToDropOff(accuaracyManager.CheckAccuracy(
                     new Vector2(AI.CurrentBase.position.x, AI.CurrentBase.position.z),
                     new Vector2(guideHelper.Zones[GuideHelper.Index].transform.position.x,
                         guideHelper.Zones[GuideHelper.Index].transform.position.z),
@@ -97,7 +97,7 @@ public class TyingUpStateMachine : StateMachineBehaviour
                 {
                     if (DifficultySettings.Instance.CurrentDifficulty != Difficulty.Beginner)
                     {
-                        accuaracyManager.AddToLoadUp(accuaracyManager.CheckAccuaracy(new Vector2(AI.HookPos.x, AI.HookPos.z),
+                        accuaracyManager.AddToLoadUp(accuaracyManager.CheckAccuracy(new Vector2(AI.HookPos.x, AI.HookPos.z),
                             new Vector2(hookLoop.transform.position.x, hookLoop.transform.position.z), 100f), 100f);
                     }
 

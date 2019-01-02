@@ -63,7 +63,7 @@ public class UIUtils : MonoBehaviour
 
     public void SetSceneLoadMessage(string message)
     {
-        SceneLoader._instance.SetLoadMessage(message);
+        SceneLoader.Instance.SetLoadMessage(message);
         print(message);
     }
 
